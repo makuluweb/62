@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<!--
+  THE 62 DECISION — standalone app
+  Host on GitHub Pages: put this file in a repo as index.html, enable Pages.
+  - Your data autosaves to this browser (localStorage). Use Export/Import JSON to back up or move it.
+  - The AI deep-dive is optional. It calls the Anthropic API directly from your browser using YOUR key.
+    Your key is stored only in this browser (localStorage), is sent only to api.anthropic.com, and is
+    NOT included in JSON backups. Never commit your key into the repo / a public page.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>The 62 Decision</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --bg:#100f0c;--panel:#1a1815;--panel2:#221f1a;--line:#322e26;--lineGold:rgba(201,169,106,.22);
+    --text:#ece6d8;--muted:#9b9384;--faint:#6f6757;--gold:#c9a96a;--goldB:#e3c389;
+    --green:#8aa57f;--amber:#d7a35f;--red:#cf8568;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Instrument Sans',system-ui,sans-serif}
+  h1,h2,h3,.serif{font-family:'Fraunces',Georgia,serif}
+  ::selection{background:var(--gold);color:var(--bg)}
+  a{color:var(--goldB)}
+  .wrap{max-width:1080px;margin:0 auto;padding:22px}
+  header.top{border-bottom:1px solid var(--line);background:var(--panel)}
+  .htop{max-width:1080px;margin:0 auto;padding:22px 22px 0}
+  .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .between{justify-content:space-between}
+  .kick{color:var(--gold);font-size:12px;letter-spacing:3px;font-weight:600}
+  h1.title{font-size:40px;font-weight:600;line-height:1;margin:6px 0 4px}
+  .sub{color:var(--muted);font-size:14px;max-width:560px}
+  .tabs{display:flex;gap:8px;margin-top:20px;padding-bottom:12px;flex-wrap:wrap}
+  .tab{display:flex;align-items:center;gap:7px;padding:8px 15px;border-radius:9px;border:1px solid transparent;
+    background:transparent;color:var(--muted);font:600 13px 'Instrument Sans';cursor:pointer}
+  .tab.active{background:var(--panel2);color:var(--goldB);border-color:var(--lineGold)}
+  .btn{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:9px;border:1px solid var(--line);
+    background:transparent;color:var(--muted);font:600 12px 'Instrument Sans';cursor:pointer}
+  .btn.gold{border-color:var(--lineGold);color:var(--goldB)}
+  .btn:hover{border-color:var(--lineGold)}
+  .grid{display:grid;gap:12px}
+  .g-cards{grid-template-columns:repeat(auto-fit,minmax(245px,1fr))}
+  .g-2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+  .g-opt{grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
+  .g-w{grid-template-columns:repeat(auto-fit,minmax(210px,1fr));column-gap:24px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .card.gold{border-color:var(--lineGold)}
+  .card.tight{padding:16px}
+  .ch{font-size:11px;color:var(--faint);font-weight:600}
+  .cn{font-size:20px;font-weight:600;margin:2px 0 8px}
+  .hr{height:1px;background:var(--line);margin:10px 0}
+  .kv{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:3px}
+  .kv b{color:var(--text);font-weight:600}
+  .big{font-size:30px;font-weight:600;color:var(--goldB);font-family:'Fraunces',serif}
+  .sl{margin-bottom:14px}
+  .sl-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px}
+  .sl-label{color:var(--muted);font-size:13px}
+  .sl-val{color:var(--text);font-size:13px;font-weight:600}
+  .sl input[type=range]{width:100%;height:4px;accent-color:var(--gold);cursor:pointer}
+  .sl input[type=range].red{accent-color:var(--red)}
+  .sl input[type=range].green{accent-color:var(--green)}
+  .sl input[type=range].amber{accent-color:var(--amber)}
+  .sl-hint{color:var(--faint);font-size:11px;margin-top:2px}
+  textarea,input[type=text],input[type=password]{width:100%;background:var(--panel2);color:var(--text);
+    border:1px solid var(--line);border-radius:8px;padding:10px;font:13px/1.5 'Instrument Sans';resize:vertical}
+  textarea:focus,input:focus{outline:none;border-color:var(--lineGold)}
+  .badge{margin-top:8px;padding:8px 10px;border-radius:8px;font-size:12px}
+  .badge.ok{background:rgba(138,165,127,.12);border:1px solid rgba(138,165,127,.3);color:var(--green)}
+  .badge.no{background:rgba(207,133,104,.10);border:1px solid rgba(207,133,104,.25);color:var(--red)}
+  .ins{display:flex;gap:12px;padding:13px;background:var(--panel2);border:1px solid var(--line);border-radius:10px}
+  .ins .t{font-size:13.5px;font-weight:600;margin-bottom:3px}
+  .ins .d{font-size:12.5px;color:var(--muted);line-height:1.5}
+  .pill{display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:8px;border:1px solid var(--line);cursor:pointer;font-size:12.5px;color:var(--muted);font-weight:600}
+  .pill.on{border-color:var(--red);background:rgba(207,133,104,.12);color:var(--red)}
+  .guard{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;padding:10px;border:1px solid var(--line);background:var(--panel2);border-radius:10px}
+  .guard.on{border-color:rgba(138,165,127,.3);background:rgba(138,165,127,.10)}
+  .guard textarea{border:none;background:transparent;padding:0}
+  .check{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;cursor:pointer}
+  .check input{accent-color:var(--gold);width:17px;height:17px;margin-top:2px;flex-shrink:0}
+  .mirror{margin-bottom:12px;padding-left:14px;border-left:2px solid var(--lineGold)}
+  .mirror .t{font-size:14px;font-weight:600;color:var(--goldB);font-family:'Fraunces',serif;margin-bottom:3px}
+  .mirror .d{font-size:13px;color:var(--muted);line-height:1.55}
+  .note{color:var(--faint);font-size:11px;line-height:1.6}
+  svg text{font-family:'Instrument Sans',sans-serif}
+  .icn{width:15px;height:15px;display:inline-block;vertical-align:-2px}
+  #printArea{display:none}
+  @media print{
+    body{background:#fff}
+    #app{display:none!important}
+    #printArea{display:block!important;color:#1c1916;padding:6mm;font-family:'Instrument Sans',sans-serif}
+    @page{margin:12mm}
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="printArea"></div>
+
+<script>
+"use strict";
+const clone=x=>JSON.parse(JSON.stringify(x));
+/* ---------------- palette for JS-drawn bits ---------------- */
+const C={gold:"#c9a96a",goldB:"#e3c389",muted:"#9b9384",faint:"#6f6757",line:"#322e26",
+  text:"#ece6d8",green:"#8aa57f",amber:"#d7a35f",red:"#cf8568"};
+
+/* ---------------- defaults ---------------- */
+const DEFAULT_OPTIONS=[
+ {id:"kpmg",name:"Stay at KPMG",tag:"The known path",
+  notes:"Band 7 partner, 3 yrs in. Global account lead (BHP), ENR consulting lead. Strong trajectory. Risk: the whistleblower issue could hit the firm at PwC-scale or worse — reduced income, distraction, brand damage that makes selling harder.",
+  s:{capability:9,brand:7,energy:6,reward:6,risk:7},ego:6,fear:4,lifecost:6,reverse:6,premortem:"",
+  active:"mid",cases:{low:{label:"Income decreases",comp:550000},mid:{label:"Flat / modest uplift",comp:650000},high:{label:"Strong uplift (+$150k)",comp:800000}},
+  timeline:[{label:"EOY outcome & bonus confirmed",date:""},{label:"Bonus payment date",date:""},{label:"Resignation date to meet new start",date:""},{label:"Notice period ends",date:""}]},
+ {id:"fti",name:"FTI Consulting",tag:"The big swing",
+  notes:"$1m/yr (last offer). New growth business, strong senior team. Tailwind: clients leaving the Big 4. Cost: rebuild a client base (3rd time in 8 yrs), hire a team, carry the pressure of that number.",
+  s:{capability:7,brand:6,energy:6,reward:9,risk:7},ego:8,fear:7,lifecost:8,reverse:5,premortem:"",
+  active:"high",cases:{low:{label:"Lowball offer",comp:700000},mid:{label:"Discounted offer",comp:850000},high:{label:"Full $1m (as before)",comp:1000000}},
+  timeline:[{label:"Term sheet received",date:""},{label:"Final interview",date:""},{label:"Offer decision deadline",date:""},{label:"Start date",date:""}]},
+ {id:"bhp",name:"Forge a role at BHP",tag:"The pivot to industry",
+  notes:"No role yet, but well-connected to the C-suite — could forge one in ~6 months. Need min Band 16; aiming for 17–18. Bands map to General Manager (16–17) up to Asset President (18).",
+  s:{capability:7,brand:8,energy:7,reward:6,risk:5},ego:5,fear:5,lifecost:5,reverse:5,premortem:"",
+  active:"mid",cases:{low:{label:"Band 16 — General Manager",comp:650000},mid:{label:"Band 17 — Senior GM",comp:800000},high:{label:"Band 18 — Asset President",comp:950000}},
+  timeline:[{label:"Confirm the role can exist",date:""},{label:"Meet C-level sponsor",date:""},{label:"Confirm band / level",date:""},{label:"Formal offer",date:""}]},
+ {id:"alt",name:"The 4th option",tag:"The outlier",
+  notes:"Your wildcard slot — a role outside your proven lane (an AI/tech enterprise sales lead, an advisory seat, or any other candidate). Use it as the outlier: set the cases and scores to whichever option you're testing.",
+  s:{capability:6,brand:9,energy:9,reward:5,risk:8},ego:7,fear:6,lifecost:6,reverse:4,premortem:"",
+  active:"mid",cases:{low:{label:"Conservative",comp:400000},mid:{label:"Expected",comp:500000},high:{label:"Strong",comp:650000}},
+  timeline:[{label:"Initial conversation",date:""},{label:"Role & comp clarity",date:""},{label:"Decision point",date:""}]},
+];
+const CASE_KEYS=["low","mid","high"];
+const OPT_COLOR={kpmg:"#c9a96a",fti:"#cf8568",bhp:"#8aa57f",alt:"#d7a35f"};
+function effComp(o){return o.cases[o.active].comp;}
+function activeLabel(o){return o.cases[o.active].label;}
+const DEFAULT_A={currentAge:55,retireAge:62,returnRate:6,living:240000,retireTarget:240000,
+  currentSuper:440000,currentInvest:0,superContrib:30000,withdrawal:4,mortgage:800000,
+  clearMortgage:true,downsizeRelease:0,stress:false,stressComp:30};
+const DEFAULT_W={financial:25,capability:15,brand:10,energy:15,safety:15,lifefit:20};
+const DEFAULT_COUCH={
+  northstar:"To reach the option to stop by 62 — through work that genuinely energises me — without trading away the health and family time that make that freedom worth having.",
+  guardrails:[
+    {text:"Financial floor: the path keeps me on track for optionality by 62 even in the stress case (3% returns), not only if everything goes right.",on:false},
+    {text:"Energy: I can honestly rate the role 7+/10 on energy six months in, not just on day one. No role taken for money alone.",on:false},
+    {text:"Life non-negotiables: daily training and protected time with my kids stay. Compressed is fine; abandoned is not. Any role that demands I drop them carries a hard end date.",on:false},
+    {text:"Reversibility: I won't walk through a one-way door unless the upside is exceptional and survives the stress test.",on:false},
+    {text:"Anti-distortion: before committing, the choice passes two tests — 'would I still choose it if I were already financially free?' and 'if no one knew the logo?'",on:false},
+    {text:"A downside I can live with: I can name the pre-mortem for the chosen path and genuinely accept the worst case. If I can't stomach it, it's not my path.",on:false},
+  ],answers:{}};
+const DEEP_Q=[
+ {id:"q1",q:"What's really stopping me leaving KPMG — the opportunity ahead, or the fear of change and having to prove myself somewhere new?"},
+ {id:"q2",q:"What exactly am I afraid of about FTI? Name it precisely. What's the worst case — and what would I actually do if it happened?"},
+ {id:"q3",q:"Which of my emotions here are data (energy, values, fit) and which are distortion (ego, fear of being found out, loss aversion)? Which am I letting drive?"},
+ {id:"q4",q:"If I were already financially free today, which path would I choose — and what does that tell me?"},
+ {id:"q5",q:"What would I regret more at 70: the risk I took, or the one I didn't?"},
+];
+
+/* ---------------- state ---------------- */
+const LS_KEY="the62_state", LS_API="the62_apikey", LS_MODEL="the62_model";
+function freshState(){return {options:clone(DEFAULT_OPTIONS),a:{...DEFAULT_A},
+  w:{...DEFAULT_W},couch:clone(DEFAULT_COUCH),checks:{}};}
+function load(){
+  try{const raw=localStorage.getItem(LS_KEY);
+    if(raw){const s=JSON.parse(raw);
+      // merge option labels from defaults, keep user inputs
+      const opts=DEFAULT_OPTIONS.map(def=>{
+        const st=(s.options||[]).find(o=>o.id===def.id);
+        if(!st) return clone(def);
+        const cases=clone(def.cases);
+        if(st.cases){CASE_KEYS.forEach(k=>{ if(st.cases[k]&&typeof st.cases[k].comp==="number") cases[k].comp=st.cases[k].comp; });}
+        else if(typeof st.comp==="number"){ cases.mid.comp=st.comp; } // migrate old single comp
+        return {...clone(def),s:st.s??def.s,ego:st.ego??def.ego,fear:st.fear??def.fear,
+          lifecost:st.lifecost??def.lifecost,reverse:st.reverse??def.reverse,premortem:st.premortem??"",
+          cases,active:st.active||def.active,
+          timeline:Array.isArray(st.timeline)&&st.timeline.length?st.timeline:def.timeline};});
+      return {options:opts,a:{...DEFAULT_A,...(s.a||{})},w:{...DEFAULT_W,...(s.w||{})},
+        couch:{...clone(DEFAULT_COUCH),...(s.couch||{})},checks:s.checks||{}};
+    }}catch(e){}
+  return freshState();
+}
+let S=load();
+let apiKey=localStorage.getItem(LS_API)||"";
+let model=localStorage.getItem(LS_MODEL)||"claude-sonnet-4-6";
+let activeTab="dashboard";
+let lastAI="";
+let aiBusy=false;
+
+function save(){try{localStorage.setItem(LS_KEY,JSON.stringify(S));}catch(e){}}
+
+/* ---------------- finance ---------------- */
+function afterTax(g){
+  const b=[[18200,0],[45000,.16],[135000,.30],[190000,.37],[Infinity,.45]];
+  let t=0,p=0;for(const[c,r]of b){if(g>p){t+=(Math.min(g,c)-p)*r;p=c;}else break;}
+  return Math.max(0,g-t-g*0.02);
+}
+function project(opt){
+  const a=S.a, years=Math.max(0,a.retireAge-a.currentAge);
+  const r=Math.max(0,(a.returnRate-(a.stress?3:0)))/100;
+  const comp=effComp(opt)*(a.stress?(1-a.stressComp/100):1);
+  const gf=Math.pow(1+r,years), af=r===0?years:(Math.pow(1+r,years)-1)/r;
+  const net=afterTax(comp), save=Math.max(0,net-a.living);
+  const personal=a.currentInvest*gf+save*af, sup=a.currentSuper*gf+a.superContrib*af;
+  let liq=personal+sup; if(a.clearMortgage) liq-=a.mortgage; liq=Math.max(0,liq);
+  const liqP=liq+a.downsizeRelease;
+  return {years,net,save,liq,liqP,sust:liqP*(a.withdrawal/100)};
+}
+function rows(){
+  const proj=S.options.map(o=>({o,p:project(o)}));
+  const maxS=Math.max(...proj.map(x=>x.p.sust),1);
+  const wSum=S.w.financial+S.w.capability+S.w.brand+S.w.energy+S.w.safety+S.w.lifefit||1;
+  const out=proj.map(({o,p})=>{
+    const sc={financial:(p.sust/maxS)*100,capability:o.s.capability*10,brand:o.s.brand*10,
+      energy:o.s.energy*10,safety:(10-o.s.risk)*10,lifefit:(10-o.lifecost)*10};
+    const total=(S.w.financial*sc.financial+S.w.capability*sc.capability+S.w.brand*sc.brand+
+      S.w.energy*sc.energy+S.w.safety*sc.safety+S.w.lifefit*sc.lifefit)/wSum;
+    return {o,p,sc,total,bias:o.ego+o.fear};
+  });
+  out.sort((x,y)=>y.total-x.total);
+  return out;
+}
+const fmt=n=>"$"+Math.round(n).toLocaleString("en-AU");
+const fmtK=n=>n>=1e6?"$"+(n/1e6).toFixed(2)+"m":"$"+Math.round(n/1000)+"k";
+const esc=s=>(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+/* ---------------- insights & mirror ---------------- */
+function insights(R){
+  const out=[],top=R[0],a=S.a;
+  const byRew=[...R].sort((x,y)=>y.p.sust-x.p.sust)[0];
+  const byEn=[...R].sort((x,y)=>y.o.s.energy-x.o.s.energy)[0];
+  const byLife=[...R].sort((x,y)=>y.o.lifecost-x.o.lifecost)[0];
+  const byRev=[...R].sort((x,y)=>x.o.reverse-y.o.reverse)[0];
+  out.push([C.gold,"Your highest-weighted path is "+top.o.name+".","It leads on your current weights — but the ranking is only as honest as the scores you set. Adjust them and watch it move."]);
+  if(a.stress)out.push([C.red,"Stress test is ON.","These rankings assume "+(a.returnRate-3)+"% returns and a "+a.stressComp+"% comp haircut. The path on top now is the one that survives the bad case — arguably the more important test."]);
+  if(top.o.ego>=7)out.push([C.amber,"Your leading choice carries a strong ego charge.","You marked "+top.o.name+" high on ego ("+top.o.ego+"/10). Is the strategy choosing it — or the part of you that needs to prove worth?"]);
+  if(byRew.o.fear>=7&&byRew.o.id!==top.o.id)out.push([C.red,byRew.o.name+" is financially strongest, but you're afraid of it.","Highest income ("+fmtK(byRew.p.sust)+"/yr) yet fear "+byRew.o.fear+"/10. Is the fear about genuine fit, or about being seen to fail at a rebuild?"]);
+  if(byLife.o.lifecost>=7)out.push([C.amber,byLife.o.name+" has the highest life cost.","You marked it "+byLife.o.lifecost+"/10 on the toll to gym, kids and health — the very things you can't trade away. If it ranks high, demand a hard end date."]);
+  if(byRev.o.reverse<=4)out.push([C.muted,byRev.o.name+" is the hardest to undo.","Reversibility "+byRev.o.reverse+"/10 — close to a one-way door. Since optionality is your whole goal, a low-reversibility bet needs a much higher payoff."]);
+  const best=Math.max(...R.map(r=>r.p.sust));
+  if(best<a.retireTarget)out.push([C.gold,"No single role reaches "+fmtK(a.retireTarget)+"/yr from investments alone by "+a.retireAge+".","Even the strongest lands at ~"+fmtK(best)+"/yr. The house downsizing lever and a realistic spend do the real work — set those and the job choice gets lighter."]);
+  return out;
+}
+function mirror(R){
+  if(!R.length)return[];const out=[],top=R[0];
+  const kpmg=R.find(r=>r.o.id==="kpmg"),fti=R.find(r=>r.o.id==="fti");
+  const byEn=[...R].sort((x,y)=>y.o.s.energy-x.o.s.energy)[0];
+  if(kpmg)out.push(["On staying at KPMG","It's where your competence is already proven and witnessed. Be honest: is the pull to stay about the opportunity ahead — or the comfort of not having to re-earn recognition somewhere new? You tend to frame it as 'leaving KPMG,' not 'going toward' something. Loss-framing is usually fear talking."]);
+  if(fti&&fti.o.ego>=6&&fti.o.fear>=6)out.push(["On the $1m at FTI","You've loaded it with both your strongest pull and a strong fear — that combination means it's touching something deeper than money. Separate the operational problem (rebuilding a book — solvable with the right deal terms) from the identity threat (being seen to fail — the old wound). Only the first is a real reason to say no."]);
+  if(byEn.o.id!==top.o.id)out.push(["Your head and your energy disagree","Your top-ranked path is "+top.o.name+", but the one that lights you up most is "+byEn.o.name+". For the final act of a career, how much excitement are you willing to trade for whatever is driving that ranking?"]);
+  if(top.o.lifecost>=7)out.push(["The cost you said you can't pay","Your leading path also carries the highest toll on training and family. If it stays on top, that toll has to become a guardrail with a hard end date, not an afterthought."]);
+  out.push(["The honest question","If you were already financially free today, which of these four would you still choose? Whatever you just answered is worth more than any number on this screen."]);
+  return out;
+}
+
+/* ---------------- charts (hand-drawn SVG) ---------------- */
+function barChart(R){
+  const W=400,H=210,pad=34,bw=(W-pad-10)/R.length*0.6,gap=(W-pad-10)/R.length;
+  const target=S.a.retireTarget;
+  const max=Math.max(target,...R.map(r=>r.p.sust))*1.12||1;
+  const y=v=>H-26-(v/max)*(H-50);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" height="210" preserveAspectRatio="xMidYMid meet">`;
+  for(let i=0;i<=3;i++){const v=max*i/3,yy=y(v);
+    s+=`<line x1="${pad}" y1="${yy}" x2="${W-6}" y2="${yy}" stroke="${C.line}" stroke-dasharray="2 4"/>`;
+    s+=`<text x="${pad-4}" y="${yy+3}" fill="${C.muted}" font-size="8" text-anchor="end">$${Math.round(v/1000)}k</text>`;}
+  s+=`<line x1="${pad}" y1="${y(target)}" x2="${W-6}" y2="${y(target)}" stroke="${C.gold}" stroke-dasharray="5 4"/>`;
+  s+=`<text x="${W-8}" y="${y(target)-4}" fill="${C.gold}" font-size="8" text-anchor="end">target ${fmtK(target)}</text>`;
+  R.forEach((r,i)=>{const x=pad+gap*i+(gap-bw)/2, yy=y(r.p.sust);
+    s+=`<rect x="${x}" y="${yy}" width="${bw}" height="${H-26-yy}" rx="4" fill="${i===0?C.goldB:C.faint}"/>`;
+    s+=`<text x="${x+bw/2}" y="${yy-4}" fill="${C.text}" font-size="8" text-anchor="middle">${fmtK(r.p.sust)}</text>`;
+    const nm=r.o.name.replace(/^(Stay at |Forge a role at )/,"");
+    s+=`<text x="${x+bw/2}" y="${H-12}" fill="${C.muted}" font-size="8" text-anchor="middle">${esc(nm.length>14?nm.slice(0,13)+"…":nm)}</text>`;});
+  return s+`</svg>`;
+}
+function scatterChart(R){
+  const W=400,H=210,px=34,py=24;
+  const X=v=>px+(v/100)*(W-px-12), Y=v=>H-py-(v/20)*(H-py-14);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" height="210" preserveAspectRatio="xMidYMid meet">`;
+  s+=`<line x1="${px}" y1="${Y(0)}" x2="${W-6}" y2="${Y(0)}" stroke="${C.line}"/>`;
+  s+=`<line x1="${px}" y1="${Y(0)}" x2="${px}" y2="12" stroke="${C.line}"/>`;
+  s+=`<text x="${W-6}" y="${H-6}" fill="${C.faint}" font-size="8" text-anchor="end">weighted strength →</text>`;
+  s+=`<text x="6" y="14" fill="${C.faint}" font-size="8">↑ ego + fear</text>`;
+  R.forEach((r,i)=>{const x=X(r.total),yy=Y(r.bias);
+    s+=`<circle cx="${x}" cy="${yy}" r="6" fill="${i===0?C.goldB:C.gold}"/>`;
+    const nm=r.o.name.replace(/^(Stay at |Forge a role at )/,"");
+    s+=`<text x="${x}" y="${yy-9}" fill="${C.muted}" font-size="8" text-anchor="middle">${esc(nm.length>13?nm.slice(0,12)+"…":nm)}</text>`;});
+  return s+`</svg>`;
+}
+
+/* ---------------- tiny svg icons ---------------- */
+const I={
+  dash:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',
+  comp:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.2 7.8 14.1 14.1 7.8 16.2 9.9 9.9"/></svg>',
+  money:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
+  brain:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3a3 3 0 0 0-3 3v1a3 3 0 0 0 0 6 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3z"/><path d="M15 3a3 3 0 0 1 3 3v1a3 3 0 0 1 0 6 3 3 0 0 1-3 3"/></svg>',
+  anchor:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></svg>',
+  cal:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>',
+};
+
+/* ---------------- builders ---------------- */
+function slider(path,label,val,min,max,step,suffix,hint,cls){
+  const show=(typeof val==="number"&&val>=1000)?val.toLocaleString():val;
+  return `<div class="sl"><div class="sl-top"><span class="sl-label">${label}</span>
+    <span class="sl-val">${show}${suffix||""}</span></div>
+    <input type="range" class="${cls||''}" min="${min}" max="${max}" step="${step||1}" value="${val}"
+      data-path="${path}" data-suffix="${suffix||''}"/>
+    ${hint?`<div class="sl-hint">${hint}</div>`:""}</div>`;
+}
+
+function viewDashboard(){
+  const R=rows();
+  let cards=R.map((c,i)=>`<div class="card tight" style="position:relative;overflow:hidden;${i===0?'border-color:var(--lineGold)':''}">
+    ${i===0?'<div style="position:absolute;top:0;right:0;background:var(--gold);color:#100f0c;font-size:10px;font-weight:700;padding:3px 10px;border-bottom-left-radius:10px;letter-spacing:1px">TOP RANKED</div>':''}
+    <div class="ch">#${i+1} · ${esc(c.o.tag)}</div>
+    <div class="serif cn">${esc(c.o.name)}</div>
+    <div style="font-size:11px;color:var(--gold);margin:-6px 0 8px">▸ ${esc(activeLabel(c.o))} · ${fmtK(effComp(c.o))}/yr</div>
+    <div style="display:flex;align-items:baseline;gap:8px"><span class="big">${Math.round(c.total)}</span><span style="color:var(--muted);font-size:12px">/ 100 weighted</span></div>
+    <div class="hr"></div>
+    <div class="kv"><span>Liquid at ${S.a.retireAge}</span><b>${fmtK(c.p.liqP)}</b></div>
+    <div class="kv"><span>Income / yr</span><b>${fmtK(c.p.sust)}</b></div>
+    <div class="kv"><span>Life cost</span><b>${c.o.lifecost}/10</b></div>
+    <div class="kv"><span>Reversibility</span><b>${c.o.reverse}/10</b></div>
+    <div class="kv"><span>Ego + fear</span><b style="color:${c.bias>=13?C.red:c.bias>=9?C.amber:C.green}">${c.bias}/20</b></div>
+  </div>`).join("");
+  const ins=insights(R).map(([tone,t,d])=>`<div class="ins"><div style="color:${tone};flex-shrink:0;margin-top:2px">◆</div>
+    <div><div class="t">${esc(t)}</div><div class="d">${esc(d)}</div></div></div>`).join("");
+  return `<div class="grid g-cards">${cards}</div>
+   <div class="grid g-2" style="margin-top:12px">
+     <div class="card"><div class="serif" style="font-size:16px">Sustainable income at ${S.a.retireAge}${S.a.stress?' (stressed)':''}</div>
+       <div style="color:var(--muted);font-size:12px;margin:2px 0 10px">Annual income each path throws off vs your ${fmtK(S.a.retireTarget)} target</div>${barChart(R)}</div>
+     <div class="card"><div class="serif" style="font-size:16px">Strength vs distortion</div>
+       <div style="color:var(--muted);font-size:12px;margin:2px 0 10px">Right = stronger on your anchors. Up = more ego/fear. You want bottom-right.</div>${scatterChart(R)}</div>
+   </div>
+   <div class="card" style="margin-top:12px"><div class="serif" style="font-size:18px;margin-bottom:14px">What the numbers are quietly telling you</div>
+     <div class="grid g-2">${ins}</div></div>
+   <div class="note" style="text-align:center;margin-top:14px">Strategic modelling, not financial advice. Tax, super caps and returns are approximations — a fee-only adviser should confirm the figures.</div>`;
+}
+
+function viewOptions(){
+  const W=S.w;
+  const weights=`<div class="card" style="margin-bottom:14px"><div class="serif" style="font-size:16px;margin-bottom:12px">How much does each anchor matter?</div>
+    <div class="grid g-w">
+      ${slider("w.financial","Financial trajectory",W.financial,0,50,1)}
+      ${slider("w.capability","Capability fit",W.capability,0,50,1)}
+      ${slider("w.brand","Brand alignment",W.brand,0,50,1)}
+      ${slider("w.energy","Energy & enjoyment",W.energy,0,50,1)}
+      ${slider("w.safety","Safety (low risk)",W.safety,0,50,1)}
+      ${slider("w.lifefit","Life fit (low toll)",W.lifefit,0,50,1,"","","green")}
+    </div></div>`;
+  const cards=S.options.map(o=>`<div class="card">
+    <div class="ch" style="color:var(--gold);letter-spacing:1px">${esc(o.tag.toUpperCase())}</div>
+    <div class="serif cn">${esc(o.name)}</div>
+    <p style="color:var(--muted);font-size:12px;line-height:1.55;margin:0 0 14px">${esc(o.notes)}</p>
+    ${slider("optS."+o.id+".capability","Fits my capability",o.s.capability,0,10,1,"/10")}
+    ${slider("optS."+o.id+".brand","Aligns my brand",o.s.brand,0,10,1,"/10")}
+    ${slider("optS."+o.id+".energy","Energy & enjoyment",o.s.energy,0,10,1,"/10")}
+    ${slider("optS."+o.id+".reward","Reward potential",o.s.reward,0,10,1,"/10")}
+    ${slider("optS."+o.id+".risk","Risk level",o.s.risk,0,10,1,"/10","Higher = riskier","red")}
+    ${slider("opt."+o.id+".lifecost","Life cost (toll on gym / kids / health)",o.lifecost,0,10,1,"/10","Higher = more sacrifice","amber")}
+    ${slider("opt."+o.id+".reverse","Reversibility (two-way door?)",o.reverse,0,10,1,"/10","Higher = easier to undo")}
+    <div style="margin-top:8px"><div style="color:var(--muted);font-size:12px;margin-bottom:4px">Pre-mortem — it's 2 yrs on and this failed. Why?</div>
+      <textarea rows="2" data-path="opt.${o.id}.premortem" placeholder="Write the most likely failure story…">${esc(o.premortem)}</textarea></div>
+  </div>`).join("");
+  // remove the dummy slider artifact (kept markup minimal)
+  return `<p style="color:var(--muted);font-size:13px;max-width:660px;margin:0 0 16px">Score each path 0–10 on your anchors, then set how much each anchor matters with the weights. <b style="color:var(--text)">Life cost</b> = the toll on gym, kids and health. <b style="color:var(--text)">Reversibility</b> = how easily you could undo this choice.</p>
+    ${weights}<div class="grid g-opt">${cards}</div>`;
+}
+
+function caseSwitch(o){
+  return `<div style="display:flex;gap:5px;margin-bottom:8px">${CASE_KEYS.map(k=>`
+    <button class="btn ${o.active===k?'gold':''}" data-action="setCase" data-id="${o.id}" data-key="${k}"
+      style="flex:1;flex-direction:column;align-items:flex-start;gap:2px;padding:6px 8px;${o.active===k?'border-color:var(--lineGold)':''}">
+      <span style="font-size:10px;color:var(--muted)">${esc(o.cases[k].label)}</span>
+      <span style="font-size:12px;color:var(--text);font-weight:700">${fmtK(o.cases[k].comp)}</span>
+    </button>`).join("")}</div>`;
+}
+function moneyCard(o){
+  const p=project(o),gap=S.a.retireTarget-p.sust;
+  return `<div class="card tight" data-money="${o.id}">
+    <div class="serif" style="font-size:18px;margin-bottom:8px">${esc(o.name)}</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:6px">Scenario (set values in “Next 30 days”)</div>
+    ${caseSwitch(o)}
+    <div class="hr"></div>
+    <div class="kv"><span>Active comp / yr</span><b>${fmt(effComp(o))}</b></div>
+    <div class="kv"><span>Take-home / yr</span><b data-m="net">${fmt(p.net)}</b></div>
+    <div class="kv"><span>Saved / yr</span><b data-m="save">${fmt(p.save)}</b></div>
+    <div class="kv"><span>Liquid at ${S.a.retireAge}</span><b data-m="liq">${fmtK(p.liq)}</b></div>
+    <div class="kv"><span>+ downsize</span><b data-m="liqP">${fmtK(p.liqP)}</b></div>
+    <div class="kv"><span>Sustainable income</span><b data-m="sust" style="font-weight:700">${fmtK(p.sust)}/yr</b></div>
+    <div class="badge ${gap<=0?'ok':'no'}" data-m="gap">${gap<=0?'✓ Covers target with '+fmtK(-gap)+'/yr to spare':'Short of target by '+fmtK(gap)+'/yr'}</div>
+  </div>`;
+}
+function viewMoney(){
+  const a=S.a;
+  const stressPill=`<div class="pill ${a.stress?'on':''}" data-action="toggleStress">${a.stress?'◉':'○'} Stress test (bad case)</div>`;
+  const assumptions=`<div class="card" style="margin-bottom:14px">
+    <div class="row between" style="margin-bottom:4px"><div class="serif" style="font-size:16px">Your assumptions</div>${stressPill}</div>
+    <div style="color:var(--muted);font-size:12px;margin-bottom:14px">${a.stress?'<span style="color:'+C.red+'">Stress on: returns cut by 3% and comp cut by '+a.stressComp+'%.</span>':'Turn on the stress test to see which paths survive a downturn.'}</div>
+    <div class="grid g-w">
+      ${slider("a.currentAge","Current age",a.currentAge,45,64,1)}
+      ${slider("a.retireAge","Stop / downshift age",a.retireAge,a.currentAge+1,70,1)}
+      ${slider("a.returnRate","Expected return",a.returnRate,2,9,0.5,"%")}
+      ${slider("a.living","Living cost / yr (now)",a.living,120000,400000,10000,"","Reduces savings")}
+      ${slider("a.retireTarget","Retirement spend target / yr",a.retireTarget,100000,400000,10000)}
+      ${slider("a.currentSuper","Current super",a.currentSuper,0,1500000,20000)}
+      ${slider("a.currentInvest","Other investments now",a.currentInvest,0,2000000,20000)}
+      ${slider("a.superContrib","Super contribution / yr",a.superContrib,0,60000,2500)}
+      ${slider("a.withdrawal","Safe withdrawal rate",a.withdrawal,3,6,0.25,"%")}
+      ${slider("a.mortgage","Mortgage to clear",a.mortgage,0,1500000,50000)}
+      ${slider("a.downsizeRelease","Downsize release (extra capital)",a.downsizeRelease,0,2000000,100000,"","Capital freed by trading down the house")}
+      ${a.stress?slider("a.stressComp","Stress: comp haircut",a.stressComp,0,50,5,"%","","red"):""}
+    </div>
+    <label class="check" style="margin-top:6px;margin-bottom:0"><input type="checkbox" data-path="a.clearMortgage" ${a.clearMortgage?'checked':''}/>
+      <span style="font-size:13px;color:var(--text)">Clear the mortgage before stopping (recommended)</span></label>
+  </div>`;
+  return assumptions+`<div class="grid g-cards">${S.options.map(moneyCard).join("")}</div>`;
+}
+function updateMoneyReadouts(){
+  document.querySelectorAll('[data-money]').forEach(card=>{
+    const o=S.options.find(x=>x.id===card.getAttribute('data-money'));if(!o)return;
+    const p=project(o),gap=S.a.retireTarget-p.sust;
+    const set=(k,v)=>{const el=card.querySelector('[data-m="'+k+'"]');if(el)el.textContent=v;};
+    set('net',fmt(p.net));set('save',fmt(p.save));set('liq',fmtK(p.liq));set('liqP',fmtK(p.liqP));set('sust',fmtK(p.sust)+"/yr");
+    const g=card.querySelector('[data-m="gap"]');if(g){g.className="badge "+(gap<=0?'ok':'no');
+      g.textContent=gap<=0?'✓ Covers target with '+fmtK(-gap)+'/yr to spare':'Short of target by '+fmtK(gap)+'/yr';}
+  });
+}
+
+function viewBias(){
+  const cards=S.options.map(o=>{const ld=o.ego+o.fear;
+    const msg=ld>=13?"Heavily loaded. Strip the ego and fear away — would this still be on your list?":ld>=9?"Some distortion here. Worth a second, quieter look.":"Relatively clean. A choice you could defend without your ego in the room.";
+    return `<div class="card"><div class="serif" style="font-size:18px;margin-bottom:12px">${esc(o.name)}</div>
+      ${slider("opt."+o.id+".ego","Ego pull — how much is this about proving worth / status?",o.ego,0,10,1,"/10","","amber")}
+      ${slider("opt."+o.id+".fear","Fear pull — how much is fear (of failing, or being found out) driving this?",o.fear,0,10,1,"/10","","red")}
+      <div style="margin-top:6px;font-size:12px;color:var(--muted);line-height:1.5">${msg}</div></div>`;}).join("");
+  const refl=[
+    "If no one ever knew which firm's name was on my card, would I still choose this?",
+    "Am I drawn to the $1m mainly because it proves something to someone?",
+    "Am I shrinking from rebuilding a client base because it's genuinely wrong — or because failing scares me?",
+    "Which option would 62-year-old me, looking back, thank me for?",
+    "If I were already financially free today, would this still be my choice?"
+  ].map((q,i)=>`<label class="check"><input type="checkbox" data-check="${i}" ${S.checks[i]?'checked':''}/>
+    <span style="font-size:13.5px;color:${S.checks[i]?'var(--text)':'var(--muted)'};line-height:1.5">${esc(q)}</span></label>`).join("");
+  return `<div class="card gold" style="margin-bottom:14px"><div style="display:flex;gap:12px;align-items:flex-start">
+      <span style="color:var(--gold);flex-shrink:0">✦</span>
+      <div><div class="serif" style="font-size:18px;margin-bottom:4px">Two forces distort a decision like this</div>
+      <p style="color:var(--muted);font-size:13px;line-height:1.6;margin:0"><b style="color:var(--text)">Ego</b> pulls you toward what proves your worth — the title, the $1m, the logo. <b style="color:var(--text)">Imposter fear</b> — your "found out as useless" — pushes you to over-prove, or away from what you might fail at. The goal isn't to erase these; it's to see them, so the strategy decides, not the wound.</p></div></div></div>
+    <div class="grid g-2">${cards}</div>
+    <div class="card" style="margin-top:14px"><div class="serif" style="font-size:18px;margin-bottom:4px">Five questions to sit with</div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:12px">Tick the ones you can answer honestly with a clear conscience.</div>${refl}</div>`;
+}
+
+function viewCouch(){
+  const c=S.couch;
+  const guards=c.guardrails.map((g,i)=>`<div class="guard ${g.on?'on':''}" data-guard="${i}">
+    <input type="checkbox" data-guardon="${i}" ${g.on?'checked':''} style="accent-color:var(--green);width:17px;height:17px;margin-top:3px;flex-shrink:0"/>
+    <textarea rows="2" data-path="couch.guard.${i}.text">${esc(g.text)}</textarea></div>`).join("");
+  const qs=DEEP_Q.map(dq=>`<div style="margin-bottom:16px">
+    <div style="font-size:13.5px;color:var(--text);font-weight:600;line-height:1.5;margin-bottom:6px">${esc(dq.q)}</div>
+    <textarea rows="3" data-path="couch.ans.${dq.id}" placeholder="Write freely…">${esc(c.answers[dq.id]||"")}</textarea></div>`).join("");
+  const mir=mirror(rows()).map(([t,d])=>`<div class="mirror"><div class="t">${esc(t)}</div><div class="d">${esc(d)}</div></div>`).join("");
+  const aiOut=lastAI?`<div style="margin-top:14px;padding:14px;background:var(--panel2);border:1px solid var(--lineGold);border-radius:10px;font-size:13px;line-height:1.6;white-space:pre-wrap">${esc(lastAI)}</div>`:"";
+  const aiStatus=aiBusy?'<span style="color:var(--gold);font-size:12px">Analysing… this can take ~20s</span>':'';
+  return `<div class="card gold" style="margin-bottom:14px"><div class="serif" style="font-size:18px;margin-bottom:6px">⚓ Your Northstar</div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:8px">The one thing every option must serve. If a path doesn't move you toward this, the score doesn't matter.</div>
+      <textarea rows="3" class="serif" style="font-size:14px" data-path="couch.northstar">${esc(c.northstar)}</textarea></div>
+    <div class="card" style="margin-bottom:14px"><div class="serif" style="font-size:18px;margin-bottom:6px">Decision guardrails</div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:12px">Rules a choice must pass. Edit to your own words. Tick each one your leading option actually clears — an option that fails a guardrail isn't a close call, it's a no.</div>${guards}</div>
+    <div class="card" style="margin-bottom:14px"><div class="serif" style="font-size:18px;margin-bottom:6px">The deep dive</div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:14px">Answer in writing. Writing forces honesty that thinking lets you skip.</div>${qs}</div>
+    <div class="card" style="margin-bottom:14px"><div class="serif" style="font-size:18px;margin-bottom:6px">The mirror</div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:14px">Patterns reflected back from the scores you've set. Sit with the ones that sting.</div>${mir}
+      <div class="note" style="margin-top:8px">A reflection tool, not therapy. If any of this stirs up more than a career decision, that's worth talking through with someone you trust.</div></div>
+    <div class="card"><div class="serif" style="font-size:18px;margin-bottom:6px">AI deep-dive (optional)</div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:12px">Sends your Northstar, scores and written answers to the Anthropic API using <b>your own key</b> for a coach-style analysis. Your key stays in this browser and is never put in JSON backups.</div>
+      <div class="sl"><div class="sl-top"><span class="sl-label">Anthropic API key</span></div>
+        <input type="password" id="apiKey" placeholder="sk-ant-..." value="${esc(apiKey)}"/></div>
+      <div class="sl"><div class="sl-top"><span class="sl-label">Model</span></div>
+        <input type="text" id="model" value="${esc(model)}"/></div>
+      <div class="row" style="gap:8px"><button class="btn gold" data-action="runAI">${aiBusy?'Working…':'Run AI deep-dive'}</button>${aiStatus}</div>
+      ${aiOut}
+      <div class="note" style="margin-top:10px">Get a key at console.anthropic.com. Charges apply per your Anthropic account.</div></div>`;
+}
+
+function viewNext(){
+  // ---- what-ifs ----
+  const cards=S.options.map(o=>{
+    const caseRows=CASE_KEYS.map(k=>{
+      const on=o.active===k, c=o.cases[k];
+      const tmp={...o,active:k}; const inc=project(tmp).sust;
+      return `<div style="border:1px solid ${on?'var(--lineGold)':'var(--line)'};background:${on?'rgba(201,169,106,.08)':'transparent'};border-radius:10px;padding:10px;margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <button class="btn ${on?'gold':''}" data-action="setCase" data-id="${o.id}" data-key="${k}" style="padding:4px 9px">${on?'● using':'○ use'}</button>
+          <input type="text" data-path="caselabel.${o.id}.${k}" value="${esc(c.label)}" style="flex:1;padding:5px 8px;font-size:12px"/>
+        </div>
+        ${slider("case."+o.id+"."+k,"Gross comp / yr",c.comp,300000,1500000,25000)}
+        <div style="font-size:11px;color:var(--muted)">→ sustainable income at ${S.a.retireAge}: <b style="color:var(--text)">${fmtK(inc)}/yr</b></div>
+      </div>`;}).join("");
+    return `<div class="card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="width:9px;height:9px;border-radius:50%;background:${OPT_COLOR[o.id]||'var(--gold)'}"></span>
+        <div class="serif" style="font-size:18px">${esc(o.name)}</div></div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:12px">Pick the case you want to model. Switching it updates the dashboard and money model instantly.</div>
+      ${caseRows}</div>`;}).join("");
+
+  // ---- combined timeline ----
+  const all=[];
+  S.options.forEach(o=>(o.timeline||[]).forEach(m=>{ if(m.date) all.push({o,m}); }));
+  all.sort((a,b)=>a.m.date<b.m.date?-1:a.m.date>b.m.date?1:0);
+  const today=new Date().toISOString().slice(0,10);
+  const combined=all.length?all.map(({o,m})=>{
+    const days=Math.round((new Date(m.date)-new Date(today))/86400000);
+    const when=isNaN(days)?"":days<0?"passed":days===0?"today":"in "+days+"d";
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)">
+      <span style="width:9px;height:9px;border-radius:50%;background:${OPT_COLOR[o.id]||'var(--gold)'};flex-shrink:0"></span>
+      <span style="font-size:12px;color:var(--faint);width:92px;flex-shrink:0">${esc(m.date)}</span>
+      <span style="font-size:13px;color:var(--text);flex:1">${esc(m.label)}</span>
+      <span style="font-size:11px;color:var(--muted)">${esc(o.name.replace(/^(Stay at |Forge a role at )/,''))} · ${when}</span>
+    </div>`;}).join(""):`<div style="color:var(--faint);font-size:13px">Add dates below and they'll line up here as a 30-day countdown.</div>`;
+
+  // ---- per-option editors ----
+  const editors=S.options.map(o=>{
+    const rows=(o.timeline||[]).map((m,i)=>`<div style="display:flex;gap:6px;margin-bottom:6px;align-items:center">
+      <input type="text" data-path="tl.${o.id}.${i}.label" value="${esc(m.label)}" style="flex:1;padding:6px 8px;font-size:12px"/>
+      <input type="date" data-path="tl.${o.id}.${i}.date" value="${esc(m.date)}" style="width:140px;padding:6px;font-size:12px"/>
+      <button class="btn" data-action="delTL" data-id="${o.id}" data-i="${i}" style="padding:6px 9px">✕</button>
+    </div>`).join("");
+    return `<div class="card tight"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <span style="width:9px;height:9px;border-radius:50%;background:${OPT_COLOR[o.id]||'var(--gold)'}"></span>
+        <div class="serif" style="font-size:16px">${esc(o.name)}</div></div>
+      ${rows}<button class="btn" data-action="addTL" data-id="${o.id}" style="margin-top:4px">+ Add milestone</button></div>`;}).join("");
+
+  return `<p style="color:var(--muted);font-size:13px;max-width:680px;margin:0 0 16px">The unknowns that resolve over the next 30 days. Set each role's possible cases, flip between them to see the decision change, and map the dates that force your hand.</p>
+    <div class="card gold" style="margin-bottom:14px"><div class="serif" style="font-size:18px;margin-bottom:4px">If this, then that — scenario switches</div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:14px">Each role has a downside / middle / upside case. The selected case feeds the whole model — so you can ask “if FTI discounts and KPMG gives a good uplift, who wins?” and see it immediately on the Dashboard.</div>
+      <div class="grid g-2">${cards}</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="serif" style="font-size:18px;margin-bottom:4px">⏱ The next 30 days, in order</div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:12px">Every dated milestone across all roles, sorted. This is the sequence that will actually force the decision.</div>${combined}</div>
+    <div class="card"><div class="serif" style="font-size:18px;margin-bottom:4px">Key dates per role</div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:14px">Edit the milestones and set dates. Examples are pre-filled — make them yours.</div>
+      <div class="grid g-2">${editors}</div></div>`;
+}
+
+function render(){
+  const tabs=[["dashboard","Dashboard",I.dash],["options","Score the options",I.comp],
+    ["money","Money model",I.money],["next","Next 30 days",I.cal],["bias","Ego & imposter",I.brain],["couch","On the couch",I.anchor]];
+  const tabbar=tabs.map(([id,label,ic])=>`<button class="tab ${activeTab===id?'active':''}" data-tab="${id}">${ic}${label}</button>`).join("");
+  const content=activeTab==="dashboard"?viewDashboard():activeTab==="options"?viewOptions():
+    activeTab==="money"?viewMoney():activeTab==="next"?viewNext():activeTab==="bias"?viewBias():viewCouch();
+  document.getElementById("app").innerHTML=`
+    <header class="top"><div class="htop">
+      <div class="row between">
+        <div><div class="kick">A CAREER &amp; FREEDOM DECISION TOOL</div>
+          <h1 class="title serif">The 62 Decision</h1>
+          <div class="sub">Four paths. One question: which lets you finish your career on your terms — secure, and free of ego and fear?</div></div>
+        <div class="row" style="gap:8px">
+          <button class="btn gold" data-action="print">⎙ Save as PDF</button>
+          <button class="btn" data-action="export">↓ Export JSON</button>
+          <button class="btn" data-action="importTrigger">↑ Import JSON</button>
+          <button class="btn" data-action="reset">↺ Reset</button>
+          <input type="file" id="importFile" accept="application/json" style="display:none"/>
+        </div>
+      </div>
+      <div class="tabs">${tabbar}</div>
+    </div></header>
+    <div class="wrap">${content}</div>`;
+}
+
+/* ---------------- state setter by path ---------------- */
+function applyPath(path,val){
+  if(!path||path.indexOf("_DUMMY")>=0)return;
+  const p=path.split(".");
+  if(p[0]==="a"){S.a[p[1]]=val;}
+  else if(p[0]==="w"){S.w[p[1]]=val;}
+  else if(p[0]==="optS"){const o=S.options.find(x=>x.id===p[1]);if(o)o.s[p[2]]=val;}
+  else if(p[0]==="opt"){const o=S.options.find(x=>x.id===p[1]);if(o)o[p[2]]=val;}
+  else if(p[0]==="couch"){
+    if(p[1]==="northstar")S.couch.northstar=val;
+    else if(p[1]==="guard")S.couch.guardrails[+p[2]].text=val;
+    else if(p[1]==="ans")S.couch.answers[p[2]]=val;
+  }
+  else if(p[0]==="case"){const o=S.options.find(x=>x.id===p[1]);if(o)o.cases[p[2]].comp=val;}
+  else if(p[0]==="caselabel"){const o=S.options.find(x=>x.id===p[1]);if(o)o.cases[p[2]].label=val;}
+  else if(p[0]==="tl"){const o=S.options.find(x=>x.id===p[1]);if(o&&o.timeline[+p[2]])o.timeline[+p[2]][p[3]]=val;}
+  save();
+}
+
+/* ---------------- AI deep-dive ---------------- */
+async function runAI(){
+  apiKey=(document.getElementById("apiKey")||{}).value||apiKey;
+  model=(document.getElementById("model")||{}).value||model;
+  localStorage.setItem(LS_API,apiKey);localStorage.setItem(LS_MODEL,model);
+  if(!apiKey){lastAI="Please paste your Anthropic API key first.";render();return;}
+  aiBusy=true;render();
+  const R=rows();
+  const summary=R.map((r,i)=>`#${i+1} ${r.o.name} (${r.o.tag}) — weighted ${Math.round(r.total)}/100; active scenario "${activeLabel(r.o)}" at ${fmt(effComp(r.o))} gross; sustainable income ${fmtK(r.p.sust)}/yr; capability ${r.o.s.capability}/10, brand ${r.o.s.brand}/10, energy ${r.o.s.energy}/10, reward ${r.o.s.reward}/10, risk ${r.o.s.risk}/10, life-cost ${r.o.lifecost}/10, reversibility ${r.o.reverse}/10, ego ${r.o.ego}/10, fear ${r.o.fear}/10.${r.o.premortem?" Pre-mortem: "+r.o.premortem:""}`).join("\n");
+  const dated=[];S.options.forEach(o=>(o.timeline||[]).forEach(m=>{if(m.date)dated.push(m.date+" — "+o.name+": "+m.label);}));
+  dated.sort();
+  const answers=DEEP_Q.map(q=>`Q: ${q.q}\nA: ${S.couch.answers[q.id]||"(blank)"}`).join("\n\n");
+  const guards=S.couch.guardrails.map(g=>(g.on?"[met] ":"[ ] ")+g.text).join("\n");
+  const sys="You are a sharp, warm executive life-strategist and decision coach for a 55-year-old consulting partner deciding the final act of his career, aiming to reach financial optionality by 62 without sacrificing health and family. Be honest and challenging but kind. Ground every observation in the data and answers provided. Separate strategy from ego and imposter fear. Do NOT give clinical or psychiatric diagnoses; speak as a coach, in hypotheses, not verdicts. Be concise and specific. Use short headed sections.";
+  const user=`Here is my decision data.\n\nNORTHSTAR: ${S.couch.northstar}\n\nGUARDRAILS:\n${guards}\n\nOPTIONS (with the scenario case I'm currently modelling):\n${summary}\n\nKEY DATES NEXT 30 DAYS:\n${dated.length?dated.join("\n"):"(none set)"}\n\nMY WRITTEN ANSWERS:\n${answers}\n\nPlease give me a deep-dive: (1) the pattern across my scores and answers, (2) where ego or imposter fear seem to be distorting my thinking, (3) the one question I appear to be avoiding, (4) given the dates, what I should pin down first, and (5) a recommendation framed as a test I can run, not an order. Challenge me.`;
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
+      headers:{"content-type":"application/json","x-api-key":apiKey,
+        "anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+      body:JSON.stringify({model:model,max_tokens:1800,system:sys,messages:[{role:"user",content:user}]})});
+    const data=await res.json();
+    if(data.error){lastAI="API error: "+(data.error.message||JSON.stringify(data.error));}
+    else{lastAI=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("\n").trim()||"(empty response)";}
+  }catch(e){lastAI="Request failed: "+e.message+"\n\nIf this is a network/CORS error, check the key and that you're online.";}
+  aiBusy=false;render();
+}
+
+/* ---------------- JSON backup ---------------- */
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);const a=document.createElement("a");
+  a.href=url;a.download="the-62-decision-backup.json";a.click();URL.revokeObjectURL(url);
+}
+function importJSON(file){
+  const r=new FileReader();
+  r.onload=()=>{try{const s=JSON.parse(r.result);
+    if(s.options){S.options=DEFAULT_OPTIONS.map(def=>{const st=s.options.find(o=>o.id===def.id);
+      return st?{...def,comp:st.comp??def.comp,s:st.s??def.s,ego:st.ego??def.ego,fear:st.fear??def.fear,
+        lifecost:st.lifecost??def.lifecost,reverse:st.reverse??def.reverse,premortem:st.premortem??""}:def;});}
+    if(s.a)S.a={...DEFAULT_A,...s.a}; if(s.w)S.w={...DEFAULT_W,...s.w};
+    if(s.couch)S.couch={...clone(DEFAULT_COUCH),...s.couch}; if(s.checks)S.checks=s.checks;
+    save();render();
+  }catch(e){alert("Could not read that file: "+e.message);}};
+  r.readAsText(file);
+}
+
+/* ---------------- print summary ---------------- */
+function buildPrint(){
+  const R=rows();
+  const rowsHtml=R.map((c,i)=>`<tr style="background:${i%2?'#f5f1e8':'#fbf9f3'};border-bottom:1px solid #d8d0c0">
+    <td style="padding:6px 8px">#${i+1}</td><td style="padding:6px 8px;font-weight:600">${esc(c.o.name)}</td>
+    <td style="padding:6px 8px;text-align:right;font-weight:700">${Math.round(c.total)}</td>
+    <td style="padding:6px 8px;text-align:right">${fmtK(c.p.sust)}</td>
+    <td style="padding:6px 8px;text-align:right">${c.o.lifecost}/10</td>
+    <td style="padding:6px 8px;text-align:right">${c.o.reverse}/10</td>
+    <td style="padding:6px 8px;text-align:right">${c.bias}/20</td></tr>`).join("");
+  const pm=R.filter(c=>c.o.premortem).map(c=>`<div style="margin-bottom:8px;font-size:11px"><b>${esc(c.o.name)} — pre-mortem:</b> <span style="color:#4a443a">${esc(c.o.premortem)}</span></div>`).join("");
+  const gl=S.couch.guardrails.filter(g=>g.on);
+  const guards=gl.length?`<div style="margin-top:10px;font-size:11px"><b>Guardrails my choice must clear:</b><ul style="margin:4px 0 0 16px">${gl.map(g=>`<li style="color:#4a443a;margin-bottom:3px">${esc(g.text)}</li>`).join("")}</ul></div>`:"";
+  const scen=`<div style="margin-top:10px;font-size:11px"><b>Scenario modelled:</b> ${R.map(c=>esc(c.o.name)+" — "+esc(activeLabel(c.o))).join("; ")}.</div>`;
+  const dts=[];S.options.forEach(o=>(o.timeline||[]).forEach(m=>{if(m.date)dts.push({d:m.date,o:o.name,l:m.label});}));
+  dts.sort((a,b)=>a.d<b.d?-1:1);
+  const dates=dts.length?`<div style="margin-top:10px;font-size:11px"><b>Next 30 days:</b><ul style="margin:4px 0 0 16px">${dts.map(x=>`<li style="color:#4a443a;margin-bottom:2px">${esc(x.d)} — ${esc(x.o)}: ${esc(x.l)}</li>`).join("")}</ul></div>`:"";
+  document.getElementById("printArea").innerHTML=`
+    <div style="font-size:11px;letter-spacing:2px;color:#a8842f;font-weight:700">THE 62 DECISION — YOUR CURRENT SNAPSHOT</div>
+    <h1 style="font-family:'Fraunces',serif;font-size:26px;margin:4px 0 2px">Decision summary</h1>
+    <div style="font-size:11px;color:#6f675a;margin-bottom:10px">Ages ${S.a.currentAge}–${S.a.retireAge} · ${S.a.returnRate}% return${S.a.stress?' · STRESS ON':''} · target ${fmtK(S.a.retireTarget)}/yr · withdrawal ${S.a.withdrawal}%</div>
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <thead><tr style="background:#1c1916;color:#fff">
+        <th style="padding:6px 8px;text-align:left">Rank</th><th style="padding:6px 8px;text-align:left">Path</th>
+        <th style="padding:6px 8px;text-align:right">Weighted</th><th style="padding:6px 8px;text-align:right">Income/yr</th>
+        <th style="padding:6px 8px;text-align:right">Life cost</th><th style="padding:6px 8px;text-align:right">Reverse</th>
+        <th style="padding:6px 8px;text-align:right">Ego+fear</th></tr></thead><tbody>${rowsHtml}</tbody></table>
+    <div style="margin-top:14px">${pm}</div>
+    ${scen}${dates}
+    <div style="margin-top:12px;padding:10px;background:#f5f1e8;border:1px solid #d8d0c0;border-radius:6px;font-size:11px"><b style="color:#a8842f">NORTHSTAR:</b> ${esc(S.couch.northstar)}</div>
+    ${guards}
+    <div style="margin-top:10px;padding:10px;background:#faf4e4;border:1px solid #c9a96a;border-radius:6px;font-size:11px"><b>Decision rule:</b> choose the path that is strong on your anchors, clean of distortion, survivable in the bad case, and reversible if you're wrong — and that reaches optionality without trading away the body and family that make freedom worth having.</div>
+    <div style="margin-top:8px;font-size:9px;color:#9a9282">Strategic modelling, not financial advice.</div>`;
+}
+
+/* ---------------- event delegation ---------------- */
+const app=document.getElementById("app");
+app.addEventListener("input",e=>{
+  const t=e.target;
+  if(t.matches('input[type=range]')){
+    const v=parseFloat(t.value);applyPath(t.dataset.path,v);
+    const val=t.closest('.sl').querySelector('.sl-val');
+    if(val)val.textContent=(v>=1000?v.toLocaleString():v)+(t.dataset.suffix||"");
+    if(activeTab==="money")updateMoneyReadouts();
+  } else if(t.matches('textarea[data-path]')){ applyPath(t.dataset.path,t.value); }
+  else if(t.matches('input[type=text][data-path]')){ applyPath(t.dataset.path,t.value); }
+  else if(t.matches('input[type=date][data-path]')){ applyPath(t.dataset.path,t.value); }
+  else if(t.id==="apiKey"){ apiKey=t.value; localStorage.setItem(LS_API,apiKey); }
+  else if(t.id==="model"){ model=t.value; localStorage.setItem(LS_MODEL,model); }
+});
+app.addEventListener("change",e=>{
+  const t=e.target;
+  if(t.matches('input[type=checkbox][data-path]')){ applyPath(t.dataset.path,t.checked);
+    if(activeTab==="money")updateMoneyReadouts(); }
+  else if(t.matches('input[type=date][data-path]')){ if(activeTab==="next")render(); }
+  else if(t.dataset.guardon!==undefined){ S.couch.guardrails[+t.dataset.guardon].on=t.checked;
+    save(); t.closest('.guard').classList.toggle('on',t.checked); }
+  else if(t.dataset.check!==undefined){ S.checks[t.dataset.check]=t.checked; save();
+    t.parentElement.querySelector('span').style.color=t.checked?'var(--text)':'var(--muted)'; }
+  else if(t.id==="importFile" && t.files[0]){ importJSON(t.files[0]); }
+});
+app.addEventListener("click",e=>{
+  const tab=e.target.closest('[data-tab]'); if(tab){activeTab=tab.dataset.tab;render();return;}
+  const act=e.target.closest('[data-action]'); if(!act)return;
+  const a=act.dataset.action;
+  if(a==="toggleStress"){S.a.stress=!S.a.stress;save();render();}
+  else if(a==="setCase"){const o=S.options.find(x=>x.id===act.dataset.id);if(o){o.active=act.dataset.key;save();render();}}
+  else if(a==="addTL"){const o=S.options.find(x=>x.id===act.dataset.id);if(o){o.timeline.push({label:"New milestone",date:""});save();render();}}
+  else if(a==="delTL"){const o=S.options.find(x=>x.id===act.dataset.id);if(o){o.timeline.splice(+act.dataset.i,1);save();render();}}
+  else if(a==="export"){exportJSON();}
+  else if(a==="importTrigger"){document.getElementById("importFile").click();}
+  else if(a==="reset"){if(confirm("Reset everything to defaults? This clears your saved inputs in this browser.")){S=freshState();save();render();}}
+  else if(a==="print"){buildPrint();window.print();}
+  else if(a==="runAI"){runAI();}
+});
+
+render();
+</script>
+</body>
+</html>

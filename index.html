@@ -157,10 +157,12 @@ const DEEP_Q=[
 
 /* ---------------- state ---------------- */
 const LS_KEY="the62_state", LS_API="the62_apikey", LS_MODEL="the62_model";
+function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 function freshState(){return {options:clone(DEFAULT_OPTIONS),a:{...DEFAULT_A},
   w:{...DEFAULT_W},couch:clone(DEFAULT_COUCH),checks:{}};}
 function load(){
-  try{const raw=localStorage.getItem(LS_KEY);
+  try{const raw=lsGet(LS_KEY);
     if(raw){const s=JSON.parse(raw);
       // merge option labels from defaults, keep user inputs
       const opts=DEFAULT_OPTIONS.map(def=>{
@@ -179,13 +181,13 @@ function load(){
   return freshState();
 }
 let S=load();
-let apiKey=localStorage.getItem(LS_API)||"";
-let model=localStorage.getItem(LS_MODEL)||"claude-sonnet-4-6";
+let apiKey=lsGet(LS_API)||"";
+let model=lsGet(LS_MODEL)||"claude-sonnet-4-6";
 let activeTab="dashboard";
 let lastAI="";
 let aiBusy=false;
 
-function save(){try{localStorage.setItem(LS_KEY,JSON.stringify(S));}catch(e){}}
+function save(){lsSet(LS_KEY,JSON.stringify(S));}
 
 /* ---------------- finance ---------------- */
 function afterTax(g){
@@ -477,7 +479,7 @@ function viewCouch(){
         <input type="text" id="model" value="${esc(model)}"/></div>
       <div class="row" style="gap:8px"><button class="btn gold" data-action="runAI">${aiBusy?'Working…':'Run AI deep-dive'}</button>${aiStatus}</div>
       ${aiOut}
-      <div class="note" style="margin-top:10px">Get a key at console.anthropic.com. Charges apply per your Anthropic account.</div></div>`;
+      <div class="note" style="margin-top:10px">Get a key at console.anthropic.com. Charges apply per your Anthropic account. <b style="color:var(--muted)">Run this from your hosted page (https) in a normal browser tab</b> — embedded previews and file:// openings block the API call.</div></div>`;
 }
 
 function viewNext(){
@@ -586,8 +588,10 @@ function applyPath(path,val){
 async function runAI(){
   apiKey=(document.getElementById("apiKey")||{}).value||apiKey;
   model=(document.getElementById("model")||{}).value||model;
-  localStorage.setItem(LS_API,apiKey);localStorage.setItem(LS_MODEL,model);
+  lsSet(LS_API,apiKey);lsSet(LS_MODEL,model);
   if(!apiKey){lastAI="Please paste your Anthropic API key first.";render();return;}
+  const embedded=(window.self!==window.top), isFile=location.protocol==="file:";
+  if(embedded){lastAI="This looks like an embedded preview (e.g. inside the Claude chat), which blocks calls to outside services — so the API request can't go through here.\n\nFix: open your hosted page (your GitHub Pages URL, https://<you>.github.io/<repo>/) in a normal browser tab and run the deep-dive there. Your typed answers are saved, so they'll be waiting.";render();return;}
   aiBusy=true;render();
   const R=rows();
   const summary=R.map((r,i)=>`#${i+1} ${r.o.name} (${r.o.tag}) — weighted ${Math.round(r.total)}/100; active scenario "${activeLabel(r.o)}" at ${fmt(effComp(r.o))} gross; sustainable income ${fmtK(r.p.sust)}/yr; capability ${r.o.s.capability}/10, brand ${r.o.s.brand}/10, energy ${r.o.s.energy}/10, reward ${r.o.s.reward}/10, risk ${r.o.s.risk}/10, life-cost ${r.o.lifecost}/10, reversibility ${r.o.reverse}/10, ego ${r.o.ego}/10, fear ${r.o.fear}/10.${r.o.premortem?" Pre-mortem: "+r.o.premortem:""}`).join("\n");
@@ -603,9 +607,14 @@ async function runAI(){
         "anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
       body:JSON.stringify({model:model,max_tokens:1800,system:sys,messages:[{role:"user",content:user}]})});
     const data=await res.json();
-    if(data.error){lastAI="API error: "+(data.error.message||JSON.stringify(data.error));}
+    if(data.error){lastAI="API error: "+(data.error.message||JSON.stringify(data.error))+"\n\nIf it mentions the model, type a current model name in the Model field (e.g. claude-sonnet-4-6). If it mentions credit/billing, add a payment method at console.anthropic.com.";}
     else{lastAI=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("\n").trim()||"(empty response)";}
-  }catch(e){lastAI="Request failed: "+e.message+"\n\nIf this is a network/CORS error, check the key and that you're online.";}
+  }catch(e){
+    let hint;
+    if(isFile) hint="Likely cause: the page was opened straight from a file (file://), which browsers block from calling APIs. Either host it on GitHub Pages, or serve it locally — in the file's folder run:  python3 -m http.server  then open  http://localhost:8000";
+    else hint="Checklist: (1) you're running this from the hosted https page in a normal browser tab (not a preview); (2) the key is correct and active at console.anthropic.com; (3) billing/credit is set up; (4) you're online; (5) no ad-blocker, VPN or privacy extension is blocking api.anthropic.com.";
+    lastAI="Request failed: "+e.message+"\n\n"+hint;
+  }
   aiBusy=false;render();
 }
 
@@ -675,8 +684,8 @@ app.addEventListener("input",e=>{
   } else if(t.matches('textarea[data-path]')){ applyPath(t.dataset.path,t.value); }
   else if(t.matches('input[type=text][data-path]')){ applyPath(t.dataset.path,t.value); }
   else if(t.matches('input[type=date][data-path]')){ applyPath(t.dataset.path,t.value); }
-  else if(t.id==="apiKey"){ apiKey=t.value; localStorage.setItem(LS_API,apiKey); }
-  else if(t.id==="model"){ model=t.value; localStorage.setItem(LS_MODEL,model); }
+  else if(t.id==="apiKey"){ apiKey=t.value; lsSet(LS_API,apiKey); }
+  else if(t.id==="model"){ model=t.value; lsSet(LS_MODEL,model); }
 });
 app.addEventListener("change",e=>{
   const t=e.target;

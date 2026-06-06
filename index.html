@@ -147,6 +147,13 @@ const DEFAULT_COUCH={
     {text:"Anti-distortion: before committing, the choice passes two tests — 'would I still choose it if I were already financially free?' and 'if no one knew the logo?'",on:false},
     {text:"A downside I can live with: I can name the pre-mortem for the chosen path and genuinely accept the worst case. If I can't stomach it, it's not my path.",on:false},
   ],answers:{}};
+const REFLECTIONS=[
+ "If no one ever knew which firm's name was on my card, would I still choose this?",
+ "Am I drawn to the $1m mainly because it proves something to someone?",
+ "Am I shrinking from rebuilding a client base because it's genuinely wrong — or because failing scares me?",
+ "Which option would 62-year-old me, looking back, thank me for?",
+ "If I were already financially free today, would this still be my choice?",
+];
 const DEEP_Q=[
  {id:"q1",q:"What's really stopping me leaving KPMG — the opportunity ahead, or the fear of change and having to prove myself somewhere new?"},
  {id:"q2",q:"What exactly am I afraid of about FTI? Name it precisely. What's the worst case — and what would I actually do if it happened?"},
@@ -160,7 +167,7 @@ const LS_KEY="the62_state", LS_API="the62_apikey", LS_MODEL="the62_model";
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 function freshState(){return {options:clone(DEFAULT_OPTIONS),a:{...DEFAULT_A},
-  w:{...DEFAULT_W},couch:clone(DEFAULT_COUCH),checks:{}};}
+  w:{...DEFAULT_W},couch:clone(DEFAULT_COUCH),checks:{},ai:null};}
 function load(){
   try{const raw=lsGet(LS_KEY);
     if(raw){const s=JSON.parse(raw);
@@ -176,7 +183,7 @@ function load(){
           cases,active:st.active||def.active,
           timeline:Array.isArray(st.timeline)&&st.timeline.length?st.timeline:def.timeline};});
       return {options:opts,a:{...DEFAULT_A,...(s.a||{})},w:{...DEFAULT_W,...(s.w||{})},
-        couch:{...clone(DEFAULT_COUCH),...(s.couch||{})},checks:s.checks||{}};
+        couch:{...clone(DEFAULT_COUCH),...(s.couch||{})},checks:s.checks||{},ai:s.ai||null};
     }}catch(e){}
   return freshState();
 }
@@ -184,10 +191,34 @@ let S=load();
 let apiKey=lsGet(LS_API)||"";
 let model=lsGet(LS_MODEL)||"claude-sonnet-4-6";
 let activeTab="dashboard";
-let lastAI="";
+let lastErr="";
 let aiBusy=false;
 
 function save(){lsSet(LS_KEY,JSON.stringify(S));}
+
+/* ---------------- markdown -> clean html ---------------- */
+function mdToHtml(md){
+  if(!md) return "";
+  const ic=s=>esc(s).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/`([^`]+?)`/g,"<code>$1</code>");
+  const lines=md.replace(/\r/g,"").split("\n"); let html="",i=0;
+  while(i<lines.length){
+    const l=lines[i];
+    let m=l.match(/^\s*(#{1,6})\s+(.*)$/);
+    if(m){const lvl=Math.min(m[1].length,4),sz=lvl<=1?16:lvl===2?14.5:13;
+      html+=`<div style="font-weight:700;font-size:${sz}px;margin:12px 0 4px;font-family:'Fraunces',serif">${ic(m[2])}</div>`;i++;continue;}
+    if(/^\s*[-*]\s+/.test(l)){html+='<ul style="margin:4px 0 8px 18px;padding:0">';
+      while(i<lines.length&&/^\s*[-*]\s+/.test(lines[i])){html+=`<li style="margin-bottom:3px">${ic(lines[i].replace(/^\s*[-*]\s+/,""))}</li>`;i++;}
+      html+="</ul>";continue;}
+    if(/^\s*\d+\.\s+/.test(l)){html+='<ol style="margin:4px 0 8px 20px;padding:0">';
+      while(i<lines.length&&/^\s*\d+\.\s+/.test(lines[i])){html+=`<li style="margin-bottom:3px">${ic(lines[i].replace(/^\s*\d+\.\s+/,""))}</li>`;i++;}
+      html+="</ol>";continue;}
+    if(/^\s*$/.test(l)){i++;continue;}
+    const para=[l];i++;
+    while(i<lines.length&&!/^\s*$/.test(lines[i])&&!/^\s*#{1,6}\s+/.test(lines[i])&&!/^\s*[-*]\s+/.test(lines[i])&&!/^\s*\d+\.\s+/.test(lines[i])){para.push(lines[i]);i++;}
+    html+=`<p style="margin:0 0 8px;line-height:1.55">${ic(para.join(" "))}</p>`;
+  }
+  return html;
+}
 
 /* ---------------- finance ---------------- */
 function afterTax(g){
@@ -433,13 +464,7 @@ function viewBias(){
       ${slider("opt."+o.id+".ego","Ego pull — how much is this about proving worth / status?",o.ego,0,10,1,"/10","","amber")}
       ${slider("opt."+o.id+".fear","Fear pull — how much is fear (of failing, or being found out) driving this?",o.fear,0,10,1,"/10","","red")}
       <div style="margin-top:6px;font-size:12px;color:var(--muted);line-height:1.5">${msg}</div></div>`;}).join("");
-  const refl=[
-    "If no one ever knew which firm's name was on my card, would I still choose this?",
-    "Am I drawn to the $1m mainly because it proves something to someone?",
-    "Am I shrinking from rebuilding a client base because it's genuinely wrong — or because failing scares me?",
-    "Which option would 62-year-old me, looking back, thank me for?",
-    "If I were already financially free today, would this still be my choice?"
-  ].map((q,i)=>`<label class="check"><input type="checkbox" data-check="${i}" ${S.checks[i]?'checked':''}/>
+  const refl=REFLECTIONS.map((q,i)=>`<label class="check"><input type="checkbox" data-check="${i}" ${S.checks[i]?'checked':''}/>
     <span style="font-size:13.5px;color:${S.checks[i]?'var(--text)':'var(--muted)'};line-height:1.5">${esc(q)}</span></label>`).join("");
   return `<div class="card gold" style="margin-bottom:14px"><div style="display:flex;gap:12px;align-items:flex-start">
       <span style="color:var(--gold);flex-shrink:0">✦</span>
@@ -459,7 +484,10 @@ function viewCouch(){
     <div style="font-size:13.5px;color:var(--text);font-weight:600;line-height:1.5;margin-bottom:6px">${esc(dq.q)}</div>
     <textarea rows="3" data-path="couch.ans.${dq.id}" placeholder="Write freely…">${esc(c.answers[dq.id]||"")}</textarea></div>`).join("");
   const mir=mirror(rows()).map(([t,d])=>`<div class="mirror"><div class="t">${esc(t)}</div><div class="d">${esc(d)}</div></div>`).join("");
-  const aiOut=lastAI?`<div style="margin-top:14px;padding:14px;background:var(--panel2);border:1px solid var(--lineGold);border-radius:10px;font-size:13px;line-height:1.6;white-space:pre-wrap">${esc(lastAI)}</div>`:"";
+  let aiOut="";
+  if(lastErr){aiOut=`<div style="margin-top:14px;padding:14px;background:rgba(207,133,104,.10);border:1px solid rgba(207,133,104,.3);border-radius:10px;font-size:13px;line-height:1.55;white-space:pre-wrap;color:var(--text)">${esc(lastErr)}</div>`;}
+  else if(S.ai&&S.ai.text){aiOut=`<div style="margin-top:14px;padding:16px;background:var(--panel2);border:1px solid var(--lineGold);border-radius:10px;font-size:13px;color:var(--text)">
+    <div style="font-size:11px;color:var(--faint);margin-bottom:8px">Generated ${esc((S.ai.when||"").slice(0,16).replace("T"," "))} · ${esc(S.ai.model||"")}</div>${mdToHtml(S.ai.text)}</div>`;}
   const aiStatus=aiBusy?'<span style="color:var(--gold);font-size:12px">Analysing… this can take ~20s</span>':'';
   return `<div class="card gold" style="margin-bottom:14px"><div class="serif" style="font-size:18px;margin-bottom:6px">⚓ Your Northstar</div>
       <div style="color:var(--muted);font-size:12px;margin-bottom:8px">The one thing every option must serve. If a path doesn't move you toward this, the score doesn't matter.</div>
@@ -589,9 +617,10 @@ async function runAI(){
   apiKey=(document.getElementById("apiKey")||{}).value||apiKey;
   model=(document.getElementById("model")||{}).value||model;
   lsSet(LS_API,apiKey);lsSet(LS_MODEL,model);
-  if(!apiKey){lastAI="Please paste your Anthropic API key first.";render();return;}
+  lastErr="";
+  if(!apiKey){lastErr="Please paste your Anthropic API key first.";render();return;}
   const embedded=(window.self!==window.top), isFile=location.protocol==="file:";
-  if(embedded){lastAI="This looks like an embedded preview (e.g. inside the Claude chat), which blocks calls to outside services — so the API request can't go through here.\n\nFix: open your hosted page (your GitHub Pages URL, https://<you>.github.io/<repo>/) in a normal browser tab and run the deep-dive there. Your typed answers are saved, so they'll be waiting.";render();return;}
+  if(embedded){lastErr="This looks like an embedded preview (e.g. inside the Claude chat), which blocks calls to outside services — so the API request can't go through here.\n\nFix: open your hosted page (your GitHub Pages URL, https://<you>.github.io/<repo>/) in a normal browser tab and run the deep-dive there. Your typed answers are saved, so they'll be waiting.";render();return;}
   aiBusy=true;render();
   const R=rows();
   const summary=R.map((r,i)=>`#${i+1} ${r.o.name} (${r.o.tag}) — weighted ${Math.round(r.total)}/100; active scenario "${activeLabel(r.o)}" at ${fmt(effComp(r.o))} gross; sustainable income ${fmtK(r.p.sust)}/yr; capability ${r.o.s.capability}/10, brand ${r.o.s.brand}/10, energy ${r.o.s.energy}/10, reward ${r.o.s.reward}/10, risk ${r.o.s.risk}/10, life-cost ${r.o.lifecost}/10, reversibility ${r.o.reverse}/10, ego ${r.o.ego}/10, fear ${r.o.fear}/10.${r.o.premortem?" Pre-mortem: "+r.o.premortem:""}`).join("\n");
@@ -607,13 +636,15 @@ async function runAI(){
         "anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
       body:JSON.stringify({model:model,max_tokens:1800,system:sys,messages:[{role:"user",content:user}]})});
     const data=await res.json();
-    if(data.error){lastAI="API error: "+(data.error.message||JSON.stringify(data.error))+"\n\nIf it mentions the model, type a current model name in the Model field (e.g. claude-sonnet-4-6). If it mentions credit/billing, add a payment method at console.anthropic.com.";}
-    else{lastAI=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("\n").trim()||"(empty response)";}
+    if(data.error){lastErr="API error: "+(data.error.message||JSON.stringify(data.error))+"\n\nIf it mentions the model, type a current model name in the Model field (e.g. claude-sonnet-4-6). If it mentions credit/billing, add a payment method at console.anthropic.com.";}
+    else{const txt=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("\n").trim();
+      if(txt){S.ai={text:txt,when:new Date().toISOString(),model:model};save();}
+      else lastErr="(empty response)";}
   }catch(e){
     let hint;
     if(isFile) hint="Likely cause: the page was opened straight from a file (file://), which browsers block from calling APIs. Either host it on GitHub Pages, or serve it locally — in the file's folder run:  python3 -m http.server  then open  http://localhost:8000";
     else hint="Checklist: (1) you're running this from the hosted https page in a normal browser tab (not a preview); (2) the key is correct and active at console.anthropic.com; (3) billing/credit is set up; (4) you're online; (5) no ad-blocker, VPN or privacy extension is blocking api.anthropic.com.";
-    lastAI="Request failed: "+e.message+"\n\n"+hint;
+    lastErr="Request failed: "+e.message+"\n\n"+hint;
   }
   aiBusy=false;render();
 }
@@ -628,48 +659,78 @@ function importJSON(file){
   const r=new FileReader();
   r.onload=()=>{try{const s=JSON.parse(r.result);
     if(s.options){S.options=DEFAULT_OPTIONS.map(def=>{const st=s.options.find(o=>o.id===def.id);
-      return st?{...def,comp:st.comp??def.comp,s:st.s??def.s,ego:st.ego??def.ego,fear:st.fear??def.fear,
-        lifecost:st.lifecost??def.lifecost,reverse:st.reverse??def.reverse,premortem:st.premortem??""}:def;});}
+      if(!st) return clone(def);
+      const cases=clone(def.cases);
+      if(st.cases){CASE_KEYS.forEach(k=>{if(st.cases[k]&&typeof st.cases[k].comp==="number")cases[k].comp=st.cases[k].comp;});}
+      else if(typeof st.comp==="number"){cases.mid.comp=st.comp;}
+      return {...clone(def),s:st.s??def.s,ego:st.ego??def.ego,fear:st.fear??def.fear,
+        lifecost:st.lifecost??def.lifecost,reverse:st.reverse??def.reverse,premortem:st.premortem??"",
+        cases,active:st.active||def.active,
+        timeline:Array.isArray(st.timeline)&&st.timeline.length?st.timeline:def.timeline};});}
     if(s.a)S.a={...DEFAULT_A,...s.a}; if(s.w)S.w={...DEFAULT_W,...s.w};
     if(s.couch)S.couch={...clone(DEFAULT_COUCH),...s.couch}; if(s.checks)S.checks=s.checks;
+    if(s.ai)S.ai=s.ai;
     save();render();
   }catch(e){alert("Could not read that file: "+e.message);}};
   r.readAsText(file);
 }
 
-/* ---------------- print summary ---------------- */
+/* ---------------- comprehensive print document ---------------- */
 function buildPrint(){
-  const R=rows();
-  const rowsHtml=R.map((c,i)=>`<tr style="background:${i%2?'#f5f1e8':'#fbf9f3'};border-bottom:1px solid #d8d0c0">
-    <td style="padding:6px 8px">#${i+1}</td><td style="padding:6px 8px;font-weight:600">${esc(c.o.name)}</td>
-    <td style="padding:6px 8px;text-align:right;font-weight:700">${Math.round(c.total)}</td>
-    <td style="padding:6px 8px;text-align:right">${fmtK(c.p.sust)}</td>
-    <td style="padding:6px 8px;text-align:right">${c.o.lifecost}/10</td>
-    <td style="padding:6px 8px;text-align:right">${c.o.reverse}/10</td>
-    <td style="padding:6px 8px;text-align:right">${c.bias}/20</td></tr>`).join("");
-  const pm=R.filter(c=>c.o.premortem).map(c=>`<div style="margin-bottom:8px;font-size:11px"><b>${esc(c.o.name)} — pre-mortem:</b> <span style="color:#4a443a">${esc(c.o.premortem)}</span></div>`).join("");
-  const gl=S.couch.guardrails.filter(g=>g.on);
-  const guards=gl.length?`<div style="margin-top:10px;font-size:11px"><b>Guardrails my choice must clear:</b><ul style="margin:4px 0 0 16px">${gl.map(g=>`<li style="color:#4a443a;margin-bottom:3px">${esc(g.text)}</li>`).join("")}</ul></div>`:"";
-  const scen=`<div style="margin-top:10px;font-size:11px"><b>Scenario modelled:</b> ${R.map(c=>esc(c.o.name)+" — "+esc(activeLabel(c.o))).join("; ")}.</div>`;
+  const R=rows(), a=S.a;
+  const sec=(t)=>`<div style="font-family:'Fraunces',serif;font-size:17px;color:#1c1916;margin:22px 0 8px;border-bottom:2px solid #c9a96a;padding-bottom:4px;break-after:avoid">${t}</div>`;
+  const th=(arr)=>`<tr style="background:#1c1916;color:#fff">${arr.map((h,j)=>`<th style="padding:5px 7px;text-align:${j===0?'left':'right'};font-size:10px">${h}</th>`).join("")}</tr>`;
+  const tr=(cells,i)=>`<tr style="background:${i%2?'#f5f1e8':'#fbf9f3'};border-bottom:1px solid #d8d0c0">${cells.map((c,j)=>`<td style="padding:5px 7px;text-align:${j===0?'left':'right'};font-size:10.5px;${c.b?'font-weight:700':''}">${c.v}</td>`).join("")}</tr>`;
+  const box=(label,html,bg)=>`<div style="margin-top:10px;padding:10px;background:${bg||'#f5f1e8'};border:1px solid #d8d0c0;border-radius:6px;font-size:11px;break-inside:avoid">${label?`<b style="color:#a8842f">${label}</b> `:""}${html}</div>`;
+
+  const ranking=`<table style="width:100%;border-collapse:collapse">${th(["Rank","Path","Scenario","Weighted","Income/yr","Life cost","Reverse","Ego+fear"])}
+    ${R.map((c,i)=>tr([{v:"#"+(i+1)},{v:esc(c.o.name),b:1},{v:esc(activeLabel(c.o))},{v:Math.round(c.total),b:1},{v:fmtK(c.p.sust)},{v:c.o.lifecost+"/10"},{v:c.o.reverse+"/10"},{v:c.bias+"/20"}],i)).join("")}</table>`;
+
+  const scoresTbl=`<table style="width:100%;border-collapse:collapse">${th(["Path","Cap.","Brand","Energy","Reward","Risk","Life cost","Reverse","Ego","Fear"])}
+    ${R.map((c,i)=>tr([{v:esc(c.o.name),b:1},{v:c.o.s.capability},{v:c.o.s.brand},{v:c.o.s.energy},{v:c.o.s.reward},{v:c.o.s.risk},{v:c.o.lifecost},{v:c.o.reverse},{v:c.o.ego},{v:c.o.fear}],i)).join("")}</table>
+    <div style="font-size:10px;color:#6f675a;margin-top:6px">Anchor weights — financial ${S.w.financial}, capability ${S.w.capability}, brand ${S.w.brand}, energy ${S.w.energy}, safety ${S.w.safety}, life fit ${S.w.lifefit}.</div>`;
+  const detail=S.options.map(o=>`<div style="margin-bottom:9px;break-inside:avoid"><b style="font-size:11.5px">${esc(o.name)}</b> <span style="color:#6f675a;font-size:10px">(${esc(o.tag)})</span>
+    <div style="font-size:10.5px;color:#4a443a;margin:2px 0">${esc(o.notes)}</div>
+    ${o.premortem?`<div style="font-size:10.5px"><b>Pre-mortem:</b> <span style="color:#4a443a">${esc(o.premortem)}</span></div>`:`<div style="font-size:10px;color:#9a9282">Pre-mortem: (not written)</div>`}</div>`).join("");
+
+  const money=`<table style="width:100%;border-collapse:collapse">${th(["Path","Scenario","Gross","Take-home","Saved/yr","Liquid@"+a.retireAge,"+Downsize","Income/yr","Gap"])}
+    ${R.map((c,i)=>{const p=c.p,gap=a.retireTarget-p.sust;return tr([{v:esc(c.o.name),b:1},{v:esc(activeLabel(c.o))},{v:fmtK(effComp(c.o))},{v:fmtK(p.net)},{v:fmtK(p.save)},{v:fmtK(p.liq)},{v:fmtK(p.liqP)},{v:fmtK(p.sust),b:1},{v:(gap<=0?"+"+fmtK(-gap):"\u2212"+fmtK(gap))}],i);}).join("")}</table>
+    <div style="font-size:10px;color:#6f675a;margin-top:6px">Assumptions — ages ${a.currentAge}\u2013${a.retireAge}, ${a.returnRate}% return${a.stress?` (STRESS: ${a.returnRate-3}% &amp; \u2212${a.stressComp}% comp)`:""}, spend now ${fmtK(a.living)}/yr, retire target ${fmtK(a.retireTarget)}/yr, super ${fmtK(a.currentSuper)}, other invest ${fmtK(a.currentInvest)}, super contrib ${fmtK(a.superContrib)}/yr, withdrawal ${a.withdrawal}%, mortgage ${fmtK(a.mortgage)} ${a.clearMortgage?"(cleared)":"(kept)"}, downsize release ${fmtK(a.downsizeRelease)}.</div>`;
+
+  const scen=S.options.map(o=>`<div style="margin-bottom:7px;break-inside:avoid"><b style="font-size:11px">${esc(o.name)}</b>
+    <div style="font-size:10.5px;color:#4a443a;margin-top:2px">${CASE_KEYS.map(k=>{const on=o.active===k;const inc=project({...o,active:k}).sust;return `${on?"<b>\u25b8 ":""}${esc(o.cases[k].label)}: ${fmtK(o.cases[k].comp)} \u2192 ${fmtK(inc)}/yr${on?"</b>":""}`;}).join(" &nbsp;&middot;&nbsp; ")}</div></div>`).join("");
+
   const dts=[];S.options.forEach(o=>(o.timeline||[]).forEach(m=>{if(m.date)dts.push({d:m.date,o:o.name,l:m.label});}));
-  dts.sort((a,b)=>a.d<b.d?-1:1);
-  const dates=dts.length?`<div style="margin-top:10px;font-size:11px"><b>Next 30 days:</b><ul style="margin:4px 0 0 16px">${dts.map(x=>`<li style="color:#4a443a;margin-bottom:2px">${esc(x.d)} — ${esc(x.o)}: ${esc(x.l)}</li>`).join("")}</ul></div>`:"";
+  dts.sort((x,y)=>x.d<y.d?-1:1);
+  const timeline=dts.length?`<table style="width:100%;border-collapse:collapse"><tr style="background:#1c1916;color:#fff"><th style="padding:5px 7px;text-align:left;font-size:10px">Date</th><th style="padding:5px 7px;text-align:left;font-size:10px">Role</th><th style="padding:5px 7px;text-align:left;font-size:10px">Milestone</th></tr>
+    ${dts.map((x,i)=>`<tr style="background:${i%2?'#f5f1e8':'#fbf9f3'};border-bottom:1px solid #d8d0c0"><td style="padding:5px 7px;font-size:10.5px;font-weight:700">${esc(x.d)}</td><td style="padding:5px 7px;font-size:10.5px">${esc(x.o)}</td><td style="padding:5px 7px;font-size:10.5px">${esc(x.l)}</td></tr>`).join("")}</table>`:`<div style="font-size:10.5px;color:#9a9282">No dates set yet.</div>`;
+
+  const refl=`<ul style="margin:0 0 0 16px;padding:0;font-size:10.5px;color:#4a443a">${REFLECTIONS.map((q,i)=>`<li style="margin-bottom:3px">${S.checks[i]?"\u2611":"\u2610"} ${esc(q)}</li>`).join("")}</ul>`;
+  const guardsAll=`<ul style="margin:0 0 0 16px;padding:0;font-size:10.5px;color:#4a443a">${S.couch.guardrails.map(g=>`<li style="margin-bottom:3px">${g.on?"\u2611":"\u2610"} ${esc(g.text)}</li>`).join("")}</ul>`;
+  const qa=DEEP_Q.map(q=>{const ans=S.couch.answers[q.id];return `<div style="margin-bottom:9px;break-inside:avoid"><div style="font-size:11px;font-weight:700;color:#1c1916">${esc(q.q)}</div><div style="font-size:10.5px;color:#4a443a;white-space:pre-wrap;margin-top:2px">${ans?esc(ans):'<i style="color:#9a9282">(not answered)</i>'}</div></div>`;}).join("");
+
+  const ai=(S.ai&&S.ai.text)?`<div style="font-size:10px;color:#9a9282;margin-bottom:8px">Generated ${esc((S.ai.when||"").slice(0,16).replace("T"," "))} \u00b7 ${esc(S.ai.model||"")}</div><div style="font-size:11px;color:#1c1916">${mdToHtml(S.ai.text)}</div>`:`<div style="font-size:10.5px;color:#9a9282">No AI deep-dive saved. Run it in the “On the couch” tab on your hosted page, then export this PDF.</div>`;
+
   document.getElementById("printArea").innerHTML=`
-    <div style="font-size:11px;letter-spacing:2px;color:#a8842f;font-weight:700">THE 62 DECISION — YOUR CURRENT SNAPSHOT</div>
-    <h1 style="font-family:'Fraunces',serif;font-size:26px;margin:4px 0 2px">Decision summary</h1>
-    <div style="font-size:11px;color:#6f675a;margin-bottom:10px">Ages ${S.a.currentAge}–${S.a.retireAge} · ${S.a.returnRate}% return${S.a.stress?' · STRESS ON':''} · target ${fmtK(S.a.retireTarget)}/yr · withdrawal ${S.a.withdrawal}%</div>
-    <table style="width:100%;border-collapse:collapse;font-size:11px">
-      <thead><tr style="background:#1c1916;color:#fff">
-        <th style="padding:6px 8px;text-align:left">Rank</th><th style="padding:6px 8px;text-align:left">Path</th>
-        <th style="padding:6px 8px;text-align:right">Weighted</th><th style="padding:6px 8px;text-align:right">Income/yr</th>
-        <th style="padding:6px 8px;text-align:right">Life cost</th><th style="padding:6px 8px;text-align:right">Reverse</th>
-        <th style="padding:6px 8px;text-align:right">Ego+fear</th></tr></thead><tbody>${rowsHtml}</tbody></table>
-    <div style="margin-top:14px">${pm}</div>
-    ${scen}${dates}
-    <div style="margin-top:12px;padding:10px;background:#f5f1e8;border:1px solid #d8d0c0;border-radius:6px;font-size:11px"><b style="color:#a8842f">NORTHSTAR:</b> ${esc(S.couch.northstar)}</div>
-    ${guards}
-    <div style="margin-top:10px;padding:10px;background:#faf4e4;border:1px solid #c9a96a;border-radius:6px;font-size:11px"><b>Decision rule:</b> choose the path that is strong on your anchors, clean of distortion, survivable in the bad case, and reversible if you're wrong — and that reaches optionality without trading away the body and family that make freedom worth having.</div>
-    <div style="margin-top:8px;font-size:9px;color:#9a9282">Strategic modelling, not financial advice.</div>`;
+    <div style="font-size:11px;letter-spacing:2px;color:#a8842f;font-weight:700">THE 62 DECISION \u2014 FULL DECISION DOSSIER</div>
+    <h1 style="font-family:'Fraunces',serif;font-size:27px;margin:4px 0 2px">Decision dossier</h1>
+    <div style="font-size:11px;color:#6f675a;margin-bottom:4px">Generated ${new Date().toISOString().slice(0,16).replace("T"," ")} \u00b7 Ages ${a.currentAge}\u2013${a.retireAge} \u00b7 ${a.returnRate}% return${a.stress?" \u00b7 STRESS ON":""} \u00b7 target ${fmtK(a.retireTarget)}/yr</div>
+    ${box("NORTHSTAR:",esc(S.couch.northstar),"#faf4e4")}
+
+    ${sec("1 \u00b7 Ranking")}${ranking}
+    ${sec("2 \u00b7 Scores by anchor")}${scoresTbl}
+    <div style="margin-top:12px">${detail}</div>
+    ${sec("3 \u00b7 Money model")}${money}
+    ${sec("4 \u00b7 Scenarios (what-ifs)")}${scen}
+    ${sec("5 \u00b7 The next 30 days")}${timeline}
+    ${sec("6 \u00b7 Ego, fear &amp; reflection")}
+    <div style="font-size:10.5px;color:#4a443a;margin-bottom:6px">Ego + fear load per path is in the ranking table above. Reflection questions answered honestly:</div>${refl}
+    ${sec("7 \u00b7 Guardrails")}${guardsAll}
+    ${sec("8 \u00b7 The deep dive (your answers)")}${qa}
+    <div style="break-before:page"></div>
+    ${sec("9 \u00b7 AI deep-dive")}${ai}
+    ${box("Decision rule:","choose the path that is strong on your anchors, clean of distortion, survivable in the bad case, and reversible if you're wrong \u2014 and that reaches optionality without trading away the body and family that make freedom worth having.","#faf4e4")}
+    <div style="margin-top:8px;font-size:9px;color:#9a9282">Strategic modelling, not financial advice. Figures are approximations to support your own informed decision; confirm tax, super and returns with a fee-only adviser.</div>`;
 }
 
 /* ---------------- event delegation ---------------- */

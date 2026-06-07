@@ -84,6 +84,10 @@
   .mirror .t{font-size:14px;font-weight:600;color:var(--goldB);font-family:'Fraunces',serif;margin-bottom:3px}
   .mirror .d{font-size:13px;color:var(--muted);line-height:1.55}
   .note{color:var(--faint);font-size:11px;line-height:1.6}
+  .lever{border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:9px;margin-bottom:8px}
+  .lever.get{border-left:3px solid var(--gold)}
+  .lever.give{border-left:3px solid var(--green)}
+  .lever.star{box-shadow:inset 0 0 0 1px rgba(215,163,95,.25)}
   svg text{font-family:'Instrument Sans',sans-serif}
   .icn{width:15px;height:15px;display:inline-block;vertical-align:-2px}
   #printArea{display:none}
@@ -162,12 +166,83 @@ const DEEP_Q=[
  {id:"q5",q:"What would I regret more at 70: the risk I took, or the one I didn't?"},
 ];
 
+/* ---------------- negotiation defaults ----------------
+   Scotwork operating model + Harvard BATNA lens.
+   Each lever is something you GET (an ask) or GIVE (cheap for you / valuable to them).
+   star = the high-leverage trade: cheap-to-give for expensive-to-you protection. */
+const DEFAULT_NEG={
+  parties:[
+    {id:"fti",name:"FTI Consulting",
+     stance:"Your live offer — but still verbal, no term sheet. Their prize is your book and speed (the Big-4 exodus is time-sensitive). Your exposure is a third book-rebuild in 8 years, so protection beats the headline number. Job one in 'Prepare': get the offer in writing — you can't trade an asset you don't hold.",
+     limit:"",aspiration:"",
+     theyWant:["Speed and certainty that you'll commit","The client relationships / book you'd bring","A credentialed Big-4 partner to anchor the growth business"],
+     levers:[
+       {label:"Guaranteed floor / minimum for an 18–24 month ramp",kind:"get",star:true,note:"De-risks the rebuild — your single most important ask."},
+       {label:"Sign-on bonus (one or two tranches)",kind:"get",star:true,note:"Bridges the KPMG bonus you'd forfeit; neutralises KPMG's timing lever."},
+       {label:"Ramped / reduced targets in year 1–2",kind:"get",star:false,note:""},
+       {label:"Budget to bring or build a team",kind:"get",star:true,note:"You flagged needing to hire."},
+       {label:"Hold the full $1m vs a discount",kind:"get",star:false,note:""},
+       {label:"Equity / profit points + vesting (and finance or waive any buy-in)",kind:"get",star:false,note:""},
+       {label:"Title, P&L mandate and reporting line",kind:"get",star:false,note:""},
+       {label:"Severance / downside protection (it's the 'swing')",kind:"get",star:false,note:""},
+       {label:"A firm, fast start date",kind:"give",star:true,note:"Cheap for you, high value to them — trade it for the floor."},
+       {label:"Named relationships and book you'll bring",kind:"give",star:true,note:"Their real prize — price it, don't give it free."},
+       {label:"A clean, fast commitment / decision",kind:"give",star:false,note:""},
+     ],
+     proposals:[
+       {ifThey:"hold the full $1m and guarantee a floor for 18 months",thenI:"commit now and start within 8 weeks"},
+       {ifThey:"fund a first hire and ramp my year-1 target",thenI:"bring the named relationships from day one"},
+     ]},
+    {id:"kpmg",name:"Stay at KPMG (the counter)",
+     stance:"The incumbent. They can pull retention levers precisely because you're the BHP global account lead — losing you risks the client, doubly sensitive amid the whistleblower exposure and a defection to a rival. Don't threaten; signal. Your FTI term sheet is the leverage that makes this conversation real.",
+     limit:"",aspiration:"",
+     theyWant:["To retain you and protect the BHP account relationship","Stability through the whistleblower exposure","To avoid a partner walking to a direct competitor"],
+     levers:[
+       {label:"Band uplift (7 → ?) and the comp it unlocks",kind:"get",star:true,note:""},
+       {label:"A defined, accelerated trajectory / path",kind:"get",star:false,note:""},
+       {label:"The BHP global account secured & expanded — status and economics",kind:"get",star:true,note:""},
+       {label:"A retention / lock-in payment",kind:"get",star:false,note:""},
+       {label:"Reduced internal load to protect your time",kind:"get",star:false,note:""},
+       {label:"Clarity on the whistleblower exposure (de-risks staying)",kind:"get",star:false,note:""},
+       {label:"A transition & continuity commitment on BHP",kind:"give",star:true,note:"Enormous to them, costs you little — your best trade."},
+       {label:"Loyalty signal / staying through a defined period",kind:"give",star:false,note:""},
+       {label:"Discretion — no public defection",kind:"give",star:false,note:""},
+     ],
+     proposals:[
+       {ifThey:"move me to [band] and formalise the BHP account economics",thenI:"commit to a defined period and lead the account through transition"},
+     ]},
+    {id:"bhp",name:"BHP (the genuine third path)",
+     stance:"Your client, and a real third path — not a card to wave at KPMG. They can verify it through the very relationship you manage, and a called bluff costs you credibility in a small ENR market. Treat it as genuine optionality: it gives you walk-away power you never have to brandish.",
+     limit:"",aspiration:"",
+     theyWant:["Someone they already trust and know (you, as account lead)","Capability to fill a real gap","A clean, conflict-free hire"],
+     levers:[
+       {label:"A real role at Band 17–18 (not the Band 16 floor)",kind:"get",star:true,note:""},
+       {label:"A named C-suite sponsor to forge / confirm the role",kind:"get",star:true,note:""},
+       {label:"Scope / mandate worthy of the level",kind:"get",star:false,note:""},
+       {label:"Timeline certainty (the ~6-month path)",kind:"get",star:false,note:""},
+       {label:"Calendar / lifestyle terms that protect training & family",kind:"get",star:false,note:""},
+       {label:"Your sector knowledge and existing relationships",kind:"give",star:false,note:""},
+       {label:"A clean exit from the KPMG account to avoid conflict",kind:"give",star:true,note:"Manage carefully — it's a reputational must, not just a trade."},
+     ],
+     proposals:[
+       {ifThey:"confirm a Band 17+ role with a named sponsor",thenI:"manage a clean, conflict-free transition off the account"},
+     ]},
+  ]};
+
 /* ---------------- state ---------------- */
 const LS_KEY="the62_state", LS_API="the62_apikey", LS_MODEL="the62_model";
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function mergeNeg(sn){
+  if(!sn||!Array.isArray(sn.parties)) return clone(DEFAULT_NEG);
+  const parties=DEFAULT_NEG.parties.map(def=>{
+    const st=sn.parties.find(p=>p.id===def.id);
+    return st?{...clone(def),...st}:clone(def);
+  });
+  return {parties};
+}
 function freshState(){return {options:clone(DEFAULT_OPTIONS),a:{...DEFAULT_A},
-  w:{...DEFAULT_W},couch:clone(DEFAULT_COUCH),checks:{},ai:null};}
+  w:{...DEFAULT_W},couch:clone(DEFAULT_COUCH),neg:clone(DEFAULT_NEG),checks:{},ai:null};}
 function load(){
   try{const raw=lsGet(LS_KEY);
     if(raw){const s=JSON.parse(raw);
@@ -183,7 +258,7 @@ function load(){
           cases,active:st.active||def.active,
           timeline:Array.isArray(st.timeline)&&st.timeline.length?st.timeline:def.timeline};});
       return {options:opts,a:{...DEFAULT_A,...(s.a||{})},w:{...DEFAULT_W,...(s.w||{})},
-        couch:{...clone(DEFAULT_COUCH),...(s.couch||{})},checks:s.checks||{},ai:s.ai||null};
+        couch:{...clone(DEFAULT_COUCH),...(s.couch||{})},neg:mergeNeg(s.neg),checks:s.checks||{},ai:s.ai||null};
     }}catch(e){}
   return freshState();
 }
@@ -326,6 +401,7 @@ const I={
   brain:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3a3 3 0 0 0-3 3v1a3 3 0 0 0 0 6 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3z"/><path d="M15 3a3 3 0 0 1 3 3v1a3 3 0 0 1 0 6 3 3 0 0 1-3 3"/></svg>',
   anchor:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></svg>',
   cal:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>',
+  deal:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"/><path d="M3 7h7M14 7h7"/><path d="M6.5 4 3 11a3 3 0 0 0 7 0z"/><path d="M17.5 4 14 11a3 3 0 0 0 7 0z"/></svg>',
 };
 
 /* ---------------- builders ---------------- */
@@ -568,12 +644,77 @@ function viewNext(){
       <div class="grid g-2">${editors}</div></div>`;
 }
 
+function viewNeg(){
+  const partyCard=pt=>{
+    const col=OPT_COLOR[pt.id]||C.gold;
+    const wants=(pt.theyWant||[]).map((w,i)=>`<div style="display:flex;gap:6px;align-items:center;margin-bottom:5px">
+        <span style="color:var(--faint);flex-shrink:0">•</span>
+        <input type="text" data-path="negwant.${pt.id}.${i}" value="${esc(w)}" style="flex:1;padding:5px 8px;font-size:12px"/>
+        <button class="btn" data-action="negDelWant" data-id="${pt.id}" data-i="${i}" style="padding:5px 8px">✕</button>
+      </div>`).join("");
+    const levers=(pt.levers||[]).map((l,i)=>`<div class="lever ${l.kind} ${l.star?'star':''}">
+        <div style="display:flex;gap:6px;align-items:center">
+          <button class="btn" data-action="negKind" data-id="${pt.id}" data-i="${i}" title="Toggle get / give"
+            style="padding:4px 8px;${l.kind==='give'?'border-color:rgba(138,165,127,.45);color:var(--green)':'border-color:var(--lineGold);color:var(--goldB)'}">${l.kind==='give'?'GIVE':'GET'}</button>
+          <button class="btn" data-action="negStar" data-id="${pt.id}" data-i="${i}" title="Mark as a high-leverage trade"
+            style="padding:4px 8px;${l.star?'border-color:rgba(215,163,95,.5);color:var(--amber)':''}">${l.star?'★':'☆'}</button>
+          <input type="text" data-path="neglever.${pt.id}.${i}.label" value="${esc(l.label)}" style="flex:1;padding:5px 8px;font-size:12.5px"/>
+          <button class="btn" data-action="negDelLever" data-id="${pt.id}" data-i="${i}" style="padding:5px 8px">✕</button>
+        </div>
+        <input type="text" data-path="neglever.${pt.id}.${i}.note" value="${esc(l.note||'')}" placeholder="why it trades / note (optional)"
+          style="width:100%;padding:4px 8px;font-size:11px;color:var(--muted);margin-top:5px"/>
+      </div>`).join("");
+    const props=(pt.proposals||[]).map((p,i)=>`<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap">
+        <span style="font-size:11px;color:var(--green);font-weight:700;flex-shrink:0">IF THEY</span>
+        <input type="text" data-path="negprop.${pt.id}.${i}.ifThey" value="${esc(p.ifThey)}" placeholder="give / concede X…" style="flex:1;min-width:150px;padding:5px 8px;font-size:12px"/>
+        <span style="font-size:11px;color:var(--goldB);font-weight:700;flex-shrink:0">THEN I</span>
+        <input type="text" data-path="negprop.${pt.id}.${i}.thenI" value="${esc(p.thenI)}" placeholder="give Y in return…" style="flex:1;min-width:150px;padding:5px 8px;font-size:12px"/>
+        <button class="btn" data-action="negDelProp" data-id="${pt.id}" data-i="${i}" style="padding:5px 8px">✕</button>
+      </div>`).join("");
+    return `<div class="card" style="border-left:3px solid ${col}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="width:10px;height:10px;border-radius:50%;background:${col}"></span>
+        <div class="serif" style="font-size:20px">${esc(pt.name)}</div></div>
+      <textarea rows="3" data-path="neg.${pt.id}.stance" style="font-size:12.5px;color:var(--muted);margin-bottom:12px">${esc(pt.stance)}</textarea>
+
+      <div style="font-size:12px;color:var(--gold);font-weight:600;letter-spacing:1px;margin-bottom:6px">WHAT DRIVES THEM</div>
+      <div style="color:var(--muted);font-size:11px;margin-bottom:8px">Their interests — the better you map these, the more trades you can find.</div>
+      ${wants}
+      <button class="btn" data-action="negAddWant" data-id="${pt.id}" style="margin-bottom:14px">+ Add interest</button>
+
+      <div class="grid g-2" style="margin-bottom:14px">
+        <div><div style="font-size:12px;color:var(--red);font-weight:600;letter-spacing:1px;margin-bottom:4px">LIMIT — walk-away</div>
+          <textarea rows="2" data-path="neg.${pt.id}.limit" placeholder="The minimum you'd accept here. Express as floor + protection, not just a headline number.">${esc(pt.limit)}</textarea></div>
+        <div><div style="font-size:12px;color:var(--green);font-weight:600;letter-spacing:1px;margin-bottom:4px">ASPIRATION — best realistic</div>
+          <textarea rows="2" data-path="neg.${pt.id}.aspiration" placeholder="Your ambitious-but-defensible target. Open near here.">${esc(pt.aspiration)}</textarea></div>
+      </div>
+
+      <div style="font-size:12px;color:var(--gold);font-weight:600;letter-spacing:1px;margin-bottom:4px">TRADEABLES</div>
+      <div style="color:var(--muted);font-size:11px;margin-bottom:8px"><b style="color:var(--goldB)">GET</b> = your ask · <b style="color:var(--green)">GIVE</b> = cheap for you, valuable to them · <b style="color:var(--amber)">★</b> = high-leverage trade.</div>
+      ${levers}
+      <button class="btn" data-action="negAddLever" data-id="${pt.id}" style="margin-bottom:14px">+ Add tradeable</button>
+
+      <div style="font-size:12px;color:var(--gold);font-weight:600;letter-spacing:1px;margin-bottom:4px">CONDITIONAL PROPOSALS</div>
+      <div style="color:var(--muted);font-size:11px;margin-bottom:8px">Scotwork's rule: conditions before offers. Never concede without getting.</div>
+      ${props}
+      <button class="btn" data-action="negAddProp" data-id="${pt.id}">+ Add proposal</button>
+    </div>`;
+  };
+  const cards=(S.neg.parties||[]).map(partyCard).join("");
+  return `<p style="color:var(--muted);font-size:13px;max-width:700px;margin:0 0 16px">Your levers per party, built on Scotwork's trading model and the BATNA lens. Tag each tradeable as something you <b style="color:var(--goldB)">get</b> or <b style="color:var(--green)">give</b>, mark the high-leverage ★ trades, then compose conditional “if-they / then-I” proposals.</p>
+    <div class="card gold" style="margin-bottom:14px"><div class="serif" style="font-size:18px;margin-bottom:6px">⚖ Balance of power — do this first</div>
+      <p style="color:var(--muted);font-size:13px;line-height:1.6;margin:0 0 8px">Your power equals the credibility of your walk-away. Right now both alternatives are soft — FTI is verbal with no term sheet, and the BHP role doesn't exist yet. <b style="color:var(--text)">You can't trade an asset you don't hold.</b> Convert the FTI verbal into a written term sheet before you open a real conversation with KPMG; that single act does more than any tactic.</p>
+      <p style="color:var(--muted);font-size:13px;line-height:1.6;margin:0">Then <b style="color:var(--text)">sequence, don't auction</b>: FTI term sheet → a signalled (not threatening) KPMG conversation → decide. In a small ENR market your reputation is the only durable asset — a called bluff is the one thing you can't buy back. The pattern to exploit: trade your cheap-to-give levers (continuity, speed, your book) for the expensive-to-you protections you actually need (floor, sign-on, ramp, time).</p></div>
+    ${cards}
+    <div class="note" style="text-align:center;margin-top:14px">A preparation tool, not legal or financial advice. Get any term sheet or contract reviewed by your own adviser before signing.</div>`;
+}
+
 function render(){
   const tabs=[["dashboard","Dashboard",I.dash],["options","Score the options",I.comp],
-    ["money","Money model",I.money],["next","Next 30 days",I.cal],["bias","Ego & imposter",I.brain],["couch","On the couch",I.anchor]];
+    ["money","Money model",I.money],["next","Next 30 days",I.cal],["neg","Negotiation",I.deal],["bias","Ego & imposter",I.brain],["couch","On the couch",I.anchor]];
   const tabbar=tabs.map(([id,label,ic])=>`<button class="tab ${activeTab===id?'active':''}" data-tab="${id}">${ic}${label}</button>`).join("");
   const content=activeTab==="dashboard"?viewDashboard():activeTab==="options"?viewOptions():
-    activeTab==="money"?viewMoney():activeTab==="next"?viewNext():activeTab==="bias"?viewBias():viewCouch();
+    activeTab==="money"?viewMoney():activeTab==="next"?viewNext():activeTab==="neg"?viewNeg():activeTab==="bias"?viewBias():viewCouch();
   document.getElementById("app").innerHTML=`
     <header class="top"><div class="htop">
       <div class="row between">
@@ -609,6 +750,10 @@ function applyPath(path,val){
   else if(p[0]==="case"){const o=S.options.find(x=>x.id===p[1]);if(o)o.cases[p[2]].comp=val;}
   else if(p[0]==="caselabel"){const o=S.options.find(x=>x.id===p[1]);if(o)o.cases[p[2]].label=val;}
   else if(p[0]==="tl"){const o=S.options.find(x=>x.id===p[1]);if(o&&o.timeline[+p[2]])o.timeline[+p[2]][p[3]]=val;}
+  else if(p[0]==="neg"){const pt=S.neg.parties.find(x=>x.id===p[1]);if(pt)pt[p[2]]=val;}
+  else if(p[0]==="negwant"){const pt=S.neg.parties.find(x=>x.id===p[1]);if(pt)pt.theyWant[+p[2]]=val;}
+  else if(p[0]==="neglever"){const pt=S.neg.parties.find(x=>x.id===p[1]);if(pt&&pt.levers[+p[2]])pt.levers[+p[2]][p[3]]=val;}
+  else if(p[0]==="negprop"){const pt=S.neg.parties.find(x=>x.id===p[1]);if(pt&&pt.proposals[+p[2]])pt.proposals[+p[2]][p[3]]=val;}
   save();
 }
 
@@ -669,6 +814,7 @@ function importJSON(file){
         timeline:Array.isArray(st.timeline)&&st.timeline.length?st.timeline:def.timeline};});}
     if(s.a)S.a={...DEFAULT_A,...s.a}; if(s.w)S.w={...DEFAULT_W,...s.w};
     if(s.couch)S.couch={...clone(DEFAULT_COUCH),...s.couch}; if(s.checks)S.checks=s.checks;
+    S.neg=mergeNeg(s.neg);
     if(s.ai)S.ai=s.ai;
     save();render();
   }catch(e){alert("Could not read that file: "+e.message);}};
@@ -705,6 +851,15 @@ function buildPrint(){
   const timeline=dts.length?`<table style="width:100%;border-collapse:collapse"><tr style="background:#1c1916;color:#fff"><th style="padding:5px 7px;text-align:left;font-size:10px">Date</th><th style="padding:5px 7px;text-align:left;font-size:10px">Role</th><th style="padding:5px 7px;text-align:left;font-size:10px">Milestone</th></tr>
     ${dts.map((x,i)=>`<tr style="background:${i%2?'#f5f1e8':'#fbf9f3'};border-bottom:1px solid #d8d0c0"><td style="padding:5px 7px;font-size:10.5px;font-weight:700">${esc(x.d)}</td><td style="padding:5px 7px;font-size:10.5px">${esc(x.o)}</td><td style="padding:5px 7px;font-size:10.5px">${esc(x.l)}</td></tr>`).join("")}</table>`:`<div style="font-size:10.5px;color:#9a9282">No dates set yet.</div>`;
 
+  const negDoc=(S.neg.parties||[]).map(pt=>{
+    const lev=k=>(pt.levers||[]).filter(l=>l.kind===k).map(l=>(l.star?"\u2605 ":"")+esc(l.label)).join("; ")||"\u2014";
+    const props=(pt.proposals||[]).filter(p=>p.ifThey||p.thenI).map(p=>`If they ${esc(p.ifThey)} \u2192 then I ${esc(p.thenI)}`).join("<br>");
+    return `<div style="margin-bottom:10px;break-inside:avoid"><b style="font-size:11.5px">${esc(pt.name)}</b>
+      <div style="font-size:10.5px;color:#4a443a;margin:2px 0"><b>Limit:</b> ${pt.limit?esc(pt.limit):'<i style="color:#9a9282">(not set)</i>'} &nbsp;&middot;&nbsp; <b>Aspiration:</b> ${pt.aspiration?esc(pt.aspiration):'<i style="color:#9a9282">(not set)</i>'}</div>
+      <div style="font-size:10.5px;color:#4a443a"><b>Get:</b> ${lev("get")}</div>
+      <div style="font-size:10.5px;color:#4a443a"><b>Give:</b> ${lev("give")}</div>
+      ${props?`<div style="font-size:10.5px;color:#4a443a;margin-top:2px"><b>Proposals:</b><br>${props}</div>`:""}</div>`;}).join("");
+
   const refl=`<ul style="margin:0 0 0 16px;padding:0;font-size:10.5px;color:#4a443a">${REFLECTIONS.map((q,i)=>`<li style="margin-bottom:3px">${S.checks[i]?"\u2611":"\u2610"} ${esc(q)}</li>`).join("")}</ul>`;
   const guardsAll=`<ul style="margin:0 0 0 16px;padding:0;font-size:10.5px;color:#4a443a">${S.couch.guardrails.map(g=>`<li style="margin-bottom:3px">${g.on?"\u2611":"\u2610"} ${esc(g.text)}</li>`).join("")}</ul>`;
   const qa=DEEP_Q.map(q=>{const ans=S.couch.answers[q.id];return `<div style="margin-bottom:9px;break-inside:avoid"><div style="font-size:11px;font-weight:700;color:#1c1916">${esc(q.q)}</div><div style="font-size:10.5px;color:#4a443a;white-space:pre-wrap;margin-top:2px">${ans?esc(ans):'<i style="color:#9a9282">(not answered)</i>'}</div></div>`;}).join("");
@@ -728,7 +883,8 @@ function buildPrint(){
     ${sec("7 \u00b7 Guardrails")}${guardsAll}
     ${sec("8 \u00b7 The deep dive (your answers)")}${qa}
     <div style="break-before:page"></div>
-    ${sec("9 \u00b7 AI deep-dive")}${ai}
+    ${sec("9 \u00b7 Negotiation levers")}${negDoc}
+    ${sec("10 \u00b7 AI deep-dive")}${ai}
     ${box("Decision rule:","choose the path that is strong on your anchors, clean of distortion, survivable in the bad case, and reversible if you're wrong \u2014 and that reaches optionality without trading away the body and family that make freedom worth having.","#faf4e4")}
     <div style="margin-top:8px;font-size:9px;color:#9a9282">Strategic modelling, not financial advice. Figures are approximations to support your own informed decision; confirm tax, super and returns with a fee-only adviser.</div>`;
 }
@@ -767,6 +923,14 @@ app.addEventListener("click",e=>{
   else if(a==="setCase"){const o=S.options.find(x=>x.id===act.dataset.id);if(o){o.active=act.dataset.key;save();render();}}
   else if(a==="addTL"){const o=S.options.find(x=>x.id===act.dataset.id);if(o){o.timeline.push({label:"New milestone",date:""});save();render();}}
   else if(a==="delTL"){const o=S.options.find(x=>x.id===act.dataset.id);if(o){o.timeline.splice(+act.dataset.i,1);save();render();}}
+  else if(a==="negKind"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){const l=pt.levers[+act.dataset.i];l.kind=l.kind==='give'?'get':'give';save();render();}}
+  else if(a==="negStar"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){const l=pt.levers[+act.dataset.i];l.star=!l.star;save();render();}}
+  else if(a==="negAddLever"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){pt.levers.push({label:"New tradeable",kind:"get",star:false,note:""});save();render();}}
+  else if(a==="negDelLever"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){pt.levers.splice(+act.dataset.i,1);save();render();}}
+  else if(a==="negAddWant"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){pt.theyWant.push("");save();render();}}
+  else if(a==="negDelWant"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){pt.theyWant.splice(+act.dataset.i,1);save();render();}}
+  else if(a==="negAddProp"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){pt.proposals.push({ifThey:"",thenI:""});save();render();}}
+  else if(a==="negDelProp"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){pt.proposals.splice(+act.dataset.i,1);save();render();}}
   else if(a==="export"){exportJSON();}
   else if(a==="importTrigger"){document.getElementById("importFile").click();}
   else if(a==="reset"){if(confirm("Reset everything to defaults? This clears your saved inputs in this browser.")){S=freshState();save();render();}}

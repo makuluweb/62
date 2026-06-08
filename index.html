@@ -16,38 +16,41 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
   :root{
-    --bg:#100f0c;--panel:#1a1815;--panel2:#221f1a;--line:#322e26;--lineGold:rgba(201,169,106,.22);
-    --text:#ece6d8;--muted:#9b9384;--faint:#6f6757;--gold:#c9a96a;--goldB:#e3c389;
-    --green:#8aa57f;--amber:#d7a35f;--red:#cf8568;
+    --bg:#f7eedb;--panel:#fffcf5;--panel2:#fbf2e1;--line:#e8d9be;--lineGold:rgba(181,97,14,.30);
+    --text:#2c2620;--muted:#7c7060;--faint:#a99b83;--gold:#b5610e;--goldB:#a24e08;
+    --blue:#1f60ac;--blueB:#174e8e;--orange:#e4621c;--teal:#0e8a7c;--mustard:#dda52b;
+    --green:#3f8a4b;--amber:#c2741a;--red:#c8472e;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:'Instrument Sans',system-ui,sans-serif}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Instrument Sans',system-ui,sans-serif;
+    background-image:radial-gradient(1100px 560px at 84% -8%,rgba(255,200,120,.50),rgba(255,200,120,0) 60%),radial-gradient(880px 520px at -8% 4%,rgba(244,176,120,.40),rgba(244,176,120,0) 55%);background-attachment:fixed}
   h1,h2,h3,.serif{font-family:'Fraunces',Georgia,serif}
-  ::selection{background:var(--gold);color:var(--bg)}
-  a{color:var(--goldB)}
+  ::selection{background:var(--gold);color:#fff}
+  a{color:var(--blue)}
   .wrap{max-width:1080px;margin:0 auto;padding:22px}
-  header.top{border-bottom:1px solid var(--line);background:var(--panel)}
+  header.top{background:linear-gradient(var(--panel),var(--panel)) padding-box,linear-gradient(90deg,var(--orange),var(--gold) 50%,var(--blue)) border-box;border:0 solid transparent;border-bottom-width:3px}
   .htop{max-width:1080px;margin:0 auto;padding:22px 22px 0}
   .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
   .between{justify-content:space-between}
-  .kick{color:var(--gold);font-size:12px;letter-spacing:3px;font-weight:600}
+  .kick{color:var(--blue);font-size:12px;letter-spacing:3px;font-weight:600}
   h1.title{font-size:40px;font-weight:600;line-height:1;margin:6px 0 4px}
   .sub{color:var(--muted);font-size:14px;max-width:560px}
   .tabs{display:flex;gap:8px;margin-top:20px;padding-bottom:12px;flex-wrap:wrap}
   .tab{display:flex;align-items:center;gap:7px;padding:8px 15px;border-radius:9px;border:1px solid transparent;
     background:transparent;color:var(--muted);font:600 13px 'Instrument Sans';cursor:pointer}
-  .tab.active{background:var(--panel2);color:var(--goldB);border-color:var(--lineGold)}
+  .tab:hover{color:var(--text)}
+  .tab.active{background:var(--panel);color:var(--blueB);border-color:var(--blue);box-shadow:0 3px 10px -5px rgba(31,96,172,.5)}
   .btn{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:9px;border:1px solid var(--line);
-    background:transparent;color:var(--muted);font:600 12px 'Instrument Sans';cursor:pointer}
-  .btn.gold{border-color:var(--lineGold);color:var(--goldB)}
-  .btn:hover{border-color:var(--lineGold)}
+    background:var(--panel);color:var(--muted);font:600 12px 'Instrument Sans';cursor:pointer}
+  .btn.gold{background:rgba(181,97,14,.10);border-color:var(--lineGold);color:var(--goldB)}
+  .btn:hover{border-color:var(--gold)}
   .grid{display:grid;gap:12px}
   .g-cards{grid-template-columns:repeat(auto-fit,minmax(245px,1fr))}
   .g-2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
   .g-opt{grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
   .g-w{grid-template-columns:repeat(auto-fit,minmax(210px,1fr));column-gap:24px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
-  .card.gold{border-color:var(--lineGold)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 1px 2px rgba(80,52,14,.05),0 14px 30px -18px rgba(80,52,14,.18)}
+  .card.gold{border-color:var(--lineGold);box-shadow:0 1px 2px rgba(181,97,14,.08),0 16px 32px -18px rgba(181,97,14,.22)}
   .card.tight{padding:16px}
   .ch{font-size:11px;color:var(--faint);font-weight:600}
   .cn{font-size:20px;font-weight:600;margin:2px 0 8px}
@@ -66,17 +69,17 @@
   .sl-hint{color:var(--faint);font-size:11px;margin-top:2px}
   textarea,input[type=text],input[type=password]{width:100%;background:var(--panel2);color:var(--text);
     border:1px solid var(--line);border-radius:8px;padding:10px;font:13px/1.5 'Instrument Sans';resize:vertical}
-  textarea:focus,input:focus{outline:none;border-color:var(--lineGold)}
+  textarea:focus,input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(31,96,172,.12)}
   .badge{margin-top:8px;padding:8px 10px;border-radius:8px;font-size:12px}
-  .badge.ok{background:rgba(138,165,127,.12);border:1px solid rgba(138,165,127,.3);color:var(--green)}
-  .badge.no{background:rgba(207,133,104,.10);border:1px solid rgba(207,133,104,.25);color:var(--red)}
+  .badge.ok{background:rgba(63,138,75,.14);border:1px solid rgba(63,138,75,.34);color:var(--green)}
+  .badge.no{background:rgba(200,71,46,.12);border:1px solid rgba(200,71,46,.30);color:var(--red)}
   .ins{display:flex;gap:12px;padding:13px;background:var(--panel2);border:1px solid var(--line);border-radius:10px}
   .ins .t{font-size:13.5px;font-weight:600;margin-bottom:3px}
   .ins .d{font-size:12.5px;color:var(--muted);line-height:1.5}
   .pill{display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:8px;border:1px solid var(--line);cursor:pointer;font-size:12.5px;color:var(--muted);font-weight:600}
-  .pill.on{border-color:var(--red);background:rgba(207,133,104,.12);color:var(--red)}
+  .pill.on{border-color:var(--red);background:rgba(200,71,46,.12);color:var(--red)}
   .guard{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;padding:10px;border:1px solid var(--line);background:var(--panel2);border-radius:10px}
-  .guard.on{border-color:rgba(138,165,127,.3);background:rgba(138,165,127,.10)}
+  .guard.on{border-color:rgba(63,138,75,.40);background:rgba(63,138,75,.14)}
   .guard textarea{border:none;background:transparent;padding:0}
   .check{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;cursor:pointer}
   .check input{accent-color:var(--gold);width:17px;height:17px;margin-top:2px;flex-shrink:0}
@@ -87,7 +90,7 @@
   .lever{border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:9px;margin-bottom:8px}
   .lever.get{border-left:3px solid var(--gold)}
   .lever.give{border-left:3px solid var(--green)}
-  .lever.star{box-shadow:inset 0 0 0 1px rgba(215,163,95,.25)}
+  .lever.star{box-shadow:inset 0 0 0 1px rgba(181,97,14,.32)}
   svg text{font-family:'Instrument Sans',sans-serif}
   .icn{width:15px;height:15px;display:inline-block;vertical-align:-2px}
   #printArea{display:none}
@@ -107,8 +110,8 @@
 "use strict";
 const clone=x=>JSON.parse(JSON.stringify(x));
 /* ---------------- palette for JS-drawn bits ---------------- */
-const C={gold:"#c9a96a",goldB:"#e3c389",muted:"#9b9384",faint:"#6f6757",line:"#322e26",
-  text:"#ece6d8",green:"#8aa57f",amber:"#d7a35f",red:"#cf8568"};
+const C={gold:"#b5610e",goldB:"#a24e08",muted:"#7c7060",faint:"#a99b83",line:"#e8d9be",
+  text:"#2c2620",green:"#3f8a4b",amber:"#c2741a",red:"#c8472e",blue:"#1f60ac",orange:"#e4621c"};
 
 /* ---------------- defaults ---------------- */
 const DEFAULT_OPTIONS=[
@@ -134,7 +137,15 @@ const DEFAULT_OPTIONS=[
   timeline:[{label:"Initial conversation",date:""},{label:"Role & comp clarity",date:""},{label:"Decision point",date:""}]},
 ];
 const CASE_KEYS=["low","mid","high"];
-const OPT_COLOR={kpmg:"#c9a96a",fti:"#cf8568",bhp:"#8aa57f",alt:"#d7a35f"};
+const OPT_COLOR={kpmg:"#1f60ac",fti:"#0e8a7c",bhp:"#e4621c",alt:"#dda52b"};
+const STREAM={
+  plan:{label:"Plan / gates",color:C.gold},
+  all:{label:"All",color:C.gold},
+  kpmg:{label:"KPMG",color:OPT_COLOR.kpmg},
+  fti:{label:"FTI",color:OPT_COLOR.fti},
+  bhp:{label:"BHP",color:OPT_COLOR.bhp},
+  alt:{label:"4th option",color:OPT_COLOR.alt},
+};
 function effComp(o){return o.cases[o.active].comp;}
 function activeLabel(o){return o.cases[o.active].label;}
 const DEFAULT_A={currentAge:55,retireAge:62,returnRate:6,living:240000,retireTarget:240000,
@@ -229,6 +240,67 @@ const DEFAULT_NEG={
      ]},
   ]};
 
+/* ---------------- 90-day plan defaults ----------------
+   Decision tree as sequential gates, each converging on the anchor date.
+   A path is only real on the anchor if it's in writing (FTI) or a confirmed role/band (BHP).
+   party links a gate to a Negotiation party card (id matches neg party / option id). */
+const DEFAULT_PLAN={
+  anchor:"2026-08-31",
+  intro:"Resign or recommit by the anchor. A path is only real on the anchor date if it's in writing (FTI) or a confirmed role/band (BHP). Verbal is not a BATNA; comfort is not a decision.",
+  gates:[
+    {id:"g0",label:"Gate 0 — Pre-commit the pass-lines",party:"",date:"2026-06-15",done:false,
+     branch:"Write the FTI floor, BHP band and KPMG counter that would each PASS — before emotion can rationalise (Guardrails 1 & 5). Confirm your real KPMG comp and rerun the Money model so the floor maths is true.",note:"",
+     tasks:[
+       {text:"Confirm real current KPMG total comp (base + bonus + benefits)",stream:"kpmg",done:false},
+       {text:"Write the FTI floor + protection that would PASS",stream:"fti",done:false},
+       {text:"Write the BHP band/level that would PASS (\u226516)",stream:"bhp",done:false},
+       {text:"Write the KPMG counter that would make recommit a yes",stream:"kpmg",done:false},
+       {text:"Re-run the Money model on the confirmed numbers",stream:"all",done:false},
+     ]},
+    {id:"g1",label:"Gate 1 — Is the FTI offer in writing?",party:"fti",date:"2026-07-18",done:false,
+     branch:"YES → a written term sheet with floor / ramp / sign-on becomes a real BATNA; test it against Guardrail 1 (stress case) and Guardrail 3 (life). NO → still verbal = not bankable; do NOT use it as leverage on KPMG.",note:"",
+     tasks:[
+       {text:"Ask FTI directly for a written term sheet",stream:"fti",done:false},
+       {text:"Pin the guaranteed floor for the 18\u201324mo ramp",stream:"fti",done:false},
+       {text:"Pin sign-on (tranches) to bridge the forfeited KPMG bonus",stream:"fti",done:false},
+       {text:"Confirm budget to bring / build a team",stream:"fti",done:false},
+       {text:"Run the written floor through the stress case (3%)",stream:"all",done:false},
+     ]},
+    {id:"g2",label:"Gate 2 — Can a BHP role exist on this timeline?",party:"bhp",date:"2026-07-31",done:false,
+     branch:"YES → a sponsor confirms a role/band (\u226516); test Guardrail 4 (one-way door — is the upside exceptional?). NO / too slow → it's a post-August parallel track, not an anchor-date destination. Never bluff it. Note: staying at KPMG keeps you closest to the BHP relationship.",note:"",
+     tasks:[
+       {text:"Book the C-suite sponsor conversation",stream:"bhp",done:false},
+       {text:"Frame the gap a role fills; propose level 17\u201318",stream:"bhp",done:false},
+       {text:"Get a definitive read: transactable by Aug, or post-Aug?",stream:"bhp",done:false},
+       {text:"Map the conflict-of-interest exit from the KPMG account",stream:"bhp",done:false},
+       {text:"Test Guardrail 4 — is the upside exceptional enough?",stream:"all",done:false},
+     ]},
+    {id:"g3",label:"Gate 3 — Open the KPMG recommit conversation",party:"kpmg",date:"2026-08-04",done:false,
+     branch:"Open ONLY after Gate 1 is written. Material counter (comp, role insulated from exposure, equity security, reform clarity) that clears your KPMG pass-line and beats the live alternatives? Words without structure = recommit failed.",note:"",
+     tasks:[
+       {text:"Open only after FTI is in writing",stream:"kpmg",done:false},
+       {text:"Set the ask: band uplift (7\u2192?) + BHP account economics",stream:"kpmg",done:false},
+       {text:"Seek clarity on the ASIC / whistleblower exposure",stream:"kpmg",done:false},
+       {text:"Signal, don't threaten; never name BHP",stream:"kpmg",done:false},
+       {text:"Get any counter in writing",stream:"kpmg",done:false},
+     ]},
+    {id:"g4",label:"Gate 4 — Decide & transact",party:"",date:"2026-08-31",done:false,
+     branch:"FTI live + written + clears guardrails + beats recommit → resign, sign FTI. BHP live + exceptional → resign, go BHP. Neither bankable OR KPMG counter clears guardrails → recommit consciously (pass anti-distortion), in writing, with a hard review date. Recommit \u2260 drift.",note:"",
+     tasks:[
+       {text:"Score the live, written options against the guardrails",stream:"all",done:false},
+       {text:"Run the pre-mortem on the leading path — can you live with it?",stream:"all",done:false},
+       {text:"If FTI: agree start date, sign, plan client transition",stream:"fti",done:false},
+       {text:"If recommit: get it in writing with a hard review date",stream:"kpmg",done:false},
+       {text:"If BHP: resign, manage a clean account handover",stream:"bhp",done:false},
+     ]},
+  ],
+  phases:[
+    {label:"Phase 1 — Set up & quiet intelligence",span:"Weeks 1–3 · to 29 Jun",body:"Lock the anchor; complete Gate 0; confirm real KPMG comp and rerun the model. FTI: request a written term sheet and load your asks into the FTI card. BHP: book the sponsor conversation to test whether a role can exist. KPMG: hold — don't tip your hand."},
+    {label:"Phase 2 — Convert verbal → written; test floors",span:"Weeks 4–8 · 30 Jun–3 Aug",body:"FTI: drive to a written term sheet by 18 Jul (Gate 1); run the written floor through the stress case. BHP: get a definitive read by 31 Jul (Gate 2). KPMG: pre-draft the recommit conversation and the counter you'd need. Update each party card's limit/aspiration and if-they/then-I rows."},
+    {label:"Phase 3 — Negotiate, converge, transact",span:"Weeks 9–12 · 4–31 Aug",body:"With FTI in writing, open the KPMG recommit (Gate 3); sequence — written BATNA first, then counter. Anchor KPMG to FTI's written floor; never reference BHP. Week 12: final guardrail + pre-mortem pass. 31 Aug: execute."},
+  ],
+};
+
 /* ---------------- state ---------------- */
 const LS_KEY="the62_state", LS_API="the62_apikey", LS_MODEL="the62_model";
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
@@ -241,8 +313,18 @@ function mergeNeg(sn){
   });
   return {parties};
 }
+function mergePlan(sp){
+  if(!sp) return clone(DEFAULT_PLAN);
+  const gates=DEFAULT_PLAN.gates.map(def=>{
+    const st=(sp.gates||[]).find(g=>g.id===def.id);
+    if(!st) return clone(def);
+    const tasks=Array.isArray(st.tasks)?st.tasks.map(t=>({text:t&&t.text!=null?t.text:"",stream:(t&&t.stream)||"all",done:!!(t&&t.done)})):clone(def.tasks);
+    return {...clone(def),date:st.date!=null?st.date:def.date,note:st.note||"",done:!!st.done,tasks};
+  });
+  return {anchor:sp.anchor||DEFAULT_PLAN.anchor,intro:DEFAULT_PLAN.intro,gates,phases:clone(DEFAULT_PLAN.phases)};
+}
 function freshState(){return {options:clone(DEFAULT_OPTIONS),a:{...DEFAULT_A},
-  w:{...DEFAULT_W},couch:clone(DEFAULT_COUCH),neg:clone(DEFAULT_NEG),checks:{},ai:null};}
+  w:{...DEFAULT_W},couch:clone(DEFAULT_COUCH),neg:clone(DEFAULT_NEG),plan:clone(DEFAULT_PLAN),checks:{},ai:null};}
 function load(){
   try{const raw=lsGet(LS_KEY);
     if(raw){const s=JSON.parse(raw);
@@ -258,7 +340,7 @@ function load(){
           cases,active:st.active||def.active,
           timeline:Array.isArray(st.timeline)&&st.timeline.length?st.timeline:def.timeline};});
       return {options:opts,a:{...DEFAULT_A,...(s.a||{})},w:{...DEFAULT_W,...(s.w||{})},
-        couch:{...clone(DEFAULT_COUCH),...(s.couch||{})},neg:mergeNeg(s.neg),checks:s.checks||{},ai:s.ai||null};
+        couch:{...clone(DEFAULT_COUCH),...(s.couch||{})},neg:mergeNeg(s.neg),plan:mergePlan(s.plan),checks:s.checks||{},ai:s.ai||null};
     }}catch(e){}
   return freshState();
 }
@@ -369,10 +451,10 @@ function barChart(R){
   for(let i=0;i<=3;i++){const v=max*i/3,yy=y(v);
     s+=`<line x1="${pad}" y1="${yy}" x2="${W-6}" y2="${yy}" stroke="${C.line}" stroke-dasharray="2 4"/>`;
     s+=`<text x="${pad-4}" y="${yy+3}" fill="${C.muted}" font-size="8" text-anchor="end">$${Math.round(v/1000)}k</text>`;}
-  s+=`<line x1="${pad}" y1="${y(target)}" x2="${W-6}" y2="${y(target)}" stroke="${C.gold}" stroke-dasharray="5 4"/>`;
-  s+=`<text x="${W-8}" y="${y(target)-4}" fill="${C.gold}" font-size="8" text-anchor="end">target ${fmtK(target)}</text>`;
+  s+=`<line x1="${pad}" y1="${y(target)}" x2="${W-6}" y2="${y(target)}" stroke="${C.blue}" stroke-dasharray="5 4"/>`;
+  s+=`<text x="${W-8}" y="${y(target)-4}" fill="${C.blue}" font-size="8" text-anchor="end">target ${fmtK(target)}</text>`;
   R.forEach((r,i)=>{const x=pad+gap*i+(gap-bw)/2, yy=y(r.p.sust);
-    s+=`<rect x="${x}" y="${yy}" width="${bw}" height="${H-26-yy}" rx="4" fill="${i===0?C.goldB:C.faint}"/>`;
+    s+=`<rect x="${x}" y="${yy}" width="${bw}" height="${H-26-yy}" rx="4" fill="${i===0?C.orange:C.muted}"/>`;
     s+=`<text x="${x+bw/2}" y="${yy-4}" fill="${C.text}" font-size="8" text-anchor="middle">${fmtK(r.p.sust)}</text>`;
     const nm=r.o.name.replace(/^(Stay at |Forge a role at )/,"");
     s+=`<text x="${x+bw/2}" y="${H-12}" fill="${C.muted}" font-size="8" text-anchor="middle">${esc(nm.length>14?nm.slice(0,13)+"…":nm)}</text>`;});
@@ -384,10 +466,10 @@ function scatterChart(R){
   let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" height="210" preserveAspectRatio="xMidYMid meet">`;
   s+=`<line x1="${px}" y1="${Y(0)}" x2="${W-6}" y2="${Y(0)}" stroke="${C.line}"/>`;
   s+=`<line x1="${px}" y1="${Y(0)}" x2="${px}" y2="12" stroke="${C.line}"/>`;
-  s+=`<text x="${W-6}" y="${H-6}" fill="${C.faint}" font-size="8" text-anchor="end">weighted strength →</text>`;
-  s+=`<text x="6" y="14" fill="${C.faint}" font-size="8">↑ ego + fear</text>`;
+  s+=`<text x="${W-6}" y="${H-6}" fill="${C.muted}" font-size="8" text-anchor="end">weighted strength →</text>`;
+  s+=`<text x="6" y="14" fill="${C.muted}" font-size="8">↑ ego + fear</text>`;
   R.forEach((r,i)=>{const x=X(r.total),yy=Y(r.bias);
-    s+=`<circle cx="${x}" cy="${yy}" r="6" fill="${i===0?C.goldB:C.gold}"/>`;
+    s+=`<circle cx="${x}" cy="${yy}" r="6" fill="${i===0?C.orange:C.blue}"/>`;
     const nm=r.o.name.replace(/^(Stay at |Forge a role at )/,"");
     s+=`<text x="${x}" y="${yy-9}" fill="${C.muted}" font-size="8" text-anchor="middle">${esc(nm.length>13?nm.slice(0,12)+"…":nm)}</text>`;});
   return s+`</svg>`;
@@ -402,6 +484,7 @@ const I={
   anchor:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></svg>',
   cal:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>',
   deal:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"/><path d="M3 7h7M14 7h7"/><path d="M6.5 4 3 11a3 3 0 0 0 7 0z"/><path d="M17.5 4 14 11a3 3 0 0 0 7 0z"/></svg>',
+  flag:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>',
 };
 
 /* ---------------- builders ---------------- */
@@ -417,7 +500,7 @@ function slider(path,label,val,min,max,step,suffix,hint,cls){
 function viewDashboard(){
   const R=rows();
   let cards=R.map((c,i)=>`<div class="card tight" style="position:relative;overflow:hidden;${i===0?'border-color:var(--lineGold)':''}">
-    ${i===0?'<div style="position:absolute;top:0;right:0;background:var(--gold);color:#100f0c;font-size:10px;font-weight:700;padding:3px 10px;border-bottom-left-radius:10px;letter-spacing:1px">TOP RANKED</div>':''}
+    ${i===0?'<div style="position:absolute;top:0;right:0;background:var(--orange);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-bottom-left-radius:10px;letter-spacing:1px">TOP RANKED</div>':''}
     <div class="ch">#${i+1} · ${esc(c.o.tag)}</div>
     <div class="serif cn">${esc(c.o.name)}</div>
     <div style="font-size:11px;color:var(--gold);margin:-6px 0 8px">▸ ${esc(activeLabel(c.o))} · ${fmtK(effComp(c.o))}/yr</div>
@@ -561,7 +644,7 @@ function viewCouch(){
     <textarea rows="3" data-path="couch.ans.${dq.id}" placeholder="Write freely…">${esc(c.answers[dq.id]||"")}</textarea></div>`).join("");
   const mir=mirror(rows()).map(([t,d])=>`<div class="mirror"><div class="t">${esc(t)}</div><div class="d">${esc(d)}</div></div>`).join("");
   let aiOut="";
-  if(lastErr){aiOut=`<div style="margin-top:14px;padding:14px;background:rgba(207,133,104,.10);border:1px solid rgba(207,133,104,.3);border-radius:10px;font-size:13px;line-height:1.55;white-space:pre-wrap;color:var(--text)">${esc(lastErr)}</div>`;}
+  if(lastErr){aiOut=`<div style="margin-top:14px;padding:14px;background:rgba(200,71,46,.10);border:1px solid rgba(200,71,46,.30);border-radius:10px;font-size:13px;line-height:1.55;white-space:pre-wrap;color:var(--text)">${esc(lastErr)}</div>`;}
   else if(S.ai&&S.ai.text){aiOut=`<div style="margin-top:14px;padding:16px;background:var(--panel2);border:1px solid var(--lineGold);border-radius:10px;font-size:13px;color:var(--text)">
     <div style="font-size:11px;color:var(--faint);margin-bottom:8px">Generated ${esc((S.ai.when||"").slice(0,16).replace("T"," "))} · ${esc(S.ai.model||"")}</div>${mdToHtml(S.ai.text)}</div>`;}
   const aiStatus=aiBusy?'<span style="color:var(--gold);font-size:12px">Analysing… this can take ~20s</span>':'';
@@ -592,7 +675,7 @@ function viewNext(){
     const caseRows=CASE_KEYS.map(k=>{
       const on=o.active===k, c=o.cases[k];
       const tmp={...o,active:k}; const inc=project(tmp).sust;
-      return `<div style="border:1px solid ${on?'var(--lineGold)':'var(--line)'};background:${on?'rgba(201,169,106,.08)':'transparent'};border-radius:10px;padding:10px;margin-bottom:8px">
+      return `<div style="border:1px solid ${on?'var(--lineGold)':'var(--line)'};background:${on?'rgba(181,97,14,.10)':'transparent'};border-radius:10px;padding:10px;margin-bottom:8px">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
           <button class="btn ${on?'gold':''}" data-action="setCase" data-id="${o.id}" data-key="${k}" style="padding:4px 9px">${on?'● using':'○ use'}</button>
           <input type="text" data-path="caselabel.${o.id}.${k}" value="${esc(c.label)}" style="flex:1;padding:5px 8px;font-size:12px"/>
@@ -609,6 +692,7 @@ function viewNext(){
   // ---- combined timeline ----
   const all=[];
   S.options.forEach(o=>(o.timeline||[]).forEach(m=>{ if(m.date) all.push({o,m}); }));
+  (S.plan?S.plan.gates:[]).forEach(g=>{ if(g.date) all.push({o:{id:"plan",name:"90-day plan",done:g.done},m:{label:g.label,date:g.date}}); });
   all.sort((a,b)=>a.m.date<b.m.date?-1:a.m.date>b.m.date?1:0);
   const today=new Date().toISOString().slice(0,10);
   const combined=all.length?all.map(({o,m})=>{
@@ -644,6 +728,178 @@ function viewNext(){
       <div class="grid g-2">${editors}</div></div>`;
 }
 
+function viewPlan(){
+  const pl=S.plan, today=new Date().toISOString().slice(0,10);
+  const daysTo=d=>{const n=Math.round((new Date(d+"T00:00:00")-new Date(today+"T00:00:00"))/86400000);return isNaN(n)?null:n;};
+  const pill=d=>{const n=daysTo(d);if(n==null)return "";const txt=n<0?"passed":n===0?"today":"in "+n+"d";
+    const col=n<0?C.faint:n<=14?C.red:n<=35?C.amber:C.muted;
+    return `<span style="font-size:11px;font-weight:700;color:${col};border:1px solid ${col};border-radius:20px;padding:2px 9px;flex-shrink:0">${txt}</span>`;};
+  const aDays=daysTo(pl.anchor);
+  const anchorTxt=aDays==null?"set an anchor date":aDays<0?Math.abs(aDays)+" days past the anchor":aDays===0?"the anchor is today":aDays+" days to the anchor";
+
+  /* ----- collect milestones: gates + per-option timelines ----- */
+  const pad2=n=>String(n).padStart(2,"0");
+  const events=[];
+  pl.gates.forEach(g=>{ if(g.date){const key=g.party||"plan"; events.push({date:g.date,short:g.id.toUpperCase(),full:g.label,key,color:(STREAM[key]||STREAM.plan).color,isGate:true,done:g.done}); }});
+  S.options.forEach(o=>(o.timeline||[]).forEach(m=>{ if(m.date) events.push({date:m.date,short:m.label,full:m.label,key:o.id,color:OPT_COLOR[o.id]||C.gold,isGate:false,done:false}); }));
+  const byDate={}; events.forEach(e=>{(byDate[e.date]=byDate[e.date]||[]).push(e);});
+  const presentKeys=[...new Set(events.map(e=>e.key))];
+  const order=["plan","kpmg","fti","bhp","alt"];
+
+  /* ----- calendar grid ----- */
+  let calendar;
+  if(!events.length){
+    calendar=`<div style="font-size:13px;color:var(--faint)">Set gate dates below and per-role milestones in “Next 30 days”, and they'll line up here on the calendar.</div>`;
+  } else {
+    const all=events.map(e=>e.date).concat([pl.anchor,today]).filter(Boolean).sort();
+    let y=+all[0].slice(0,4), mo=+all[0].slice(5,7)-1;
+    const endY=+all[all.length-1].slice(0,4), endMo=+all[all.length-1].slice(5,7)-1;
+    const months=[]; let guard=0;
+    while((y<endY||(y===endY&&mo<=endMo))&&guard++<10){ months.push([y,mo]); mo++; if(mo>11){mo=0;y++;} }
+    const wd=["M","T","W","T","F","S","S"];
+    const monthName=(yy,mm)=>new Date(yy,mm,1).toLocaleDateString("en-AU",{month:"long",year:"numeric"});
+    const grids=months.map(([yy,mm])=>{
+      const offset=(new Date(yy,mm,1).getDay()+6)%7, dim=new Date(yy,mm+1,0).getDate();
+      let cells=""; for(let i=0;i<offset;i++) cells+=`<div></div>`;
+      for(let d=1;d<=dim;d++){
+        const dstr=yy+"-"+pad2(mm+1)+"-"+pad2(d), evs=byDate[dstr]||[];
+        const isToday=dstr===today, isAnchor=dstr===pl.anchor;
+        const chips=evs.slice(0,3).map(e=>`<div style="display:flex;align-items:center;gap:3px;line-height:1.15">
+            <span style="width:6px;height:6px;border-radius:50%;background:${e.color};flex-shrink:0;${e.done?'opacity:.4':''}"></span>
+            <span style="font-size:8.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;${e.done?'text-decoration:line-through':''}">${esc(e.isGate?e.short:(e.short.length>9?e.short.slice(0,8)+'\u2026':e.short))}</span></div>`).join("");
+        const more=evs.length>3?`<div style="font-size:8px;color:var(--faint)">+${evs.length-3} more</div>`:"";
+        const bg=isAnchor?'background:rgba(228,98,28,.14);':evs.length?'background:rgba(181,97,14,.06);':'';
+        const ring=isToday?'box-shadow:inset 0 0 0 2px var(--blue);':isAnchor?'box-shadow:inset 0 0 0 2px var(--orange);':'';
+        cells+=`<div style="min-height:46px;border:1px solid var(--line);border-radius:7px;padding:3px 4px;overflow:hidden;${bg}${ring}">
+          <div style="font-size:9px;font-weight:700;color:${isToday?'var(--blue)':isAnchor?'var(--orange)':'var(--faint)'}">${d}${isAnchor?' \u2605':''}</div>${chips}${more}</div>`;
+      }
+      return `<div class="card tight"><div class="serif" style="font-size:15px;margin-bottom:8px">${esc(monthName(yy,mm))}</div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px">${wd.map(w=>`<div style="font-size:9px;color:var(--faint);text-align:center;font-weight:700">${w}</div>`).join("")}</div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px">${cells}</div></div>`;
+    }).join("");
+    const legend=order.filter(k=>presentKeys.includes(k)).map(k=>`<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);margin:0 12px 6px 0">
+        <span style="width:9px;height:9px;border-radius:50%;background:${(STREAM[k]||STREAM.plan).color}"></span>${esc((STREAM[k]||STREAM.plan).label)}</span>`).join("");
+    calendar=`<div style="margin-bottom:12px">${legend}
+        <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);margin:0 12px 6px 0"><span style="width:9px;height:9px;border-radius:3px;box-shadow:inset 0 0 0 2px var(--blue)"></span>today</span>
+        <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><span style="width:9px;height:9px;border-radius:3px;box-shadow:inset 0 0 0 2px var(--orange)"></span>anchor \u2605</span></div>
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(228px,1fr))">${grids}</div>`;
+  }
+
+  /* ----- by-stream breakdown ----- */
+  const byStream=order.filter(k=>presentKeys.includes(k)).map(k=>{
+    const items=events.filter(e=>e.key===k).sort((a,b)=>a.date<b.date?-1:1), col=(STREAM[k]||STREAM.plan).color;
+    const rows=items.map(e=>`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--line)">
+        <span style="font-size:11px;color:var(--faint);width:86px;flex-shrink:0">${esc(e.date)}</span>
+        <span style="font-size:12.5px;color:var(--text);flex:1;${e.done?'text-decoration:line-through;color:var(--muted)':''}">${esc(e.full)}</span></div>`).join("");
+    return `<div class="card tight" style="border-left:3px solid ${col}">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="width:10px;height:10px;border-radius:50%;background:${col}"></span>
+          <div class="serif" style="font-size:16px">${esc((STREAM[k]||STREAM.plan).label)}</div>
+          <span style="font-size:11px;color:var(--faint)">${items.length} milestone${items.length===1?'':'s'}</span></div>${rows}</div>`;
+  }).join("");
+
+  /* ----- streams timeline (swimlane gantt) ----- */
+  let timelineCard="";
+  if(events.length){
+    const toT=d=>new Date(d+"T00:00:00").getTime();
+    const lanes=order.filter(k=>presentKeys.includes(k));
+    const W=760, LX=64, RX=16, laneH=32, topPad=26, H=topPad+lanes.length*laneH+16;
+    let minT=Math.min(toT(today),toT(pl.anchor),...events.map(e=>toT(e.date)));
+    let maxT=Math.max(toT(today),toT(pl.anchor),...events.map(e=>toT(e.date)));
+    if(maxT<=minT)maxT=minT+86400000;
+    const padT=Math.max((maxT-minT)*0.05,2*86400000); minT-=padT; maxT+=padT;
+    const x=t=>LX+((t-minT)/(maxT-minT))*(W-LX-RX);
+    let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="xMidYMid meet" style="max-width:100%">`;
+    let gy=new Date(minT).getFullYear(), gm=new Date(minT).getMonth();
+    for(let i=0;i<14;i++){const mt=new Date(gy,gm,1).getTime(); if(mt>maxT)break;
+      if(mt>=minT){const gx=x(mt);
+        s+=`<line x1="${gx.toFixed(1)}" y1="${topPad-6}" x2="${gx.toFixed(1)}" y2="${H-8}" stroke="${C.line}" stroke-dasharray="2 4"/>`;
+        s+=`<text x="${gx.toFixed(1)}" y="${topPad-10}" fill="${C.faint}" font-size="9" text-anchor="middle">${new Date(gy,gm,1).toLocaleDateString("en-AU",{month:"short"})}</text>`;}
+      gm++; if(gm>11){gm=0;gy++;}}
+    const tx=x(toT(today)), ax=x(toT(pl.anchor));
+    s+=`<line x1="${tx.toFixed(1)}" y1="${topPad-6}" x2="${tx.toFixed(1)}" y2="${H-8}" stroke="${C.blue}" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+    s+=`<text x="${tx.toFixed(1)}" y="${H-1}" fill="${C.blue}" font-size="8.5" text-anchor="middle" font-weight="700">today</text>`;
+    s+=`<line x1="${ax.toFixed(1)}" y1="${topPad-6}" x2="${ax.toFixed(1)}" y2="${H-8}" stroke="${C.orange}" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+    s+=`<text x="${ax.toFixed(1)}" y="${H-1}" fill="${C.orange}" font-size="8.5" text-anchor="middle" font-weight="700">anchor</text>`;
+    lanes.forEach((k,li)=>{
+      const yMid=topPad+li*laneH+laneH/2, col=(STREAM[k]||STREAM.plan).color;
+      const items=events.filter(e=>e.key===k).sort((a,b)=>a.date<b.date?-1:1);
+      s+=`<text x="6" y="${(yMid+3).toFixed(1)}" fill="${col}" font-size="10" font-weight="700">${esc((STREAM[k]||STREAM.plan).label.split(" ")[0])}</text>`;
+      s+=`<line x1="${LX}" y1="${yMid.toFixed(1)}" x2="${W-RX}" y2="${yMid.toFixed(1)}" stroke="${C.line}"/>`;
+      if(items.length>1){const x1=x(toT(items[0].date)), x2=x(toT(items[items.length-1].date));
+        s+=`<rect x="${x1.toFixed(1)}" y="${(yMid-5).toFixed(1)}" width="${Math.max(2,x2-x1).toFixed(1)}" height="10" rx="5" fill="${col}" opacity="0.20"/>`;}
+      items.forEach(e=>{const cx=x(toT(e.date)), r=e.isGate?5.5:4;
+        s+=`<circle cx="${cx.toFixed(1)}" cy="${yMid.toFixed(1)}" r="${r}" fill="${e.done?'#fffcf5':col}" stroke="${col}" stroke-width="1.5" opacity="${e.done?0.6:1}"/>`;
+        if(e.isGate) s+=`<text x="${cx.toFixed(1)}" y="${(yMid-9).toFixed(1)}" fill="${col}" font-size="8" text-anchor="middle" font-weight="700">${esc(e.short)}</text>`;});
+    });
+    s+=`</svg>`;
+    timelineCard=`<div class="card" style="margin-bottom:14px"><div class="serif" style="font-size:18px;margin-bottom:4px">\u229e Streams timeline</div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:10px">Each stream as a lane across time. The bar is the stream's active window; G0\u2013G4 are the gates, hollow markers are done. Today is the blue line, the anchor the orange line.</div>
+      <div style="overflow-x:auto">${s}</div></div>`;
+  }
+
+  /* ----- gates with tasks ----- */
+  const gates=pl.gates.map(g=>{
+    const col=OPT_COLOR[g.party]||C.gold;
+    const partyName=g.party?(S.neg.parties.find(p=>p.id===g.party)||{}).name:"";
+    const link=g.party?`<button class="btn" data-tab="neg" style="padding:4px 9px;border-color:${col};color:${col}">→ ${esc((partyName||g.party).split(" (")[0])} in Negotiation</button>`:"";
+    const taskRows=(g.tasks||[]).map((tk,ti)=>{const sm=STREAM[tk.stream]||STREAM.all;
+      return `<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">
+        <input type="checkbox" data-plantask="${g.id}.${ti}" ${tk.done?'checked':''} style="accent-color:var(--green);width:15px;height:15px;flex-shrink:0"/>
+        <button class="btn" data-action="planTaskStream" data-id="${g.id}" data-i="${ti}" title="Cycle the stream this task belongs to" style="padding:2px 7px;border-color:${sm.color};color:${sm.color};flex-shrink:0;min-width:48px;justify-content:center">${esc(sm.label.split(" ")[0])}</button>
+        <input type="text" data-path="planTask.${g.id}.${ti}.text" value="${esc(tk.text)}" placeholder="task / thing to consider…" style="flex:1;padding:5px 8px;font-size:12px;${tk.done?'text-decoration:line-through;color:var(--muted)':''}"/>
+        <button class="btn" data-action="planDelTask" data-id="${g.id}" data-i="${ti}" style="padding:4px 8px;flex-shrink:0">✕</button></div>`;}).join("");
+    const doneN=(g.tasks||[]).filter(t=>t.done).length, totN=(g.tasks||[]).length;
+    return `<div class="card tight" style="border-left:3px solid ${g.done?C.green:col};${g.done?'opacity:.65':''}">
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <input type="checkbox" data-planon="${g.id}" ${g.done?'checked':''} style="accent-color:var(--green);width:18px;height:18px;margin-top:3px;flex-shrink:0"/>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span class="serif" style="font-size:17px;${g.done?'text-decoration:line-through;color:var(--muted)':''}">${esc(g.label)}</span>${pill(g.date)}
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin:8px 0;flex-wrap:wrap">
+            <span style="font-size:11px;color:var(--faint);flex-shrink:0">Target</span>
+            <input type="date" data-path="planGate.${g.id}.date" value="${esc(g.date)}" style="width:150px;padding:5px;font-size:12px"/>${link}
+          </div>
+          <div style="font-size:12.5px;color:var(--muted);line-height:1.55">${esc(g.branch)}</div>
+          <div style="margin:10px 0 8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+              <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">TASKS — TO CONSIDER / ACTION</span>
+              <span style="font-size:11px;color:var(--faint)">${doneN}/${totN} done</span></div>
+            ${taskRows}
+            <button class="btn" data-action="planAddTask" data-id="${g.id}" style="margin-top:2px">+ Add task</button></div>
+          <div style="font-size:11px;color:var(--faint);margin-bottom:4px">Notes / context</div>
+          <textarea rows="2" data-path="planGate.${g.id}.note" placeholder="Anything else — context, who said what, open questions…">${esc(g.note)}</textarea>
+        </div>
+      </div>
+    </div>`;}).join("");
+
+  const phases=pl.phases.map(ph=>`<div class="card tight">
+      <div class="serif" style="font-size:15px;margin-bottom:2px">${esc(ph.label)}</div>
+      <div style="font-size:11px;color:var(--gold);margin-bottom:8px">${esc(ph.span)}</div>
+      <div style="font-size:12.5px;color:var(--muted);line-height:1.55">${esc(ph.body)}</div>
+    </div>`).join("");
+
+  return `<p style="color:var(--muted);font-size:13px;max-width:700px;margin:0 0 16px">The decision tree to the anchor: a sequence of gates, each with its own tasks across the FTI, KPMG and BHP streams. The rule that governs all of them — <b style="color:var(--text)">a path is only real on the anchor if it's in writing (FTI) or a confirmed role and band (BHP)</b>.</p>
+    <div class="card gold" style="margin-bottom:14px">
+      <div style="font-size:11px;letter-spacing:2px;color:var(--gold);font-weight:700;margin-bottom:6px">ANCHOR — RESIGN OR RECOMMIT</div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px">
+        <input type="date" data-path="plan.anchor" value="${esc(pl.anchor)}" style="width:160px;padding:7px;font-size:14px"/>
+        <span class="big" style="font-size:24px">${esc(anchorTxt)}</span></div>
+      <p style="color:var(--muted);font-size:13px;line-height:1.6;margin:0">${esc(pl.intro)}</p>
+    </div>
+    <div class="card" style="margin-bottom:14px"><div class="serif" style="font-size:18px;margin-bottom:4px">⌗ Calendar — milestones &amp; streams</div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:10px">Every gate and milestone from now to the anchor, colour-coded by stream. Today is ringed in blue, the anchor in orange.</div>
+      ${calendar}
+      ${byStream?`<div style="font-size:12px;color:var(--gold);font-weight:700;letter-spacing:1px;margin:16px 0 8px">BY STREAM</div><div class="grid g-2">${byStream}</div>`:""}</div>
+    ${timelineCard}
+    <div class="grid" style="margin-bottom:14px">${gates}</div>
+    <div class="card" style="margin-bottom:14px"><div class="serif" style="font-size:18px;margin-bottom:4px">The three phases</div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:14px">How the twelve weeks break down. Phase 2 is where verbal becomes written; Phase 3 is where you converge and transact.</div>
+      <div class="grid g-2" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">${phases}</div></div>
+    <div class="note" style="text-align:center">A planning tool, not legal or financial advice. Get any term sheet or contract reviewed by your own adviser before acting.</div>`;
+}
+
 function viewNeg(){
   const partyCard=pt=>{
     const col=OPT_COLOR[pt.id]||C.gold;
@@ -655,9 +911,9 @@ function viewNeg(){
     const levers=(pt.levers||[]).map((l,i)=>`<div class="lever ${l.kind} ${l.star?'star':''}">
         <div style="display:flex;gap:6px;align-items:center">
           <button class="btn" data-action="negKind" data-id="${pt.id}" data-i="${i}" title="Toggle get / give"
-            style="padding:4px 8px;${l.kind==='give'?'border-color:rgba(138,165,127,.45);color:var(--green)':'border-color:var(--lineGold);color:var(--goldB)'}">${l.kind==='give'?'GIVE':'GET'}</button>
+            style="padding:4px 8px;${l.kind==='give'?'border-color:rgba(63,138,75,.55);color:var(--green)':'border-color:var(--lineGold);color:var(--goldB)'}">${l.kind==='give'?'GIVE':'GET'}</button>
           <button class="btn" data-action="negStar" data-id="${pt.id}" data-i="${i}" title="Mark as a high-leverage trade"
-            style="padding:4px 8px;${l.star?'border-color:rgba(215,163,95,.5);color:var(--amber)':''}">${l.star?'★':'☆'}</button>
+            style="padding:4px 8px;${l.star?'border-color:rgba(194,116,26,.6);color:var(--amber)':''}">${l.star?'★':'☆'}</button>
           <input type="text" data-path="neglever.${pt.id}.${i}.label" value="${esc(l.label)}" style="flex:1;padding:5px 8px;font-size:12.5px"/>
           <button class="btn" data-action="negDelLever" data-id="${pt.id}" data-i="${i}" style="padding:5px 8px">✕</button>
         </div>
@@ -711,10 +967,10 @@ function viewNeg(){
 
 function render(){
   const tabs=[["dashboard","Dashboard",I.dash],["options","Score the options",I.comp],
-    ["money","Money model",I.money],["next","Next 30 days",I.cal],["neg","Negotiation",I.deal],["bias","Ego & imposter",I.brain],["couch","On the couch",I.anchor]];
+    ["money","Money model",I.money],["next","Next 30 days",I.cal],["plan","90-day plan",I.flag],["neg","Negotiation",I.deal],["bias","Ego & imposter",I.brain],["couch","On the couch",I.anchor]];
   const tabbar=tabs.map(([id,label,ic])=>`<button class="tab ${activeTab===id?'active':''}" data-tab="${id}">${ic}${label}</button>`).join("");
   const content=activeTab==="dashboard"?viewDashboard():activeTab==="options"?viewOptions():
-    activeTab==="money"?viewMoney():activeTab==="next"?viewNext():activeTab==="neg"?viewNeg():activeTab==="bias"?viewBias():viewCouch();
+    activeTab==="money"?viewMoney():activeTab==="next"?viewNext():activeTab==="plan"?viewPlan():activeTab==="neg"?viewNeg():activeTab==="bias"?viewBias():viewCouch();
   document.getElementById("app").innerHTML=`
     <header class="top"><div class="htop">
       <div class="row between">
@@ -754,6 +1010,9 @@ function applyPath(path,val){
   else if(p[0]==="negwant"){const pt=S.neg.parties.find(x=>x.id===p[1]);if(pt)pt.theyWant[+p[2]]=val;}
   else if(p[0]==="neglever"){const pt=S.neg.parties.find(x=>x.id===p[1]);if(pt&&pt.levers[+p[2]])pt.levers[+p[2]][p[3]]=val;}
   else if(p[0]==="negprop"){const pt=S.neg.parties.find(x=>x.id===p[1]);if(pt&&pt.proposals[+p[2]])pt.proposals[+p[2]][p[3]]=val;}
+  else if(p[0]==="plan"){S.plan.anchor=val;}
+  else if(p[0]==="planGate"){const g=S.plan.gates.find(x=>x.id===p[1]);if(g)g[p[2]]=val;}
+  else if(p[0]==="planTask"){const g=S.plan.gates.find(x=>x.id===p[1]);if(g&&g.tasks&&g.tasks[+p[2]])g.tasks[+p[2]][p[3]]=val;}
   save();
 }
 
@@ -815,6 +1074,7 @@ function importJSON(file){
     if(s.a)S.a={...DEFAULT_A,...s.a}; if(s.w)S.w={...DEFAULT_W,...s.w};
     if(s.couch)S.couch={...clone(DEFAULT_COUCH),...s.couch}; if(s.checks)S.checks=s.checks;
     S.neg=mergeNeg(s.neg);
+    S.plan=mergePlan(s.plan);
     if(s.ai)S.ai=s.ai;
     save();render();
   }catch(e){alert("Could not read that file: "+e.message);}};
@@ -824,10 +1084,10 @@ function importJSON(file){
 /* ---------------- comprehensive print document ---------------- */
 function buildPrint(){
   const R=rows(), a=S.a;
-  const sec=(t)=>`<div style="font-family:'Fraunces',serif;font-size:17px;color:#1c1916;margin:22px 0 8px;border-bottom:2px solid #c9a96a;padding-bottom:4px;break-after:avoid">${t}</div>`;
-  const th=(arr)=>`<tr style="background:#1c1916;color:#fff">${arr.map((h,j)=>`<th style="padding:5px 7px;text-align:${j===0?'left':'right'};font-size:10px">${h}</th>`).join("")}</tr>`;
+  const sec=(t)=>`<div style="font-family:'Fraunces',serif;font-size:17px;color:#1c1916;margin:22px 0 8px;border-bottom:2px solid #e4621c;padding-bottom:4px;break-after:avoid">${t}</div>`;
+  const th=(arr)=>`<tr style="background:#173a63;color:#fff">${arr.map((h,j)=>`<th style="padding:5px 7px;text-align:${j===0?'left':'right'};font-size:10px">${h}</th>`).join("")}</tr>`;
   const tr=(cells,i)=>`<tr style="background:${i%2?'#f5f1e8':'#fbf9f3'};border-bottom:1px solid #d8d0c0">${cells.map((c,j)=>`<td style="padding:5px 7px;text-align:${j===0?'left':'right'};font-size:10.5px;${c.b?'font-weight:700':''}">${c.v}</td>`).join("")}</tr>`;
-  const box=(label,html,bg)=>`<div style="margin-top:10px;padding:10px;background:${bg||'#f5f1e8'};border:1px solid #d8d0c0;border-radius:6px;font-size:11px;break-inside:avoid">${label?`<b style="color:#a8842f">${label}</b> `:""}${html}</div>`;
+  const box=(label,html,bg)=>`<div style="margin-top:10px;padding:10px;background:${bg||'#f5f1e8'};border:1px solid #d8d0c0;border-radius:6px;font-size:11px;break-inside:avoid">${label?`<b style="color:#b5610e">${label}</b> `:""}${html}</div>`;
 
   const ranking=`<table style="width:100%;border-collapse:collapse">${th(["Rank","Path","Scenario","Weighted","Income/yr","Life cost","Reverse","Ego+fear"])}
     ${R.map((c,i)=>tr([{v:"#"+(i+1)},{v:esc(c.o.name),b:1},{v:esc(activeLabel(c.o))},{v:Math.round(c.total),b:1},{v:fmtK(c.p.sust)},{v:c.o.lifecost+"/10"},{v:c.o.reverse+"/10"},{v:c.bias+"/20"}],i)).join("")}</table>`;
@@ -848,7 +1108,7 @@ function buildPrint(){
 
   const dts=[];S.options.forEach(o=>(o.timeline||[]).forEach(m=>{if(m.date)dts.push({d:m.date,o:o.name,l:m.label});}));
   dts.sort((x,y)=>x.d<y.d?-1:1);
-  const timeline=dts.length?`<table style="width:100%;border-collapse:collapse"><tr style="background:#1c1916;color:#fff"><th style="padding:5px 7px;text-align:left;font-size:10px">Date</th><th style="padding:5px 7px;text-align:left;font-size:10px">Role</th><th style="padding:5px 7px;text-align:left;font-size:10px">Milestone</th></tr>
+  const timeline=dts.length?`<table style="width:100%;border-collapse:collapse"><tr style="background:#173a63;color:#fff"><th style="padding:5px 7px;text-align:left;font-size:10px">Date</th><th style="padding:5px 7px;text-align:left;font-size:10px">Role</th><th style="padding:5px 7px;text-align:left;font-size:10px">Milestone</th></tr>
     ${dts.map((x,i)=>`<tr style="background:${i%2?'#f5f1e8':'#fbf9f3'};border-bottom:1px solid #d8d0c0"><td style="padding:5px 7px;font-size:10.5px;font-weight:700">${esc(x.d)}</td><td style="padding:5px 7px;font-size:10.5px">${esc(x.o)}</td><td style="padding:5px 7px;font-size:10.5px">${esc(x.l)}</td></tr>`).join("")}</table>`:`<div style="font-size:10.5px;color:#9a9282">No dates set yet.</div>`;
 
   const negDoc=(S.neg.parties||[]).map(pt=>{
@@ -866,8 +1126,12 @@ function buildPrint(){
 
   const ai=(S.ai&&S.ai.text)?`<div style="font-size:10px;color:#9a9282;margin-bottom:8px">Generated ${esc((S.ai.when||"").slice(0,16).replace("T"," "))} \u00b7 ${esc(S.ai.model||"")}</div><div style="font-size:11px;color:#1c1916">${mdToHtml(S.ai.text)}</div>`:`<div style="font-size:10.5px;color:#9a9282">No AI deep-dive saved. Run it in the “On the couch” tab on your hosted page, then export this PDF.</div>`;
 
+  const planAnchor=S.plan?S.plan.anchor:"";
+  const planGates=(S.plan?S.plan.gates:[]).map(g=>`<div style="margin-bottom:8px;break-inside:avoid"><b style="font-size:11px">${g.done?"\u2611":"\u2610"} ${esc(g.label)}</b> <span style="color:#6f675a;font-size:10px">${g.date?esc(g.date):"(no date)"}</span><div style="font-size:10.5px;color:#4a443a;margin-top:1px">${esc(g.branch)}</div>${(g.tasks&&g.tasks.length)?`<ul style="margin:3px 0 0 16px;padding:0;font-size:10.5px;color:#4a443a">${g.tasks.map(t=>`<li style="margin-bottom:1px">${t.done?"\u2611":"\u2610"} <b>${esc((STREAM[t.stream]||STREAM.all).label.split(" ")[0])}</b> \u00b7 ${esc(t.text)}</li>`).join("")}</ul>`:""}${g.note?`<div style="font-size:10.5px;color:#1c1916;margin-top:2px"><b>Note:</b> ${esc(g.note)}</div>`:""}</div>`).join("");
+  const planPhases=(S.plan?S.plan.phases:[]).map(ph=>`<div style="margin-bottom:6px;break-inside:avoid"><b style="font-size:11px">${esc(ph.label)}</b> <span style="color:#6f675a;font-size:10px">${esc(ph.span)}</span><div style="font-size:10.5px;color:#4a443a">${esc(ph.body)}</div></div>`).join("");
+
   document.getElementById("printArea").innerHTML=`
-    <div style="font-size:11px;letter-spacing:2px;color:#a8842f;font-weight:700">THE 62 DECISION \u2014 FULL DECISION DOSSIER</div>
+    <div style="font-size:11px;letter-spacing:2px;color:#b5610e;font-weight:700">THE 62 DECISION \u2014 FULL DECISION DOSSIER</div>
     <h1 style="font-family:'Fraunces',serif;font-size:27px;margin:4px 0 2px">Decision dossier</h1>
     <div style="font-size:11px;color:#6f675a;margin-bottom:4px">Generated ${new Date().toISOString().slice(0,16).replace("T"," ")} \u00b7 Ages ${a.currentAge}\u2013${a.retireAge} \u00b7 ${a.returnRate}% return${a.stress?" \u00b7 STRESS ON":""} \u00b7 target ${fmtK(a.retireTarget)}/yr</div>
     ${box("NORTHSTAR:",esc(S.couch.northstar),"#faf4e4")}
@@ -885,6 +1149,10 @@ function buildPrint(){
     <div style="break-before:page"></div>
     ${sec("9 \u00b7 Negotiation levers")}${negDoc}
     ${sec("10 \u00b7 AI deep-dive")}${ai}
+    ${sec("11 \u00b7 90-day plan to "+esc(planAnchor))}
+    <div style="font-size:10.5px;color:#4a443a;margin-bottom:6px">${esc(S.plan?S.plan.intro:"")}</div>
+    ${planGates}
+    <div style="margin-top:8px;font-weight:700;font-size:11px;color:#1c1916">Phases</div>${planPhases}
     ${box("Decision rule:","choose the path that is strong on your anchors, clean of distortion, survivable in the bad case, and reversible if you're wrong \u2014 and that reaches optionality without trading away the body and family that make freedom worth having.","#faf4e4")}
     <div style="margin-top:8px;font-size:9px;color:#9a9282">Strategic modelling, not financial advice. Figures are approximations to support your own informed decision; confirm tax, super and returns with a fee-only adviser.</div>`;
 }
@@ -908,7 +1176,9 @@ app.addEventListener("change",e=>{
   const t=e.target;
   if(t.matches('input[type=checkbox][data-path]')){ applyPath(t.dataset.path,t.checked);
     if(activeTab==="money")updateMoneyReadouts(); }
-  else if(t.matches('input[type=date][data-path]')){ if(activeTab==="next")render(); }
+  else if(t.matches('input[type=date][data-path]')){ if(activeTab==="next"||activeTab==="plan")render(); }
+  else if(t.dataset.planon!==undefined){ const g=S.plan.gates.find(x=>x.id===t.dataset.planon); if(g){g.done=t.checked;save();render();} }
+  else if(t.dataset.plantask!==undefined){ const pr=t.dataset.plantask.split("."); const g=S.plan.gates.find(x=>x.id===pr[0]); if(g&&g.tasks[+pr[1]]){g.tasks[+pr[1]].done=t.checked;save();render();} }
   else if(t.dataset.guardon!==undefined){ S.couch.guardrails[+t.dataset.guardon].on=t.checked;
     save(); t.closest('.guard').classList.toggle('on',t.checked); }
   else if(t.dataset.check!==undefined){ S.checks[t.dataset.check]=t.checked; save();
@@ -931,6 +1201,9 @@ app.addEventListener("click",e=>{
   else if(a==="negDelWant"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){pt.theyWant.splice(+act.dataset.i,1);save();render();}}
   else if(a==="negAddProp"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){pt.proposals.push({ifThey:"",thenI:""});save();render();}}
   else if(a==="negDelProp"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){pt.proposals.splice(+act.dataset.i,1);save();render();}}
+  else if(a==="planAddTask"){const g=S.plan.gates.find(x=>x.id===act.dataset.id);if(g){if(!g.tasks)g.tasks=[];g.tasks.push({text:"",stream:"all",done:false});save();render();}}
+  else if(a==="planDelTask"){const g=S.plan.gates.find(x=>x.id===act.dataset.id);if(g&&g.tasks){g.tasks.splice(+act.dataset.i,1);save();render();}}
+  else if(a==="planTaskStream"){const g=S.plan.gates.find(x=>x.id===act.dataset.id);if(g&&g.tasks&&g.tasks[+act.dataset.i]){const ord=["all","fti","kpmg","bhp","alt"];const tk=g.tasks[+act.dataset.i];tk.stream=ord[(ord.indexOf(tk.stream)+1)%ord.length];save();render();}}
   else if(a==="export"){exportJSON();}
   else if(a==="importTrigger"){document.getElementById("importFile").click();}
   else if(a==="reset"){if(confirm("Reset everything to defaults? This clears your saved inputs in this browser.")){S=freshState();save();render();}}

@@ -728,6 +728,49 @@ function viewNext(){
       <div class="grid g-2">${editors}</div></div>`;
 }
 
+function streamsTimelineSVG(){
+  const pl=S.plan; if(!pl) return "";
+  const today=new Date().toISOString().slice(0,10);
+  const events=[];
+  pl.gates.forEach(g=>{ if(g.date){const key=g.party||"plan"; events.push({date:g.date,short:g.id.toUpperCase(),key,color:(STREAM[key]||STREAM.plan).color,isGate:true,done:g.done}); }});
+  S.options.forEach(o=>(o.timeline||[]).forEach(m=>{ if(m.date) events.push({date:m.date,key:o.id,color:OPT_COLOR[o.id]||C.gold,isGate:false,done:false}); }));
+  if(!events.length) return "";
+  const order=["plan","kpmg","fti","bhp","alt"];
+  const presentKeys=[...new Set(events.map(e=>e.key))];
+  const toT=d=>new Date(d+"T00:00:00").getTime();
+  const lanes=order.filter(k=>presentKeys.includes(k));
+  const W=760, LX=64, RX=16, laneH=32, topPad=26, H=topPad+lanes.length*laneH+16;
+  let minT=Math.min(toT(today),toT(pl.anchor),...events.map(e=>toT(e.date)));
+  let maxT=Math.max(toT(today),toT(pl.anchor),...events.map(e=>toT(e.date)));
+  if(maxT<=minT)maxT=minT+86400000;
+  const padT=Math.max((maxT-minT)*0.05,2*86400000); minT-=padT; maxT+=padT;
+  const x=t=>LX+((t-minT)/(maxT-minT))*(W-LX-RX);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="xMidYMid meet" style="max-width:100%">`;
+  let gy=new Date(minT).getFullYear(), gm=new Date(minT).getMonth();
+  for(let i=0;i<14;i++){const mt=new Date(gy,gm,1).getTime(); if(mt>maxT)break;
+    if(mt>=minT){const gx=x(mt);
+      s+=`<line x1="${gx.toFixed(1)}" y1="${topPad-6}" x2="${gx.toFixed(1)}" y2="${H-8}" stroke="${C.line}" stroke-dasharray="2 4"/>`;
+      s+=`<text x="${gx.toFixed(1)}" y="${topPad-10}" fill="${C.faint}" font-size="9" text-anchor="middle">${new Date(gy,gm,1).toLocaleDateString("en-AU",{month:"short"})}</text>`;}
+    gm++; if(gm>11){gm=0;gy++;}}
+  const tx=x(toT(today)), ax=x(toT(pl.anchor));
+  s+=`<line x1="${tx.toFixed(1)}" y1="${topPad-6}" x2="${tx.toFixed(1)}" y2="${H-8}" stroke="${C.blue}" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+  s+=`<text x="${tx.toFixed(1)}" y="${H-1}" fill="${C.blue}" font-size="8.5" text-anchor="middle" font-weight="700">today</text>`;
+  s+=`<line x1="${ax.toFixed(1)}" y1="${topPad-6}" x2="${ax.toFixed(1)}" y2="${H-8}" stroke="${C.orange}" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+  s+=`<text x="${ax.toFixed(1)}" y="${H-1}" fill="${C.orange}" font-size="8.5" text-anchor="middle" font-weight="700">anchor</text>`;
+  lanes.forEach((k,li)=>{
+    const yMid=topPad+li*laneH+laneH/2, col=(STREAM[k]||STREAM.plan).color;
+    const items=events.filter(e=>e.key===k).sort((a,b)=>a.date<b.date?-1:1);
+    s+=`<text x="6" y="${(yMid+3).toFixed(1)}" fill="${col}" font-size="10" font-weight="700">${esc((STREAM[k]||STREAM.plan).label.split(" ")[0])}</text>`;
+    s+=`<line x1="${LX}" y1="${yMid.toFixed(1)}" x2="${W-RX}" y2="${yMid.toFixed(1)}" stroke="${C.line}"/>`;
+    if(items.length>1){const x1=x(toT(items[0].date)), x2=x(toT(items[items.length-1].date));
+      s+=`<rect x="${x1.toFixed(1)}" y="${(yMid-5).toFixed(1)}" width="${Math.max(2,x2-x1).toFixed(1)}" height="10" rx="5" fill="${col}" opacity="0.20"/>`;}
+    items.forEach(e=>{const cx=x(toT(e.date)), r=e.isGate?5.5:4;
+      s+=`<circle cx="${cx.toFixed(1)}" cy="${yMid.toFixed(1)}" r="${r}" fill="${e.done?'#fffcf5':col}" stroke="${col}" stroke-width="1.5" opacity="${e.done?0.6:1}"/>`;
+      if(e.isGate) s+=`<text x="${cx.toFixed(1)}" y="${(yMid-9).toFixed(1)}" fill="${col}" font-size="8" text-anchor="middle" font-weight="700">${esc(e.short)}</text>`;});
+  });
+  return s+`</svg>`;
+}
+
 function viewPlan(){
   const pl=S.plan, today=new Date().toISOString().slice(0,10);
   const daysTo=d=>{const n=Math.round((new Date(d+"T00:00:00")-new Date(today+"T00:00:00"))/86400000);return isNaN(n)?null:n;};
@@ -799,44 +842,10 @@ function viewPlan(){
   }).join("");
 
   /* ----- streams timeline (swimlane gantt) ----- */
-  let timelineCard="";
-  if(events.length){
-    const toT=d=>new Date(d+"T00:00:00").getTime();
-    const lanes=order.filter(k=>presentKeys.includes(k));
-    const W=760, LX=64, RX=16, laneH=32, topPad=26, H=topPad+lanes.length*laneH+16;
-    let minT=Math.min(toT(today),toT(pl.anchor),...events.map(e=>toT(e.date)));
-    let maxT=Math.max(toT(today),toT(pl.anchor),...events.map(e=>toT(e.date)));
-    if(maxT<=minT)maxT=minT+86400000;
-    const padT=Math.max((maxT-minT)*0.05,2*86400000); minT-=padT; maxT+=padT;
-    const x=t=>LX+((t-minT)/(maxT-minT))*(W-LX-RX);
-    let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="xMidYMid meet" style="max-width:100%">`;
-    let gy=new Date(minT).getFullYear(), gm=new Date(minT).getMonth();
-    for(let i=0;i<14;i++){const mt=new Date(gy,gm,1).getTime(); if(mt>maxT)break;
-      if(mt>=minT){const gx=x(mt);
-        s+=`<line x1="${gx.toFixed(1)}" y1="${topPad-6}" x2="${gx.toFixed(1)}" y2="${H-8}" stroke="${C.line}" stroke-dasharray="2 4"/>`;
-        s+=`<text x="${gx.toFixed(1)}" y="${topPad-10}" fill="${C.faint}" font-size="9" text-anchor="middle">${new Date(gy,gm,1).toLocaleDateString("en-AU",{month:"short"})}</text>`;}
-      gm++; if(gm>11){gm=0;gy++;}}
-    const tx=x(toT(today)), ax=x(toT(pl.anchor));
-    s+=`<line x1="${tx.toFixed(1)}" y1="${topPad-6}" x2="${tx.toFixed(1)}" y2="${H-8}" stroke="${C.blue}" stroke-width="1.5" stroke-dasharray="4 3"/>`;
-    s+=`<text x="${tx.toFixed(1)}" y="${H-1}" fill="${C.blue}" font-size="8.5" text-anchor="middle" font-weight="700">today</text>`;
-    s+=`<line x1="${ax.toFixed(1)}" y1="${topPad-6}" x2="${ax.toFixed(1)}" y2="${H-8}" stroke="${C.orange}" stroke-width="1.5" stroke-dasharray="4 3"/>`;
-    s+=`<text x="${ax.toFixed(1)}" y="${H-1}" fill="${C.orange}" font-size="8.5" text-anchor="middle" font-weight="700">anchor</text>`;
-    lanes.forEach((k,li)=>{
-      const yMid=topPad+li*laneH+laneH/2, col=(STREAM[k]||STREAM.plan).color;
-      const items=events.filter(e=>e.key===k).sort((a,b)=>a.date<b.date?-1:1);
-      s+=`<text x="6" y="${(yMid+3).toFixed(1)}" fill="${col}" font-size="10" font-weight="700">${esc((STREAM[k]||STREAM.plan).label.split(" ")[0])}</text>`;
-      s+=`<line x1="${LX}" y1="${yMid.toFixed(1)}" x2="${W-RX}" y2="${yMid.toFixed(1)}" stroke="${C.line}"/>`;
-      if(items.length>1){const x1=x(toT(items[0].date)), x2=x(toT(items[items.length-1].date));
-        s+=`<rect x="${x1.toFixed(1)}" y="${(yMid-5).toFixed(1)}" width="${Math.max(2,x2-x1).toFixed(1)}" height="10" rx="5" fill="${col}" opacity="0.20"/>`;}
-      items.forEach(e=>{const cx=x(toT(e.date)), r=e.isGate?5.5:4;
-        s+=`<circle cx="${cx.toFixed(1)}" cy="${yMid.toFixed(1)}" r="${r}" fill="${e.done?'#fffcf5':col}" stroke="${col}" stroke-width="1.5" opacity="${e.done?0.6:1}"/>`;
-        if(e.isGate) s+=`<text x="${cx.toFixed(1)}" y="${(yMid-9).toFixed(1)}" fill="${col}" font-size="8" text-anchor="middle" font-weight="700">${esc(e.short)}</text>`;});
-    });
-    s+=`</svg>`;
-    timelineCard=`<div class="card" style="margin-bottom:14px"><div class="serif" style="font-size:18px;margin-bottom:4px">\u229e Streams timeline</div>
+  const _gantt=streamsTimelineSVG();
+  const timelineCard=_gantt?`<div class="card" style="margin-bottom:14px"><div class="serif" style="font-size:18px;margin-bottom:4px">\u229e Streams timeline</div>
       <div style="color:var(--muted);font-size:12px;margin-bottom:10px">Each stream as a lane across time. The bar is the stream's active window; G0\u2013G4 are the gates, hollow markers are done. Today is the blue line, the anchor the orange line.</div>
-      <div style="overflow-x:auto">${s}</div></div>`;
-  }
+      <div style="overflow-x:auto">${_gantt}</div></div>`:"";
 
   /* ----- gates with tasks ----- */
   const gates=pl.gates.map(g=>{
@@ -1129,6 +1138,7 @@ function buildPrint(){
   const planAnchor=S.plan?S.plan.anchor:"";
   const planGates=(S.plan?S.plan.gates:[]).map(g=>`<div style="margin-bottom:8px;break-inside:avoid"><b style="font-size:11px">${g.done?"\u2611":"\u2610"} ${esc(g.label)}</b> <span style="color:#6f675a;font-size:10px">${g.date?esc(g.date):"(no date)"}</span><div style="font-size:10.5px;color:#4a443a;margin-top:1px">${esc(g.branch)}</div>${(g.tasks&&g.tasks.length)?`<ul style="margin:3px 0 0 16px;padding:0;font-size:10.5px;color:#4a443a">${g.tasks.map(t=>`<li style="margin-bottom:1px">${t.done?"\u2611":"\u2610"} <b>${esc((STREAM[t.stream]||STREAM.all).label.split(" ")[0])}</b> \u00b7 ${esc(t.text)}</li>`).join("")}</ul>`:""}${g.note?`<div style="font-size:10.5px;color:#1c1916;margin-top:2px"><b>Note:</b> ${esc(g.note)}</div>`:""}</div>`).join("");
   const planPhases=(S.plan?S.plan.phases:[]).map(ph=>`<div style="margin-bottom:6px;break-inside:avoid"><b style="font-size:11px">${esc(ph.label)}</b> <span style="color:#6f675a;font-size:10px">${esc(ph.span)}</span><div style="font-size:10.5px;color:#4a443a">${esc(ph.body)}</div></div>`).join("");
+  const planSvg=streamsTimelineSVG();
 
   document.getElementById("printArea").innerHTML=`
     <div style="font-size:11px;letter-spacing:2px;color:#b5610e;font-weight:700">THE 62 DECISION \u2014 FULL DECISION DOSSIER</div>
@@ -1151,6 +1161,7 @@ function buildPrint(){
     ${sec("10 \u00b7 AI deep-dive")}${ai}
     ${sec("11 \u00b7 90-day plan to "+esc(planAnchor))}
     <div style="font-size:10.5px;color:#4a443a;margin-bottom:6px">${esc(S.plan?S.plan.intro:"")}</div>
+    ${planSvg?`<div style="font-weight:700;font-size:11px;color:#1c1916;margin-bottom:2px">Streams timeline</div><div style="margin-bottom:10px;break-inside:avoid">${planSvg}</div>`:""}
     ${planGates}
     <div style="margin-top:8px;font-weight:700;font-size:11px;color:#1c1916">Phases</div>${planPhases}
     ${box("Decision rule:","choose the path that is strong on your anchors, clean of distortion, survivable in the bad case, and reversible if you're wrong \u2014 and that reaches optionality without trading away the body and family that make freedom worth having.","#faf4e4")}

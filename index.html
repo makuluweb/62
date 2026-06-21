@@ -16,41 +16,38 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
   :root{
-    --bg:#f7eedb;--panel:#fffcf5;--panel2:#fbf2e1;--line:#e8d9be;--lineGold:rgba(181,97,14,.30);
-    --text:#2c2620;--muted:#7c7060;--faint:#a99b83;--gold:#b5610e;--goldB:#a24e08;
-    --blue:#1f60ac;--blueB:#174e8e;--orange:#e4621c;--teal:#0e8a7c;--mustard:#dda52b;
-    --green:#3f8a4b;--amber:#c2741a;--red:#c8472e;
+    --bg:#100f0c;--panel:#1a1815;--panel2:#221f1a;--line:#322e26;--lineGold:rgba(201,169,106,.22);
+    --text:#ece6d8;--muted:#9b9384;--faint:#6f6757;--gold:#c9a96a;--goldB:#e3c389;
+    --green:#8aa57f;--amber:#d7a35f;--red:#cf8568;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:'Instrument Sans',system-ui,sans-serif;
-    background-image:radial-gradient(1100px 560px at 84% -8%,rgba(255,200,120,.50),rgba(255,200,120,0) 60%),radial-gradient(880px 520px at -8% 4%,rgba(244,176,120,.40),rgba(244,176,120,0) 55%);background-attachment:fixed}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Instrument Sans',system-ui,sans-serif}
   h1,h2,h3,.serif{font-family:'Fraunces',Georgia,serif}
-  ::selection{background:var(--gold);color:#fff}
-  a{color:var(--blue)}
+  ::selection{background:var(--gold);color:var(--bg)}
+  a{color:var(--goldB)}
   .wrap{max-width:1080px;margin:0 auto;padding:22px}
-  header.top{background:linear-gradient(var(--panel),var(--panel)) padding-box,linear-gradient(90deg,var(--orange),var(--gold) 50%,var(--blue)) border-box;border:0 solid transparent;border-bottom-width:3px}
+  header.top{border-bottom:1px solid var(--line);background:var(--panel)}
   .htop{max-width:1080px;margin:0 auto;padding:22px 22px 0}
   .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
   .between{justify-content:space-between}
-  .kick{color:var(--blue);font-size:12px;letter-spacing:3px;font-weight:600}
+  .kick{color:var(--gold);font-size:12px;letter-spacing:3px;font-weight:600}
   h1.title{font-size:40px;font-weight:600;line-height:1;margin:6px 0 4px}
   .sub{color:var(--muted);font-size:14px;max-width:560px}
   .tabs{display:flex;gap:8px;margin-top:20px;padding-bottom:12px;flex-wrap:wrap}
   .tab{display:flex;align-items:center;gap:7px;padding:8px 15px;border-radius:9px;border:1px solid transparent;
     background:transparent;color:var(--muted);font:600 13px 'Instrument Sans';cursor:pointer}
-  .tab:hover{color:var(--text)}
-  .tab.active{background:var(--panel);color:var(--blueB);border-color:var(--blue);box-shadow:0 3px 10px -5px rgba(31,96,172,.5)}
+  .tab.active{background:var(--panel2);color:var(--goldB);border-color:var(--lineGold)}
   .btn{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:9px;border:1px solid var(--line);
-    background:var(--panel);color:var(--muted);font:600 12px 'Instrument Sans';cursor:pointer}
-  .btn.gold{background:rgba(181,97,14,.10);border-color:var(--lineGold);color:var(--goldB)}
-  .btn:hover{border-color:var(--gold)}
+    background:transparent;color:var(--muted);font:600 12px 'Instrument Sans';cursor:pointer}
+  .btn.gold{border-color:var(--lineGold);color:var(--goldB)}
+  .btn:hover{border-color:var(--lineGold)}
   .grid{display:grid;gap:12px}
   .g-cards{grid-template-columns:repeat(auto-fit,minmax(245px,1fr))}
   .g-2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
   .g-opt{grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
   .g-w{grid-template-columns:repeat(auto-fit,minmax(210px,1fr));column-gap:24px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 1px 2px rgba(80,52,14,.05),0 14px 30px -18px rgba(80,52,14,.18)}
-  .card.gold{border-color:var(--lineGold);box-shadow:0 1px 2px rgba(181,97,14,.08),0 16px 32px -18px rgba(181,97,14,.22)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .card.gold{border-color:var(--lineGold)}
   .card.tight{padding:16px}
   .ch{font-size:11px;color:var(--faint);font-weight:600}
   .cn{font-size:20px;font-weight:600;margin:2px 0 8px}
@@ -69,17 +66,17 @@
   .sl-hint{color:var(--faint);font-size:11px;margin-top:2px}
   textarea,input[type=text],input[type=password]{width:100%;background:var(--panel2);color:var(--text);
     border:1px solid var(--line);border-radius:8px;padding:10px;font:13px/1.5 'Instrument Sans';resize:vertical}
-  textarea:focus,input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(31,96,172,.12)}
+  textarea:focus,input:focus{outline:none;border-color:var(--lineGold)}
   .badge{margin-top:8px;padding:8px 10px;border-radius:8px;font-size:12px}
-  .badge.ok{background:rgba(63,138,75,.14);border:1px solid rgba(63,138,75,.34);color:var(--green)}
-  .badge.no{background:rgba(200,71,46,.12);border:1px solid rgba(200,71,46,.30);color:var(--red)}
+  .badge.ok{background:rgba(138,165,127,.12);border:1px solid rgba(138,165,127,.3);color:var(--green)}
+  .badge.no{background:rgba(207,133,104,.10);border:1px solid rgba(207,133,104,.25);color:var(--red)}
   .ins{display:flex;gap:12px;padding:13px;background:var(--panel2);border:1px solid var(--line);border-radius:10px}
   .ins .t{font-size:13.5px;font-weight:600;margin-bottom:3px}
   .ins .d{font-size:12.5px;color:var(--muted);line-height:1.5}
   .pill{display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:8px;border:1px solid var(--line);cursor:pointer;font-size:12.5px;color:var(--muted);font-weight:600}
-  .pill.on{border-color:var(--red);background:rgba(200,71,46,.12);color:var(--red)}
+  .pill.on{border-color:var(--red);background:rgba(207,133,104,.12);color:var(--red)}
   .guard{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;padding:10px;border:1px solid var(--line);background:var(--panel2);border-radius:10px}
-  .guard.on{border-color:rgba(63,138,75,.40);background:rgba(63,138,75,.14)}
+  .guard.on{border-color:rgba(138,165,127,.3);background:rgba(138,165,127,.10)}
   .guard textarea{border:none;background:transparent;padding:0}
   .check{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;cursor:pointer}
   .check input{accent-color:var(--gold);width:17px;height:17px;margin-top:2px;flex-shrink:0}
@@ -90,7 +87,7 @@
   .lever{border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:9px;margin-bottom:8px}
   .lever.get{border-left:3px solid var(--gold)}
   .lever.give{border-left:3px solid var(--green)}
-  .lever.star{box-shadow:inset 0 0 0 1px rgba(181,97,14,.32)}
+  .lever.star{box-shadow:inset 0 0 0 1px rgba(215,163,95,.25)}
   svg text{font-family:'Instrument Sans',sans-serif}
   .icn{width:15px;height:15px;display:inline-block;vertical-align:-2px}
   #printArea{display:none}
@@ -109,45 +106,92 @@
 <script>
 "use strict";
 const clone=x=>JSON.parse(JSON.stringify(x));
+const num=(v,d)=>typeof v==="number"&&!isNaN(v)?v:d;
 /* ---------------- palette for JS-drawn bits ---------------- */
-const C={gold:"#b5610e",goldB:"#a24e08",muted:"#7c7060",faint:"#a99b83",line:"#e8d9be",
-  text:"#2c2620",green:"#3f8a4b",amber:"#c2741a",red:"#c8472e",blue:"#1f60ac",orange:"#e4621c"};
+const C={gold:"#c9a96a",goldB:"#e3c389",muted:"#9b9384",faint:"#6f6757",line:"#322e26",
+  text:"#ece6d8",green:"#8aa57f",amber:"#d7a35f",red:"#cf8568"};
 
 /* ---------------- defaults ---------------- */
+/* ---------------- the canonical option set ----------------
+   Mirrors the 21 Jun career-options list: six real, named pursuits plus the
+   three reverse-funnel archetypes kept as comparators. `status` tracks the
+   pursuit stage (active / single / dormant / comparator). */
 const DEFAULT_OPTIONS=[
- {id:"kpmg",name:"Stay at KPMG",tag:"The known path",
-  notes:"Band 7 partner, 3 yrs in. Global account lead (BHP), ENR consulting lead. Strong trajectory. Risk: the whistleblower issue could hit the firm at PwC-scale or worse — reduced income, distraction, brand damage that makes selling harder.",
-  s:{capability:9,brand:7,energy:6,reward:6,risk:7},ego:6,fear:4,lifecost:6,reverse:6,premortem:"",
-  active:"mid",cases:{low:{label:"Income decreases",comp:550000},mid:{label:"Flat / modest uplift",comp:650000},high:{label:"Strong uplift (+$150k)",comp:800000}},
-  timeline:[{label:"EOY outcome & bonus confirmed",date:""},{label:"Bonus payment date",date:""},{label:"Resignation date to meet new start",date:""},{label:"Notice period ends",date:""}]},
- {id:"fti",name:"FTI Consulting",tag:"The big swing",
-  notes:"$1m/yr (last offer). New growth business, strong senior team. Tailwind: clients leaving the Big 4. Cost: rebuild a client base (3rd time in 8 yrs), hire a team, carry the pressure of that number.",
-  s:{capability:7,brand:6,energy:6,reward:9,risk:7},ego:8,fear:7,lifecost:8,reverse:5,premortem:"",
-  active:"high",cases:{low:{label:"Lowball offer",comp:700000},mid:{label:"Discounted offer",comp:850000},high:{label:"Full $1m (as before)",comp:1000000}},
-  timeline:[{label:"Term sheet received",date:""},{label:"Final interview",date:""},{label:"Offer decision deadline",date:""},{label:"Start date",date:""}]},
- {id:"bhp",name:"Forge a role at BHP",tag:"The pivot to industry",
-  notes:"No role yet, but well-connected to the C-suite — could forge one in ~6 months. Need min Band 16; aiming for 17–18. Bands map to General Manager (16–17) up to Asset President (18).",
+ {id:"bhp",name:"Forge a role at BHP",tag:"The pivot to industry",status:"active",
+  notes:"Front-runner on effort: 7 contacts made (Jus, Adrian, Ben C, Tim Day, Michelle K, Mark P, Sharon H). No role yet but actively forging via the C-suite; target Band 17–18 (GM to Asset President). The path a counterparty can actually verify.",
   s:{capability:7,brand:8,energy:7,reward:6,risk:5},ego:5,fear:5,lifecost:5,reverse:5,premortem:"",
   active:"mid",cases:{low:{label:"Band 16 — General Manager",comp:650000},mid:{label:"Band 17 — Senior GM",comp:800000},high:{label:"Band 18 — Asset President",comp:950000}},
-  timeline:[{label:"Confirm the role can exist",date:""},{label:"Meet C-level sponsor",date:""},{label:"Confirm band / level",date:""},{label:"Formal offer",date:""}]},
- {id:"alt",name:"The 4th option",tag:"The outlier",
-  notes:"Your wildcard slot — a role outside your proven lane (an AI/tech enterprise sales lead, an advisory seat, or any other candidate). Use it as the outlier: set the cases and scores to whichever option you're testing.",
-  s:{capability:6,brand:9,energy:9,reward:5,risk:8},ego:7,fear:6,lifecost:6,reverse:4,premortem:"",
-  active:"mid",cases:{low:{label:"Conservative",comp:400000},mid:{label:"Expected",comp:500000},high:{label:"Strong",comp:650000}},
-  timeline:[{label:"Initial conversation",date:""},{label:"Role & comp clarity",date:""},{label:"Decision point",date:""}]},
+  timeline:[{label:"Confirm the role can exist",date:""},{label:"Sponsor confirmed (Tim Day)",date:""},{label:"Confirm band / level",date:""},{label:"Formal offer",date:""}]},
+ {id:"fti",name:"FTI Consulting",tag:"The big swing",status:"active",
+  notes:"Live offer, but it only becomes actual in Feb/March — so it's the slowest clock, not a near-term lever. New growth business, Big-4 exodus tailwind. Cost: rebuild a client base (3rd time in 8 yrs), hire a team, carry that number.",
+  s:{capability:7,brand:6,energy:6,reward:9,risk:7},ego:8,fear:7,lifecost:8,reverse:5,premortem:"",
+  active:"high",cases:{low:{label:"Lowball offer",comp:700000},mid:{label:"Discounted offer",comp:850000},high:{label:"Full $1m (as before)",comp:1000000}},
+  timeline:[{label:"Offer actualises (Feb/Mar)",date:""},{label:"Term sheet in writing",date:""},{label:"Decision deadline",date:""},{label:"Start date",date:""}]},
+ {id:"kpmg",name:"KPMG global (US)",tag:"The internal move",status:"single",
+  notes:"A global / US move within KPMG — established contact with the US mining lead. Keeps the firm and partner economics but changes geography, scope and life cost. Distinct from your current AU account-lead seat.",
+  s:{capability:8,brand:8,energy:6,reward:7,risk:5},ego:6,fear:5,lifecost:7,reverse:6,premortem:"",
+  active:"mid",cases:{low:{label:"US secondment",comp:700000},mid:{label:"US ENR partner",comp:900000},high:{label:"US mining lead",comp:1100000}},
+  timeline:[{label:"Follow-up with US mining lead",date:""},{label:"Role / mandate clarity",date:""},{label:"Internal approval",date:""}]},
+ {id:"alt",name:"Anthropic",tag:"The frontier bet",status:"single",
+  notes:"Enterprise sales / commercial leadership at the AI frontier. Job applied for; no contact yet. Energising and high-growth, furthest from your proven lane — comp and role still undefined.",
+  s:{capability:6,brand:9,energy:9,reward:6,risk:8},ego:7,fear:6,lifecost:6,reverse:4,premortem:"",
+  active:"mid",cases:{low:{label:"Base-heavy",comp:500000},mid:{label:"Base + commission",comp:800000},high:{label:"Top quota + equity",comp:1200000}},
+  timeline:[{label:"Application acknowledged",date:""},{label:"First contact / screen",date:""},{label:"Role & comp clarity",date:""}]},
+ {id:"execsearch",name:"Executive search",tag:"The open channel",status:"dormant",
+  notes:"Engaging a search firm to surface roles you're not seeing — not activated yet. A channel rather than a role; comp reflects whatever it surfaces. Cheap to switch on and low effort to keep warm.",
+  s:{capability:7,brand:7,energy:6,reward:6,risk:6},ego:5,fear:5,lifecost:5,reverse:8,premortem:"",
+  active:"mid",cases:{low:{label:"Conservative placement",comp:600000},mid:{label:"Target placement",comp:850000},high:{label:"Premium placement",comp:1100000}},
+  timeline:[{label:"Brief 1–2 search firms",date:""},{label:"First role shortlist",date:""}]},
+ {id:"sap",name:"SAP",tag:"Tech-into-resources (live)",status:"single",
+  notes:"Commercial / enterprise leadership at SAP selling into resources — informal enquiry established. A live instance of the tech-into-resources play: base plus commission, global, runs on relationships you already own.",
+  s:{capability:6,brand:8,energy:8,reward:7,risk:7},ego:6,fear:6,lifecost:6,reverse:6,premortem:"",
+  active:"mid",cases:{low:{label:"Base-heavy",comp:500000},mid:{label:"Base + commission",comp:800000},high:{label:"Top quota + equity",comp:1100000}},
+  timeline:[{label:"Formalise the enquiry",date:""},{label:"Role & comp structure",date:""}]},
+ {id:"advisor",name:"Independent Senior Advisor",tag:"Own the calendar",status:"comparator",
+  notes:"Comparator (not in active play): your own advisory shingle — resources & energy C-suites on transformation, capex-to-BAU, tech as enabler. Highest life-fit and reversibility; passes the 'no logo' and 'already free' tests hardest.",
+  s:{capability:9,brand:8,energy:7,reward:6,risk:6},ego:4,fear:6,lifecost:3,reverse:9,premortem:"",
+  active:"mid",cases:{low:{label:"Slow ramp",comp:400000},mid:{label:"Established book",comp:700000},high:{label:"Premium / retainers",comp:1100000}},
+  timeline:[{label:"Decide to test it",date:""},{label:"First anchor client",date:""},{label:"Replace a salary's worth",date:""}]},
+ {id:"ned",name:"NED / Board Portfolio",tag:"Work as a choice",status:"comparator",
+  notes:"Comparator (not in active play): a portfolio of 3–4 non-exec director seats. The literal version of optionality — global, lowest time cost, high reversibility. Slowest to reach $1m; best built while you still hold an exec seat to trade on.",
+  s:{capability:7,brand:9,energy:6,reward:6,risk:4},ego:6,fear:4,lifecost:2,reverse:8,premortem:"",
+  active:"mid",cases:{low:{label:"1–2 seats",comp:250000},mid:{label:"3 seats",comp:550000},high:{label:"Full portfolio",comp:1000000}},
+  timeline:[{label:"First seat conversation",date:""},{label:"Secure seat #1",date:""},{label:"Build to 3 seats",date:""}]},
+ {id:"oppartner",name:"Operating Partner / Advisor",tag:"Capital + carry",status:"comparator",
+  notes:"Comparator (not in active play): operating partner / senior advisor to a PE / infra / commodity fund. Fees plus carry leverage your network into capital — the highest ceiling that isn't a grind-job. Carry is back-ended; deal cycles can spike the life cost.",
+  s:{capability:8,brand:8,energy:7,reward:9,risk:6},ego:7,fear:6,lifecost:6,reverse:6,premortem:"",
+  active:"mid",cases:{low:{label:"Fees only",comp:600000},mid:{label:"Fees + modest carry",comp:950000},high:{label:"Fees + full carry",comp:1500000}},
+  timeline:[{label:"Map target funds",date:""},{label:"First operating-advisor mandate",date:""},{label:"Carry / equity confirmed",date:""}]},
 ];
+/* Extra library archetypes — available to add, not in the default set. */
+const LIBRARY_EXTRA=[
+ {id:"gulf",name:"Gulf operating role",tag:"Max money + global",status:"comparator",
+  notes:"Senior operator/advisor on a Gulf giga-project or sovereign vehicle (PIF, NEOM, Ma'aden, ADNOC, QatarEnergy). Tax-advantaged premium and real hunger for senior Western operators. The biggest geographic unlock for the number — but the highest life cost and a relocation.",
+  s:{capability:8,brand:7,energy:6,reward:9,risk:6},ego:7,fear:6,lifecost:8,reverse:5,premortem:"",
+  active:"mid",cases:{low:{label:"Advisory",comp:700000},mid:{label:"Senior operator",comp:1100000},high:{label:"Programme lead",comp:1600000}},
+  timeline:[{label:"Test appetite via network",date:""},{label:"Role & package clarity",date:""},{label:"Relocation decision",date:""}]},
+ {id:"techres",name:"Tech-into-resources lead",tag:"Industrial tech, widened",status:"comparator",
+  notes:"Commercial / enterprise-sales leadership at an industrial-tech firm selling into mining (autonomy, decarbonisation, mine planning, AI ops) — Komatsu, Caterpillar, Hexagon, Seequent and the like. Base plus commission can clear $1m, global, runs on relationships you already own.",
+  s:{capability:6,brand:8,energy:8,reward:7,risk:7},ego:6,fear:6,lifecost:6,reverse:6,premortem:"",
+  active:"mid",cases:{low:{label:"Base-heavy",comp:500000},mid:{label:"Base + commission",comp:800000},high:{label:"Top quota + equity",comp:1200000}},
+  timeline:[{label:"Identify target firms",date:""},{label:"Commercial-lead conversations",date:""},{label:"Offer & comp structure",date:""}]},
+];
+const ARCHETYPE_PRESETS=DEFAULT_OPTIONS.filter(o=>o.status==="comparator");
+const LIBRARY_PRESETS=ARCHETYPE_PRESETS.concat(LIBRARY_EXTRA);
+const SEED_VERSION=2;
+
 const CASE_KEYS=["low","mid","high"];
-const OPT_COLOR={kpmg:"#1f60ac",fti:"#0e8a7c",bhp:"#e4621c",alt:"#dda52b"};
-const STREAM={
-  plan:{label:"Plan / gates",color:C.gold},
-  all:{label:"All",color:C.gold},
-  kpmg:{label:"KPMG",color:OPT_COLOR.kpmg},
-  fti:{label:"FTI",color:OPT_COLOR.fti},
-  bhp:{label:"BHP",color:OPT_COLOR.bhp},
-  alt:{label:"4th option",color:OPT_COLOR.alt},
-};
+const OPT_COLOR={kpmg:"#c9a96a",fti:"#cf8568",bhp:"#8aa57f",alt:"#d7a35f",
+  advisor:"#8aa57f",ned:"#6fa8c9",oppartner:"#9b8bd8",gulf:"#d7a35f",techres:"#c98ba0"};
+const PALETTE=["#c9a96a","#cf8568","#8aa57f","#d7a35f","#9b8bd8","#6fa8c9","#c98ba0","#a0c98b"];
+const STATUS={active:{label:"Active",color:"#8aa57f"},single:{label:"Single-touch",color:"#d7a35f"},
+  dormant:{label:"Dormant",color:"#6f6757"},comparator:{label:"Comparator",color:"#9b8bd8"}};
+function statusMeta(s){return STATUS[s]||STATUS.active;}
 function effComp(o){return o.cases[o.active].comp;}
 function activeLabel(o){return o.cases[o.active].label;}
+function colorFor(o){ if(OPT_COLOR[o.id])return OPT_COLOR[o.id];
+  const i=S.options.findIndex(x=>x.id===o.id); return PALETTE[(i<0?0:i)%PALETTE.length]; }
+
 const DEFAULT_A={currentAge:55,retireAge:62,returnRate:6,living:240000,retireTarget:240000,
   currentSuper:440000,currentInvest:0,superContrib:30000,withdrawal:4,mortgage:800000,
   clearMortgage:true,downsizeRelease:0,stress:false,stressComp:30};
@@ -240,67 +284,6 @@ const DEFAULT_NEG={
      ]},
   ]};
 
-/* ---------------- 90-day plan defaults ----------------
-   Decision tree as sequential gates, each converging on the anchor date.
-   A path is only real on the anchor if it's in writing (FTI) or a confirmed role/band (BHP).
-   party links a gate to a Negotiation party card (id matches neg party / option id). */
-const DEFAULT_PLAN={
-  anchor:"2026-08-31",
-  intro:"Resign or recommit by the anchor. A path is only real on the anchor date if it's in writing (FTI) or a confirmed role/band (BHP). Verbal is not a BATNA; comfort is not a decision.",
-  gates:[
-    {id:"g0",label:"Gate 0 — Pre-commit the pass-lines",party:"",date:"2026-06-15",done:false,
-     branch:"Write the FTI floor, BHP band and KPMG counter that would each PASS — before emotion can rationalise (Guardrails 1 & 5). Confirm your real KPMG comp and rerun the Money model so the floor maths is true.",note:"",
-     tasks:[
-       {text:"Confirm real current KPMG total comp (base + bonus + benefits)",stream:"kpmg",done:false},
-       {text:"Write the FTI floor + protection that would PASS",stream:"fti",done:false},
-       {text:"Write the BHP band/level that would PASS (\u226516)",stream:"bhp",done:false},
-       {text:"Write the KPMG counter that would make recommit a yes",stream:"kpmg",done:false},
-       {text:"Re-run the Money model on the confirmed numbers",stream:"all",done:false},
-     ]},
-    {id:"g1",label:"Gate 1 — Is the FTI offer in writing?",party:"fti",date:"2026-07-18",done:false,
-     branch:"YES → a written term sheet with floor / ramp / sign-on becomes a real BATNA; test it against Guardrail 1 (stress case) and Guardrail 3 (life). NO → still verbal = not bankable; do NOT use it as leverage on KPMG.",note:"",
-     tasks:[
-       {text:"Ask FTI directly for a written term sheet",stream:"fti",done:false},
-       {text:"Pin the guaranteed floor for the 18\u201324mo ramp",stream:"fti",done:false},
-       {text:"Pin sign-on (tranches) to bridge the forfeited KPMG bonus",stream:"fti",done:false},
-       {text:"Confirm budget to bring / build a team",stream:"fti",done:false},
-       {text:"Run the written floor through the stress case (3%)",stream:"all",done:false},
-     ]},
-    {id:"g2",label:"Gate 2 — Can a BHP role exist on this timeline?",party:"bhp",date:"2026-07-31",done:false,
-     branch:"YES → a sponsor confirms a role/band (\u226516); test Guardrail 4 (one-way door — is the upside exceptional?). NO / too slow → it's a post-August parallel track, not an anchor-date destination. Never bluff it. Note: staying at KPMG keeps you closest to the BHP relationship.",note:"",
-     tasks:[
-       {text:"Book the C-suite sponsor conversation",stream:"bhp",done:false},
-       {text:"Frame the gap a role fills; propose level 17\u201318",stream:"bhp",done:false},
-       {text:"Get a definitive read: transactable by Aug, or post-Aug?",stream:"bhp",done:false},
-       {text:"Map the conflict-of-interest exit from the KPMG account",stream:"bhp",done:false},
-       {text:"Test Guardrail 4 — is the upside exceptional enough?",stream:"all",done:false},
-     ]},
-    {id:"g3",label:"Gate 3 — Open the KPMG recommit conversation",party:"kpmg",date:"2026-08-04",done:false,
-     branch:"Open ONLY after Gate 1 is written. Material counter (comp, role insulated from exposure, equity security, reform clarity) that clears your KPMG pass-line and beats the live alternatives? Words without structure = recommit failed.",note:"",
-     tasks:[
-       {text:"Open only after FTI is in writing",stream:"kpmg",done:false},
-       {text:"Set the ask: band uplift (7\u2192?) + BHP account economics",stream:"kpmg",done:false},
-       {text:"Seek clarity on the ASIC / whistleblower exposure",stream:"kpmg",done:false},
-       {text:"Signal, don't threaten; never name BHP",stream:"kpmg",done:false},
-       {text:"Get any counter in writing",stream:"kpmg",done:false},
-     ]},
-    {id:"g4",label:"Gate 4 — Decide & transact",party:"",date:"2026-08-31",done:false,
-     branch:"FTI live + written + clears guardrails + beats recommit → resign, sign FTI. BHP live + exceptional → resign, go BHP. Neither bankable OR KPMG counter clears guardrails → recommit consciously (pass anti-distortion), in writing, with a hard review date. Recommit \u2260 drift.",note:"",
-     tasks:[
-       {text:"Score the live, written options against the guardrails",stream:"all",done:false},
-       {text:"Run the pre-mortem on the leading path — can you live with it?",stream:"all",done:false},
-       {text:"If FTI: agree start date, sign, plan client transition",stream:"fti",done:false},
-       {text:"If recommit: get it in writing with a hard review date",stream:"kpmg",done:false},
-       {text:"If BHP: resign, manage a clean account handover",stream:"bhp",done:false},
-     ]},
-  ],
-  phases:[
-    {label:"Phase 1 — Set up & quiet intelligence",span:"Weeks 1–3 · to 29 Jun",body:"Lock the anchor; complete Gate 0; confirm real KPMG comp and rerun the model. FTI: request a written term sheet and load your asks into the FTI card. BHP: book the sponsor conversation to test whether a role can exist. KPMG: hold — don't tip your hand."},
-    {label:"Phase 2 — Convert verbal → written; test floors",span:"Weeks 4–8 · 30 Jun–3 Aug",body:"FTI: drive to a written term sheet by 18 Jul (Gate 1); run the written floor through the stress case. BHP: get a definitive read by 31 Jul (Gate 2). KPMG: pre-draft the recommit conversation and the counter you'd need. Update each party card's limit/aspiration and if-they/then-I rows."},
-    {label:"Phase 3 — Negotiate, converge, transact",span:"Weeks 9–12 · 4–31 Aug",body:"With FTI in writing, open the KPMG recommit (Gate 3); sequence — written BATNA first, then counter. Anchor KPMG to FTI's written floor; never reference BHP. Week 12: final guardrail + pre-mortem pass. 31 Aug: execute."},
-  ],
-};
-
 /* ---------------- state ---------------- */
 const LS_KEY="the62_state", LS_API="the62_apikey", LS_MODEL="the62_model";
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
@@ -313,38 +296,64 @@ function mergeNeg(sn){
   });
   return {parties};
 }
-function mergePlan(sp){
-  if(!sp) return clone(DEFAULT_PLAN);
-  const gates=DEFAULT_PLAN.gates.map(def=>{
-    const st=(sp.gates||[]).find(g=>g.id===def.id);
-    if(!st) return clone(def);
-    const tasks=Array.isArray(st.tasks)?st.tasks.map(t=>({text:t&&t.text!=null?t.text:"",stream:(t&&t.stream)||"all",done:!!(t&&t.done)})):clone(def.tasks);
-    return {...clone(def),date:st.date!=null?st.date:def.date,note:st.note||"",done:!!st.done,tasks};
-  });
-  return {anchor:sp.anchor||DEFAULT_PLAN.anchor,intro:DEFAULT_PLAN.intro,gates,phases:clone(DEFAULT_PLAN.phases)};
+/* Make any saved/added option whole: fill missing fields, migrate old single-comp. */
+function sanitizeOption(o){
+  o=o||{};
+  const sc=o.s||{};
+  let cases;
+  if(o.cases&&o.cases.low&&o.cases.mid&&o.cases.high){
+    cases={};
+    CASE_KEYS.forEach(k=>{const cc=o.cases[k]||{};
+      cases[k]={label:(cc.label!=null?String(cc.label):k),comp:num(cc.comp,500000)};});
+  }else{
+    const base=num(o.comp,500000);
+    cases={low:{label:"Low",comp:Math.round(base*0.8)},mid:{label:"Mid",comp:base},high:{label:"High",comp:Math.round(base*1.25)}};
+  }
+  return {
+    id:o.id||("opt"+Math.random().toString(36).slice(2,8)),
+    name:o.name||"Untitled option",
+    tag:o.tag||"Candidate",
+    status:STATUS[o.status]?o.status:"active",
+    notes:o.notes||"",
+    s:{capability:num(sc.capability,5),brand:num(sc.brand,5),energy:num(sc.energy,5),reward:num(sc.reward,5),risk:num(sc.risk,5)},
+    ego:num(o.ego,5),fear:num(o.fear,5),lifecost:num(o.lifecost,5),reverse:num(o.reverse,5),
+    premortem:o.premortem||"",
+    active:CASE_KEYS.includes(o.active)?o.active:"mid",
+    cases,
+    timeline:Array.isArray(o.timeline)?o.timeline.map(m=>({label:(m&&m.label!=null)?String(m.label):"",date:(m&&m.date)?String(m.date):""})):[]
+  };
 }
 function freshState(){return {options:clone(DEFAULT_OPTIONS),a:{...DEFAULT_A},
-  w:{...DEFAULT_W},couch:clone(DEFAULT_COUCH),neg:clone(DEFAULT_NEG),plan:clone(DEFAULT_PLAN),checks:{},ai:null};}
+  w:{...DEFAULT_W},couch:clone(DEFAULT_COUCH),neg:clone(DEFAULT_NEG),checks:{},ai:null,seedVersion:SEED_VERSION};}
 function load(){
   try{const raw=lsGet(LS_KEY);
     if(raw){const s=JSON.parse(raw);
-      // merge option labels from defaults, keep user inputs
-      const opts=DEFAULT_OPTIONS.map(def=>{
-        const st=(s.options||[]).find(o=>o.id===def.id);
-        if(!st) return clone(def);
-        const cases=clone(def.cases);
-        if(st.cases){CASE_KEYS.forEach(k=>{ if(st.cases[k]&&typeof st.cases[k].comp==="number") cases[k].comp=st.cases[k].comp; });}
-        else if(typeof st.comp==="number"){ cases.mid.comp=st.comp; } // migrate old single comp
-        return {...clone(def),s:st.s??def.s,ego:st.ego??def.ego,fear:st.fear??def.fear,
-          lifecost:st.lifecost??def.lifecost,reverse:st.reverse??def.reverse,premortem:st.premortem??"",
-          cases,active:st.active||def.active,
-          timeline:Array.isArray(st.timeline)&&st.timeline.length?st.timeline:def.timeline};});
+      const opts=(Array.isArray(s.options)&&s.options.length)?s.options.map(sanitizeOption):clone(DEFAULT_OPTIONS);
       return {options:opts,a:{...DEFAULT_A,...(s.a||{})},w:{...DEFAULT_W,...(s.w||{})},
-        couch:{...clone(DEFAULT_COUCH),...(s.couch||{})},neg:mergeNeg(s.neg),plan:mergePlan(s.plan),checks:s.checks||{},ai:s.ai||null};
+        couch:{...clone(DEFAULT_COUCH),...(s.couch||{})},neg:mergeNeg(s.neg),
+        checks:s.checks||{},ai:s.ai||null,
+        seedVersion:(typeof s.seedVersion==="number"?s.seedVersion:(s.seededReverse?1:0))};
     }}catch(e){}
   return freshState();
 }
 let S=load();
+/* One-time migration to the current canonical option set, preserving entered data.
+   v2: repoint kpmg->KPMG global and alt->Anthropic (meaning changed, full reset),
+   refresh labels+status on the others, add any missing canonical options. */
+(function(){
+  const cur=S.seedVersion||0;
+  if(cur>=SEED_VERSION) return;
+  const repurpose=new Set(["kpmg","alt"]);
+  const byId={}; S.options.forEach(o=>byId[o.id]=o);
+  DEFAULT_OPTIONS.forEach(def=>{
+    const ex=byId[def.id];
+    if(!ex){ S.options.push(clone(def)); }
+    else if(repurpose.has(def.id)){ S.options[S.options.indexOf(ex)]=clone(def); }
+    else { ex.name=def.name; ex.tag=def.tag; ex.notes=def.notes; ex.status=def.status; }
+  });
+  S.options.forEach(o=>{ if(!STATUS[o.status]) o.status="active"; });
+  S.seedVersion=SEED_VERSION; save();
+})();
 let apiKey=lsGet(LS_API)||"";
 let model=lsGet(LS_MODEL)||"claude-sonnet-4-6";
 let activeTab="dashboard";
@@ -437,7 +446,7 @@ function mirror(R){
   if(fti&&fti.o.ego>=6&&fti.o.fear>=6)out.push(["On the $1m at FTI","You've loaded it with both your strongest pull and a strong fear — that combination means it's touching something deeper than money. Separate the operational problem (rebuilding a book — solvable with the right deal terms) from the identity threat (being seen to fail — the old wound). Only the first is a real reason to say no."]);
   if(byEn.o.id!==top.o.id)out.push(["Your head and your energy disagree","Your top-ranked path is "+top.o.name+", but the one that lights you up most is "+byEn.o.name+". For the final act of a career, how much excitement are you willing to trade for whatever is driving that ranking?"]);
   if(top.o.lifecost>=7)out.push(["The cost you said you can't pay","Your leading path also carries the highest toll on training and family. If it stays on top, that toll has to become a guardrail with a hard end date, not an afterthought."]);
-  out.push(["The honest question","If you were already financially free today, which of these four would you still choose? Whatever you just answered is worth more than any number on this screen."]);
+  out.push(["The honest question","If you were already financially free today, which of these would you still choose? Whatever you just answered is worth more than any number on this screen."]);
   return out;
 }
 
@@ -451,10 +460,10 @@ function barChart(R){
   for(let i=0;i<=3;i++){const v=max*i/3,yy=y(v);
     s+=`<line x1="${pad}" y1="${yy}" x2="${W-6}" y2="${yy}" stroke="${C.line}" stroke-dasharray="2 4"/>`;
     s+=`<text x="${pad-4}" y="${yy+3}" fill="${C.muted}" font-size="8" text-anchor="end">$${Math.round(v/1000)}k</text>`;}
-  s+=`<line x1="${pad}" y1="${y(target)}" x2="${W-6}" y2="${y(target)}" stroke="${C.blue}" stroke-dasharray="5 4"/>`;
-  s+=`<text x="${W-8}" y="${y(target)-4}" fill="${C.blue}" font-size="8" text-anchor="end">target ${fmtK(target)}</text>`;
+  s+=`<line x1="${pad}" y1="${y(target)}" x2="${W-6}" y2="${y(target)}" stroke="${C.gold}" stroke-dasharray="5 4"/>`;
+  s+=`<text x="${W-8}" y="${y(target)-4}" fill="${C.gold}" font-size="8" text-anchor="end">target ${fmtK(target)}</text>`;
   R.forEach((r,i)=>{const x=pad+gap*i+(gap-bw)/2, yy=y(r.p.sust);
-    s+=`<rect x="${x}" y="${yy}" width="${bw}" height="${H-26-yy}" rx="4" fill="${i===0?C.orange:C.muted}"/>`;
+    s+=`<rect x="${x}" y="${yy}" width="${bw}" height="${H-26-yy}" rx="4" fill="${i===0?C.goldB:C.faint}"/>`;
     s+=`<text x="${x+bw/2}" y="${yy-4}" fill="${C.text}" font-size="8" text-anchor="middle">${fmtK(r.p.sust)}</text>`;
     const nm=r.o.name.replace(/^(Stay at |Forge a role at )/,"");
     s+=`<text x="${x+bw/2}" y="${H-12}" fill="${C.muted}" font-size="8" text-anchor="middle">${esc(nm.length>14?nm.slice(0,13)+"…":nm)}</text>`;});
@@ -466,10 +475,10 @@ function scatterChart(R){
   let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" height="210" preserveAspectRatio="xMidYMid meet">`;
   s+=`<line x1="${px}" y1="${Y(0)}" x2="${W-6}" y2="${Y(0)}" stroke="${C.line}"/>`;
   s+=`<line x1="${px}" y1="${Y(0)}" x2="${px}" y2="12" stroke="${C.line}"/>`;
-  s+=`<text x="${W-6}" y="${H-6}" fill="${C.muted}" font-size="8" text-anchor="end">weighted strength →</text>`;
-  s+=`<text x="6" y="14" fill="${C.muted}" font-size="8">↑ ego + fear</text>`;
+  s+=`<text x="${W-6}" y="${H-6}" fill="${C.faint}" font-size="8" text-anchor="end">weighted strength →</text>`;
+  s+=`<text x="6" y="14" fill="${C.faint}" font-size="8">↑ ego + fear</text>`;
   R.forEach((r,i)=>{const x=X(r.total),yy=Y(r.bias);
-    s+=`<circle cx="${x}" cy="${yy}" r="6" fill="${i===0?C.orange:C.blue}"/>`;
+    s+=`<circle cx="${x}" cy="${yy}" r="6" fill="${i===0?C.goldB:C.gold}"/>`;
     const nm=r.o.name.replace(/^(Stay at |Forge a role at )/,"");
     s+=`<text x="${x}" y="${yy-9}" fill="${C.muted}" font-size="8" text-anchor="middle">${esc(nm.length>13?nm.slice(0,12)+"…":nm)}</text>`;});
   return s+`</svg>`;
@@ -484,7 +493,6 @@ const I={
   anchor:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></svg>',
   cal:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>',
   deal:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"/><path d="M3 7h7M14 7h7"/><path d="M6.5 4 3 11a3 3 0 0 0 7 0z"/><path d="M17.5 4 14 11a3 3 0 0 0 7 0z"/></svg>',
-  flag:'<svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>',
 };
 
 /* ---------------- builders ---------------- */
@@ -500,8 +508,9 @@ function slider(path,label,val,min,max,step,suffix,hint,cls){
 function viewDashboard(){
   const R=rows();
   let cards=R.map((c,i)=>`<div class="card tight" style="position:relative;overflow:hidden;${i===0?'border-color:var(--lineGold)':''}">
-    ${i===0?'<div style="position:absolute;top:0;right:0;background:var(--orange);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-bottom-left-radius:10px;letter-spacing:1px">TOP RANKED</div>':''}
+    ${i===0?'<div style="position:absolute;top:0;right:0;background:var(--gold);color:#100f0c;font-size:10px;font-weight:700;padding:3px 10px;border-bottom-left-radius:10px;letter-spacing:1px">TOP RANKED</div>':''}
     <div class="ch">#${i+1} · ${esc(c.o.tag)}</div>
+    <span style="display:inline-block;margin:5px 0 2px;padding:2px 8px;border-radius:999px;font-size:9.5px;font-weight:700;letter-spacing:.5px;color:#100f0c;background:${statusMeta(c.o.status).color}">${statusMeta(c.o.status).label.toUpperCase()}</span>
     <div class="serif cn">${esc(c.o.name)}</div>
     <div style="font-size:11px;color:var(--gold);margin:-6px 0 8px">▸ ${esc(activeLabel(c.o))} · ${fmtK(effComp(c.o))}/yr</div>
     <div style="display:flex;align-items:baseline;gap:8px"><span class="big">${Math.round(c.total)}</span><span style="color:var(--muted);font-size:12px">/ 100 weighted</span></div>
@@ -537,10 +546,23 @@ function viewOptions(){
       ${slider("w.safety","Safety (low risk)",W.safety,0,50,1)}
       ${slider("w.lifefit","Life fit (low toll)",W.lifefit,0,50,1,"","","green")}
     </div></div>`;
+  const lib=LIBRARY_PRESETS.map(p=>`<button class="btn" data-action="addOption" data-preset="${p.id}">+ ${esc(p.name)}</button>`).join("");
+  const addCard=`<div class="card" style="margin-bottom:14px"><div class="serif" style="font-size:16px;margin-bottom:6px">Add a candidate</div>
+    <div style="color:var(--muted);font-size:12px;margin-bottom:10px">Load a reverse-funnel archetype to score against the rest — or start blank. Rename, edit and delete any option freely. The three core archetypes are already seeded below.</div>
+    <div class="row" style="gap:8px">${lib}<button class="btn gold" data-action="addOption" data-preset="blank">+ Blank candidate</button></div></div>`;
   const cards=S.options.map(o=>`<div class="card">
-    <div class="ch" style="color:var(--gold);letter-spacing:1px">${esc(o.tag.toUpperCase())}</div>
-    <div class="serif cn">${esc(o.name)}</div>
-    <p style="color:var(--muted);font-size:12px;line-height:1.55;margin:0 0 14px">${esc(o.notes)}</p>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+      <input type="text" data-path="opt.${o.id}.tag" value="${esc(o.tag)}" style="flex:1;padding:5px 8px;font-size:11px;color:var(--gold);letter-spacing:1px"/>
+      <button class="btn" data-action="delOption" data-id="${o.id}" title="Remove this option" style="padding:5px 9px">✕</button>
+    </div>
+    <input type="text" data-path="opt.${o.id}.name" value="${esc(o.name)}" class="serif" style="font-size:18px;font-weight:600;margin-bottom:8px;padding:6px 8px"/>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <span style="width:9px;height:9px;border-radius:50%;background:${statusMeta(o.status).color};flex-shrink:0"></span>
+      <select data-path="opt.${o.id}.status" style="flex:1;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 8px;font:600 12px 'Instrument Sans'">
+        ${Object.keys(STATUS).map(k=>`<option value="${k}" ${o.status===k?'selected':''}>${STATUS[k].label}</option>`).join("")}
+      </select>
+    </div>
+    <textarea rows="3" data-path="opt.${o.id}.notes" placeholder="Notes / context…" style="color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:14px">${esc(o.notes)}</textarea>
     ${slider("optS."+o.id+".capability","Fits my capability",o.s.capability,0,10,1,"/10")}
     ${slider("optS."+o.id+".brand","Aligns my brand",o.s.brand,0,10,1,"/10")}
     ${slider("optS."+o.id+".energy","Energy & enjoyment",o.s.energy,0,10,1,"/10")}
@@ -551,9 +573,8 @@ function viewOptions(){
     <div style="margin-top:8px"><div style="color:var(--muted);font-size:12px;margin-bottom:4px">Pre-mortem — it's 2 yrs on and this failed. Why?</div>
       <textarea rows="2" data-path="opt.${o.id}.premortem" placeholder="Write the most likely failure story…">${esc(o.premortem)}</textarea></div>
   </div>`).join("");
-  // remove the dummy slider artifact (kept markup minimal)
   return `<p style="color:var(--muted);font-size:13px;max-width:660px;margin:0 0 16px">Score each path 0–10 on your anchors, then set how much each anchor matters with the weights. <b style="color:var(--text)">Life cost</b> = the toll on gym, kids and health. <b style="color:var(--text)">Reversibility</b> = how easily you could undo this choice.</p>
-    ${weights}<div class="grid g-opt">${cards}</div>`;
+    ${weights}${addCard}<div class="grid g-opt">${cards}</div>`;
 }
 
 function caseSwitch(o){
@@ -644,7 +665,7 @@ function viewCouch(){
     <textarea rows="3" data-path="couch.ans.${dq.id}" placeholder="Write freely…">${esc(c.answers[dq.id]||"")}</textarea></div>`).join("");
   const mir=mirror(rows()).map(([t,d])=>`<div class="mirror"><div class="t">${esc(t)}</div><div class="d">${esc(d)}</div></div>`).join("");
   let aiOut="";
-  if(lastErr){aiOut=`<div style="margin-top:14px;padding:14px;background:rgba(200,71,46,.10);border:1px solid rgba(200,71,46,.30);border-radius:10px;font-size:13px;line-height:1.55;white-space:pre-wrap;color:var(--text)">${esc(lastErr)}</div>`;}
+  if(lastErr){aiOut=`<div style="margin-top:14px;padding:14px;background:rgba(207,133,104,.10);border:1px solid rgba(207,133,104,.3);border-radius:10px;font-size:13px;line-height:1.55;white-space:pre-wrap;color:var(--text)">${esc(lastErr)}</div>`;}
   else if(S.ai&&S.ai.text){aiOut=`<div style="margin-top:14px;padding:16px;background:var(--panel2);border:1px solid var(--lineGold);border-radius:10px;font-size:13px;color:var(--text)">
     <div style="font-size:11px;color:var(--faint);margin-bottom:8px">Generated ${esc((S.ai.when||"").slice(0,16).replace("T"," "))} · ${esc(S.ai.model||"")}</div>${mdToHtml(S.ai.text)}</div>`;}
   const aiStatus=aiBusy?'<span style="color:var(--gold);font-size:12px">Analysing… this can take ~20s</span>':'';
@@ -675,7 +696,7 @@ function viewNext(){
     const caseRows=CASE_KEYS.map(k=>{
       const on=o.active===k, c=o.cases[k];
       const tmp={...o,active:k}; const inc=project(tmp).sust;
-      return `<div style="border:1px solid ${on?'var(--lineGold)':'var(--line)'};background:${on?'rgba(181,97,14,.10)':'transparent'};border-radius:10px;padding:10px;margin-bottom:8px">
+      return `<div style="border:1px solid ${on?'var(--lineGold)':'var(--line)'};background:${on?'rgba(201,169,106,.08)':'transparent'};border-radius:10px;padding:10px;margin-bottom:8px">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
           <button class="btn ${on?'gold':''}" data-action="setCase" data-id="${o.id}" data-key="${k}" style="padding:4px 9px">${on?'● using':'○ use'}</button>
           <input type="text" data-path="caselabel.${o.id}.${k}" value="${esc(c.label)}" style="flex:1;padding:5px 8px;font-size:12px"/>
@@ -684,7 +705,7 @@ function viewNext(){
         <div style="font-size:11px;color:var(--muted)">→ sustainable income at ${S.a.retireAge}: <b style="color:var(--text)">${fmtK(inc)}/yr</b></div>
       </div>`;}).join("");
     return `<div class="card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-        <span style="width:9px;height:9px;border-radius:50%;background:${OPT_COLOR[o.id]||'var(--gold)'}"></span>
+        <span style="width:9px;height:9px;border-radius:50%;background:${colorFor(o)}"></span>
         <div class="serif" style="font-size:18px">${esc(o.name)}</div></div>
       <div style="color:var(--muted);font-size:12px;margin-bottom:12px">Pick the case you want to model. Switching it updates the dashboard and money model instantly.</div>
       ${caseRows}</div>`;}).join("");
@@ -692,14 +713,13 @@ function viewNext(){
   // ---- combined timeline ----
   const all=[];
   S.options.forEach(o=>(o.timeline||[]).forEach(m=>{ if(m.date) all.push({o,m}); }));
-  (S.plan?S.plan.gates:[]).forEach(g=>{ if(g.date) all.push({o:{id:"plan",name:"90-day plan",done:g.done},m:{label:g.label,date:g.date}}); });
   all.sort((a,b)=>a.m.date<b.m.date?-1:a.m.date>b.m.date?1:0);
   const today=new Date().toISOString().slice(0,10);
   const combined=all.length?all.map(({o,m})=>{
     const days=Math.round((new Date(m.date)-new Date(today))/86400000);
     const when=isNaN(days)?"":days<0?"passed":days===0?"today":"in "+days+"d";
     return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)">
-      <span style="width:9px;height:9px;border-radius:50%;background:${OPT_COLOR[o.id]||'var(--gold)'};flex-shrink:0"></span>
+      <span style="width:9px;height:9px;border-radius:50%;background:${colorFor(o)};flex-shrink:0"></span>
       <span style="font-size:12px;color:var(--faint);width:92px;flex-shrink:0">${esc(m.date)}</span>
       <span style="font-size:13px;color:var(--text);flex:1">${esc(m.label)}</span>
       <span style="font-size:11px;color:var(--muted)">${esc(o.name.replace(/^(Stay at |Forge a role at )/,''))} · ${when}</span>
@@ -713,7 +733,7 @@ function viewNext(){
       <button class="btn" data-action="delTL" data-id="${o.id}" data-i="${i}" style="padding:6px 9px">✕</button>
     </div>`).join("");
     return `<div class="card tight"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-        <span style="width:9px;height:9px;border-radius:50%;background:${OPT_COLOR[o.id]||'var(--gold)'}"></span>
+        <span style="width:9px;height:9px;border-radius:50%;background:${colorFor(o)}"></span>
         <div class="serif" style="font-size:16px">${esc(o.name)}</div></div>
       ${rows}<button class="btn" data-action="addTL" data-id="${o.id}" style="margin-top:4px">+ Add milestone</button></div>`;}).join("");
 
@@ -728,187 +748,6 @@ function viewNext(){
       <div class="grid g-2">${editors}</div></div>`;
 }
 
-function streamsTimelineSVG(){
-  const pl=S.plan; if(!pl) return "";
-  const today=new Date().toISOString().slice(0,10);
-  const events=[];
-  pl.gates.forEach(g=>{ if(g.date){const key=g.party||"plan"; events.push({date:g.date,short:g.id.toUpperCase(),key,color:(STREAM[key]||STREAM.plan).color,isGate:true,done:g.done}); }});
-  S.options.forEach(o=>(o.timeline||[]).forEach(m=>{ if(m.date) events.push({date:m.date,key:o.id,color:OPT_COLOR[o.id]||C.gold,isGate:false,done:false}); }));
-  if(!events.length) return "";
-  const order=["plan","kpmg","fti","bhp","alt"];
-  const presentKeys=[...new Set(events.map(e=>e.key))];
-  const toT=d=>new Date(d+"T00:00:00").getTime();
-  const lanes=order.filter(k=>presentKeys.includes(k));
-  const W=760, LX=64, RX=16, laneH=32, topPad=26, H=topPad+lanes.length*laneH+16;
-  let minT=Math.min(toT(today),toT(pl.anchor),...events.map(e=>toT(e.date)));
-  let maxT=Math.max(toT(today),toT(pl.anchor),...events.map(e=>toT(e.date)));
-  if(maxT<=minT)maxT=minT+86400000;
-  const padT=Math.max((maxT-minT)*0.05,2*86400000); minT-=padT; maxT+=padT;
-  const x=t=>LX+((t-minT)/(maxT-minT))*(W-LX-RX);
-  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="xMidYMid meet" style="max-width:100%">`;
-  let gy=new Date(minT).getFullYear(), gm=new Date(minT).getMonth();
-  for(let i=0;i<14;i++){const mt=new Date(gy,gm,1).getTime(); if(mt>maxT)break;
-    if(mt>=minT){const gx=x(mt);
-      s+=`<line x1="${gx.toFixed(1)}" y1="${topPad-6}" x2="${gx.toFixed(1)}" y2="${H-8}" stroke="${C.line}" stroke-dasharray="2 4"/>`;
-      s+=`<text x="${gx.toFixed(1)}" y="${topPad-10}" fill="${C.faint}" font-size="9" text-anchor="middle">${new Date(gy,gm,1).toLocaleDateString("en-AU",{month:"short"})}</text>`;}
-    gm++; if(gm>11){gm=0;gy++;}}
-  const tx=x(toT(today)), ax=x(toT(pl.anchor));
-  s+=`<line x1="${tx.toFixed(1)}" y1="${topPad-6}" x2="${tx.toFixed(1)}" y2="${H-8}" stroke="${C.blue}" stroke-width="1.5" stroke-dasharray="4 3"/>`;
-  s+=`<text x="${tx.toFixed(1)}" y="${H-1}" fill="${C.blue}" font-size="8.5" text-anchor="middle" font-weight="700">today</text>`;
-  s+=`<line x1="${ax.toFixed(1)}" y1="${topPad-6}" x2="${ax.toFixed(1)}" y2="${H-8}" stroke="${C.orange}" stroke-width="1.5" stroke-dasharray="4 3"/>`;
-  s+=`<text x="${ax.toFixed(1)}" y="${H-1}" fill="${C.orange}" font-size="8.5" text-anchor="middle" font-weight="700">anchor</text>`;
-  lanes.forEach((k,li)=>{
-    const yMid=topPad+li*laneH+laneH/2, col=(STREAM[k]||STREAM.plan).color;
-    const items=events.filter(e=>e.key===k).sort((a,b)=>a.date<b.date?-1:1);
-    s+=`<text x="6" y="${(yMid+3).toFixed(1)}" fill="${col}" font-size="10" font-weight="700">${esc((STREAM[k]||STREAM.plan).label.split(" ")[0])}</text>`;
-    s+=`<line x1="${LX}" y1="${yMid.toFixed(1)}" x2="${W-RX}" y2="${yMid.toFixed(1)}" stroke="${C.line}"/>`;
-    if(items.length>1){const x1=x(toT(items[0].date)), x2=x(toT(items[items.length-1].date));
-      s+=`<rect x="${x1.toFixed(1)}" y="${(yMid-5).toFixed(1)}" width="${Math.max(2,x2-x1).toFixed(1)}" height="10" rx="5" fill="${col}" opacity="0.20"/>`;}
-    items.forEach(e=>{const cx=x(toT(e.date)), r=e.isGate?5.5:4;
-      s+=`<circle cx="${cx.toFixed(1)}" cy="${yMid.toFixed(1)}" r="${r}" fill="${e.done?'#fffcf5':col}" stroke="${col}" stroke-width="1.5" opacity="${e.done?0.6:1}"/>`;
-      if(e.isGate) s+=`<text x="${cx.toFixed(1)}" y="${(yMid-9).toFixed(1)}" fill="${col}" font-size="8" text-anchor="middle" font-weight="700">${esc(e.short)}</text>`;});
-  });
-  return s+`</svg>`;
-}
-
-function viewPlan(){
-  const pl=S.plan, today=new Date().toISOString().slice(0,10);
-  const daysTo=d=>{const n=Math.round((new Date(d+"T00:00:00")-new Date(today+"T00:00:00"))/86400000);return isNaN(n)?null:n;};
-  const pill=d=>{const n=daysTo(d);if(n==null)return "";const txt=n<0?"passed":n===0?"today":"in "+n+"d";
-    const col=n<0?C.faint:n<=14?C.red:n<=35?C.amber:C.muted;
-    return `<span style="font-size:11px;font-weight:700;color:${col};border:1px solid ${col};border-radius:20px;padding:2px 9px;flex-shrink:0">${txt}</span>`;};
-  const aDays=daysTo(pl.anchor);
-  const anchorTxt=aDays==null?"set an anchor date":aDays<0?Math.abs(aDays)+" days past the anchor":aDays===0?"the anchor is today":aDays+" days to the anchor";
-
-  /* ----- collect milestones: gates + per-option timelines ----- */
-  const pad2=n=>String(n).padStart(2,"0");
-  const events=[];
-  pl.gates.forEach(g=>{ if(g.date){const key=g.party||"plan"; events.push({date:g.date,short:g.id.toUpperCase(),full:g.label,key,color:(STREAM[key]||STREAM.plan).color,isGate:true,done:g.done}); }});
-  S.options.forEach(o=>(o.timeline||[]).forEach(m=>{ if(m.date) events.push({date:m.date,short:m.label,full:m.label,key:o.id,color:OPT_COLOR[o.id]||C.gold,isGate:false,done:false}); }));
-  const byDate={}; events.forEach(e=>{(byDate[e.date]=byDate[e.date]||[]).push(e);});
-  const presentKeys=[...new Set(events.map(e=>e.key))];
-  const order=["plan","kpmg","fti","bhp","alt"];
-
-  /* ----- calendar grid ----- */
-  let calendar;
-  if(!events.length){
-    calendar=`<div style="font-size:13px;color:var(--faint)">Set gate dates below and per-role milestones in “Next 30 days”, and they'll line up here on the calendar.</div>`;
-  } else {
-    const all=events.map(e=>e.date).concat([pl.anchor,today]).filter(Boolean).sort();
-    let y=+all[0].slice(0,4), mo=+all[0].slice(5,7)-1;
-    const endY=+all[all.length-1].slice(0,4), endMo=+all[all.length-1].slice(5,7)-1;
-    const months=[]; let guard=0;
-    while((y<endY||(y===endY&&mo<=endMo))&&guard++<10){ months.push([y,mo]); mo++; if(mo>11){mo=0;y++;} }
-    const wd=["M","T","W","T","F","S","S"];
-    const monthName=(yy,mm)=>new Date(yy,mm,1).toLocaleDateString("en-AU",{month:"long",year:"numeric"});
-    const grids=months.map(([yy,mm])=>{
-      const offset=(new Date(yy,mm,1).getDay()+6)%7, dim=new Date(yy,mm+1,0).getDate();
-      let cells=""; for(let i=0;i<offset;i++) cells+=`<div></div>`;
-      for(let d=1;d<=dim;d++){
-        const dstr=yy+"-"+pad2(mm+1)+"-"+pad2(d), evs=byDate[dstr]||[];
-        const isToday=dstr===today, isAnchor=dstr===pl.anchor;
-        const chips=evs.slice(0,3).map(e=>`<div style="display:flex;align-items:center;gap:3px;line-height:1.15">
-            <span style="width:6px;height:6px;border-radius:50%;background:${e.color};flex-shrink:0;${e.done?'opacity:.4':''}"></span>
-            <span style="font-size:8.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;${e.done?'text-decoration:line-through':''}">${esc(e.isGate?e.short:(e.short.length>9?e.short.slice(0,8)+'\u2026':e.short))}</span></div>`).join("");
-        const more=evs.length>3?`<div style="font-size:8px;color:var(--faint)">+${evs.length-3} more</div>`:"";
-        const bg=isAnchor?'background:rgba(228,98,28,.14);':evs.length?'background:rgba(181,97,14,.06);':'';
-        const ring=isToday?'box-shadow:inset 0 0 0 2px var(--blue);':isAnchor?'box-shadow:inset 0 0 0 2px var(--orange);':'';
-        cells+=`<div style="min-height:46px;border:1px solid var(--line);border-radius:7px;padding:3px 4px;overflow:hidden;${bg}${ring}">
-          <div style="font-size:9px;font-weight:700;color:${isToday?'var(--blue)':isAnchor?'var(--orange)':'var(--faint)'}">${d}${isAnchor?' \u2605':''}</div>${chips}${more}</div>`;
-      }
-      return `<div class="card tight"><div class="serif" style="font-size:15px;margin-bottom:8px">${esc(monthName(yy,mm))}</div>
-        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px">${wd.map(w=>`<div style="font-size:9px;color:var(--faint);text-align:center;font-weight:700">${w}</div>`).join("")}</div>
-        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px">${cells}</div></div>`;
-    }).join("");
-    const legend=order.filter(k=>presentKeys.includes(k)).map(k=>`<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);margin:0 12px 6px 0">
-        <span style="width:9px;height:9px;border-radius:50%;background:${(STREAM[k]||STREAM.plan).color}"></span>${esc((STREAM[k]||STREAM.plan).label)}</span>`).join("");
-    calendar=`<div style="margin-bottom:12px">${legend}
-        <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);margin:0 12px 6px 0"><span style="width:9px;height:9px;border-radius:3px;box-shadow:inset 0 0 0 2px var(--blue)"></span>today</span>
-        <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><span style="width:9px;height:9px;border-radius:3px;box-shadow:inset 0 0 0 2px var(--orange)"></span>anchor \u2605</span></div>
-      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(228px,1fr))">${grids}</div>`;
-  }
-
-  /* ----- by-stream breakdown ----- */
-  const byStream=order.filter(k=>presentKeys.includes(k)).map(k=>{
-    const items=events.filter(e=>e.key===k).sort((a,b)=>a.date<b.date?-1:1), col=(STREAM[k]||STREAM.plan).color;
-    const rows=items.map(e=>`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--line)">
-        <span style="font-size:11px;color:var(--faint);width:86px;flex-shrink:0">${esc(e.date)}</span>
-        <span style="font-size:12.5px;color:var(--text);flex:1;${e.done?'text-decoration:line-through;color:var(--muted)':''}">${esc(e.full)}</span></div>`).join("");
-    return `<div class="card tight" style="border-left:3px solid ${col}">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-          <span style="width:10px;height:10px;border-radius:50%;background:${col}"></span>
-          <div class="serif" style="font-size:16px">${esc((STREAM[k]||STREAM.plan).label)}</div>
-          <span style="font-size:11px;color:var(--faint)">${items.length} milestone${items.length===1?'':'s'}</span></div>${rows}</div>`;
-  }).join("");
-
-  /* ----- streams timeline (swimlane gantt) ----- */
-  const _gantt=streamsTimelineSVG();
-  const timelineCard=_gantt?`<div class="card" style="margin-bottom:14px"><div class="serif" style="font-size:18px;margin-bottom:4px">\u229e Streams timeline</div>
-      <div style="color:var(--muted);font-size:12px;margin-bottom:10px">Each stream as a lane across time. The bar is the stream's active window; G0\u2013G4 are the gates, hollow markers are done. Today is the blue line, the anchor the orange line.</div>
-      <div style="overflow-x:auto">${_gantt}</div></div>`:"";
-
-  /* ----- gates with tasks ----- */
-  const gates=pl.gates.map(g=>{
-    const col=OPT_COLOR[g.party]||C.gold;
-    const partyName=g.party?(S.neg.parties.find(p=>p.id===g.party)||{}).name:"";
-    const link=g.party?`<button class="btn" data-tab="neg" style="padding:4px 9px;border-color:${col};color:${col}">→ ${esc((partyName||g.party).split(" (")[0])} in Negotiation</button>`:"";
-    const taskRows=(g.tasks||[]).map((tk,ti)=>{const sm=STREAM[tk.stream]||STREAM.all;
-      return `<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">
-        <input type="checkbox" data-plantask="${g.id}.${ti}" ${tk.done?'checked':''} style="accent-color:var(--green);width:15px;height:15px;flex-shrink:0"/>
-        <button class="btn" data-action="planTaskStream" data-id="${g.id}" data-i="${ti}" title="Cycle the stream this task belongs to" style="padding:2px 7px;border-color:${sm.color};color:${sm.color};flex-shrink:0;min-width:48px;justify-content:center">${esc(sm.label.split(" ")[0])}</button>
-        <input type="text" data-path="planTask.${g.id}.${ti}.text" value="${esc(tk.text)}" placeholder="task / thing to consider…" style="flex:1;padding:5px 8px;font-size:12px;${tk.done?'text-decoration:line-through;color:var(--muted)':''}"/>
-        <button class="btn" data-action="planDelTask" data-id="${g.id}" data-i="${ti}" style="padding:4px 8px;flex-shrink:0">✕</button></div>`;}).join("");
-    const doneN=(g.tasks||[]).filter(t=>t.done).length, totN=(g.tasks||[]).length;
-    return `<div class="card tight" style="border-left:3px solid ${g.done?C.green:col};${g.done?'opacity:.65':''}">
-      <div style="display:flex;align-items:flex-start;gap:10px">
-        <input type="checkbox" data-planon="${g.id}" ${g.done?'checked':''} style="accent-color:var(--green);width:18px;height:18px;margin-top:3px;flex-shrink:0"/>
-        <div style="flex:1;min-width:0">
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-            <span class="serif" style="font-size:17px;${g.done?'text-decoration:line-through;color:var(--muted)':''}">${esc(g.label)}</span>${pill(g.date)}
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;margin:8px 0;flex-wrap:wrap">
-            <span style="font-size:11px;color:var(--faint);flex-shrink:0">Target</span>
-            <input type="date" data-path="planGate.${g.id}.date" value="${esc(g.date)}" style="width:150px;padding:5px;font-size:12px"/>${link}
-          </div>
-          <div style="font-size:12.5px;color:var(--muted);line-height:1.55">${esc(g.branch)}</div>
-          <div style="margin:10px 0 8px">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-              <span style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px">TASKS — TO CONSIDER / ACTION</span>
-              <span style="font-size:11px;color:var(--faint)">${doneN}/${totN} done</span></div>
-            ${taskRows}
-            <button class="btn" data-action="planAddTask" data-id="${g.id}" style="margin-top:2px">+ Add task</button></div>
-          <div style="font-size:11px;color:var(--faint);margin-bottom:4px">Notes / context</div>
-          <textarea rows="2" data-path="planGate.${g.id}.note" placeholder="Anything else — context, who said what, open questions…">${esc(g.note)}</textarea>
-        </div>
-      </div>
-    </div>`;}).join("");
-
-  const phases=pl.phases.map(ph=>`<div class="card tight">
-      <div class="serif" style="font-size:15px;margin-bottom:2px">${esc(ph.label)}</div>
-      <div style="font-size:11px;color:var(--gold);margin-bottom:8px">${esc(ph.span)}</div>
-      <div style="font-size:12.5px;color:var(--muted);line-height:1.55">${esc(ph.body)}</div>
-    </div>`).join("");
-
-  return `<p style="color:var(--muted);font-size:13px;max-width:700px;margin:0 0 16px">The decision tree to the anchor: a sequence of gates, each with its own tasks across the FTI, KPMG and BHP streams. The rule that governs all of them — <b style="color:var(--text)">a path is only real on the anchor if it's in writing (FTI) or a confirmed role and band (BHP)</b>.</p>
-    <div class="card gold" style="margin-bottom:14px">
-      <div style="font-size:11px;letter-spacing:2px;color:var(--gold);font-weight:700;margin-bottom:6px">ANCHOR — RESIGN OR RECOMMIT</div>
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px">
-        <input type="date" data-path="plan.anchor" value="${esc(pl.anchor)}" style="width:160px;padding:7px;font-size:14px"/>
-        <span class="big" style="font-size:24px">${esc(anchorTxt)}</span></div>
-      <p style="color:var(--muted);font-size:13px;line-height:1.6;margin:0">${esc(pl.intro)}</p>
-    </div>
-    <div class="card" style="margin-bottom:14px"><div class="serif" style="font-size:18px;margin-bottom:4px">⌗ Calendar — milestones &amp; streams</div>
-      <div style="color:var(--muted);font-size:12px;margin-bottom:10px">Every gate and milestone from now to the anchor, colour-coded by stream. Today is ringed in blue, the anchor in orange.</div>
-      ${calendar}
-      ${byStream?`<div style="font-size:12px;color:var(--gold);font-weight:700;letter-spacing:1px;margin:16px 0 8px">BY STREAM</div><div class="grid g-2">${byStream}</div>`:""}</div>
-    ${timelineCard}
-    <div class="grid" style="margin-bottom:14px">${gates}</div>
-    <div class="card" style="margin-bottom:14px"><div class="serif" style="font-size:18px;margin-bottom:4px">The three phases</div>
-      <div style="color:var(--muted);font-size:12px;margin-bottom:14px">How the twelve weeks break down. Phase 2 is where verbal becomes written; Phase 3 is where you converge and transact.</div>
-      <div class="grid g-2" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">${phases}</div></div>
-    <div class="note" style="text-align:center">A planning tool, not legal or financial advice. Get any term sheet or contract reviewed by your own adviser before acting.</div>`;
-}
-
 function viewNeg(){
   const partyCard=pt=>{
     const col=OPT_COLOR[pt.id]||C.gold;
@@ -920,9 +759,9 @@ function viewNeg(){
     const levers=(pt.levers||[]).map((l,i)=>`<div class="lever ${l.kind} ${l.star?'star':''}">
         <div style="display:flex;gap:6px;align-items:center">
           <button class="btn" data-action="negKind" data-id="${pt.id}" data-i="${i}" title="Toggle get / give"
-            style="padding:4px 8px;${l.kind==='give'?'border-color:rgba(63,138,75,.55);color:var(--green)':'border-color:var(--lineGold);color:var(--goldB)'}">${l.kind==='give'?'GIVE':'GET'}</button>
+            style="padding:4px 8px;${l.kind==='give'?'border-color:rgba(138,165,127,.45);color:var(--green)':'border-color:var(--lineGold);color:var(--goldB)'}">${l.kind==='give'?'GIVE':'GET'}</button>
           <button class="btn" data-action="negStar" data-id="${pt.id}" data-i="${i}" title="Mark as a high-leverage trade"
-            style="padding:4px 8px;${l.star?'border-color:rgba(194,116,26,.6);color:var(--amber)':''}">${l.star?'★':'☆'}</button>
+            style="padding:4px 8px;${l.star?'border-color:rgba(215,163,95,.5);color:var(--amber)':''}">${l.star?'★':'☆'}</button>
           <input type="text" data-path="neglever.${pt.id}.${i}.label" value="${esc(l.label)}" style="flex:1;padding:5px 8px;font-size:12.5px"/>
           <button class="btn" data-action="negDelLever" data-id="${pt.id}" data-i="${i}" style="padding:5px 8px">✕</button>
         </div>
@@ -976,16 +815,16 @@ function viewNeg(){
 
 function render(){
   const tabs=[["dashboard","Dashboard",I.dash],["options","Score the options",I.comp],
-    ["money","Money model",I.money],["next","Next 30 days",I.cal],["plan","90-day plan",I.flag],["neg","Negotiation",I.deal],["bias","Ego & imposter",I.brain],["couch","On the couch",I.anchor]];
+    ["money","Money model",I.money],["next","Next 30 days",I.cal],["neg","Negotiation",I.deal],["bias","Ego & imposter",I.brain],["couch","On the couch",I.anchor]];
   const tabbar=tabs.map(([id,label,ic])=>`<button class="tab ${activeTab===id?'active':''}" data-tab="${id}">${ic}${label}</button>`).join("");
   const content=activeTab==="dashboard"?viewDashboard():activeTab==="options"?viewOptions():
-    activeTab==="money"?viewMoney():activeTab==="next"?viewNext():activeTab==="plan"?viewPlan():activeTab==="neg"?viewNeg():activeTab==="bias"?viewBias():viewCouch();
+    activeTab==="money"?viewMoney():activeTab==="next"?viewNext():activeTab==="neg"?viewNeg():activeTab==="bias"?viewBias():viewCouch();
   document.getElementById("app").innerHTML=`
     <header class="top"><div class="htop">
       <div class="row between">
         <div><div class="kick">A CAREER &amp; FREEDOM DECISION TOOL</div>
           <h1 class="title serif">The 62 Decision</h1>
-          <div class="sub">Four paths. One question: which lets you finish your career on your terms — secure, and free of ego and fear?</div></div>
+          <div class="sub">Your paths, one question: which lets you finish your career on your terms — secure, and free of ego and fear?</div></div>
         <div class="row" style="gap:8px">
           <button class="btn gold" data-action="print">⎙ Save as PDF</button>
           <button class="btn" data-action="export">↓ Export JSON</button>
@@ -1019,9 +858,6 @@ function applyPath(path,val){
   else if(p[0]==="negwant"){const pt=S.neg.parties.find(x=>x.id===p[1]);if(pt)pt.theyWant[+p[2]]=val;}
   else if(p[0]==="neglever"){const pt=S.neg.parties.find(x=>x.id===p[1]);if(pt&&pt.levers[+p[2]])pt.levers[+p[2]][p[3]]=val;}
   else if(p[0]==="negprop"){const pt=S.neg.parties.find(x=>x.id===p[1]);if(pt&&pt.proposals[+p[2]])pt.proposals[+p[2]][p[3]]=val;}
-  else if(p[0]==="plan"){S.plan.anchor=val;}
-  else if(p[0]==="planGate"){const g=S.plan.gates.find(x=>x.id===p[1]);if(g)g[p[2]]=val;}
-  else if(p[0]==="planTask"){const g=S.plan.gates.find(x=>x.id===p[1]);if(g&&g.tasks&&g.tasks[+p[2]])g.tasks[+p[2]][p[3]]=val;}
   save();
 }
 
@@ -1041,8 +877,13 @@ async function runAI(){
   dated.sort();
   const answers=DEEP_Q.map(q=>`Q: ${q.q}\nA: ${S.couch.answers[q.id]||"(blank)"}`).join("\n\n");
   const guards=S.couch.guardrails.map(g=>(g.on?"[met] ":"[ ] ")+g.text).join("\n");
-  const sys="You are a sharp, warm executive life-strategist and decision coach for a 55-year-old consulting partner deciding the final act of his career, aiming to reach financial optionality by 62 without sacrificing health and family. Be honest and challenging but kind. Ground every observation in the data and answers provided. Separate strategy from ego and imposter fear. Do NOT give clinical or psychiatric diagnoses; speak as a coach, in hypotheses, not verdicts. Be concise and specific. Use short headed sections.";
-  const user=`Here is my decision data.\n\nNORTHSTAR: ${S.couch.northstar}\n\nGUARDRAILS:\n${guards}\n\nOPTIONS (with the scenario case I'm currently modelling):\n${summary}\n\nKEY DATES NEXT 30 DAYS:\n${dated.length?dated.join("\n"):"(none set)"}\n\nMY WRITTEN ANSWERS:\n${answers}\n\nPlease give me a deep-dive: (1) the pattern across my scores and answers, (2) where ego or imposter fear seem to be distorting my thinking, (3) the one question I appear to be avoiding, (4) given the dates, what I should pin down first, and (5) a recommendation framed as a test I can run, not an order. Challenge me.`;
+  const negTxt=(S.neg.parties||[]).map(pt=>{
+    const gv=k=>(pt.levers||[]).filter(l=>l.kind===k).map(l=>(l.star?"*":"")+l.label).join("; ");
+    const pr=(pt.proposals||[]).filter(p=>p.ifThey||p.thenI).map(p=>`if they ${p.ifThey} then I ${p.thenI}`).join(" | ");
+    return `${pt.name}: limit=${pt.limit||"(unset)"}; aspiration=${pt.aspiration||"(unset)"}; GET=${gv("get")||"-"}; GIVE=${gv("give")||"-"}; proposals: ${pr||"-"}`;
+  }).join("\n");
+  const sys="You are a sharp, warm executive life-strategist, decision coach and negotiation adviser for a 55-year-old consulting partner deciding the final act of his career, aiming to reach financial optionality by 62 without sacrificing health and family. Be honest and challenging but kind. Ground every observation in the data and answers provided. Separate strategy from ego and imposter fear. On negotiation, use Scotwork-style trading (conditional proposals, trade cheap-to-give for expensive-to-him protections) and BATNA logic; never advise bluffing with a verifiable counterparty. Do NOT give clinical or psychiatric diagnoses; speak as a coach, in hypotheses, not verdicts. Be concise and specific. Use short headed sections.";
+  const user=`Here is my decision data.\n\nNORTHSTAR: ${S.couch.northstar}\n\nGUARDRAILS:\n${guards}\n\nOPTIONS (with the scenario case I'm currently modelling):\n${summary}\n\nNEGOTIATION PREP (per counterparty):\n${negTxt}\n\nKEY DATES NEXT 30 DAYS:\n${dated.length?dated.join("\n"):"(none set)"}\n\nMY WRITTEN ANSWERS:\n${answers}\n\nPlease give me a deep-dive: (1) the pattern across my scores and answers, (2) where ego or imposter fear seem to be distorting my thinking, (3) the one question I appear to be avoiding, (4) given the dates, what I should pin down first, (5) my strongest negotiation sequence and the two trades I'm under-using, and (6) a recommendation framed as a test I can run, not an order. Challenge me.`;
   try{
     const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
       headers:{"content-type":"application/json","x-api-key":apiKey,
@@ -1071,19 +912,11 @@ function exportJSON(){
 function importJSON(file){
   const r=new FileReader();
   r.onload=()=>{try{const s=JSON.parse(r.result);
-    if(s.options){S.options=DEFAULT_OPTIONS.map(def=>{const st=s.options.find(o=>o.id===def.id);
-      if(!st) return clone(def);
-      const cases=clone(def.cases);
-      if(st.cases){CASE_KEYS.forEach(k=>{if(st.cases[k]&&typeof st.cases[k].comp==="number")cases[k].comp=st.cases[k].comp;});}
-      else if(typeof st.comp==="number"){cases.mid.comp=st.comp;}
-      return {...clone(def),s:st.s??def.s,ego:st.ego??def.ego,fear:st.fear??def.fear,
-        lifecost:st.lifecost??def.lifecost,reverse:st.reverse??def.reverse,premortem:st.premortem??"",
-        cases,active:st.active||def.active,
-        timeline:Array.isArray(st.timeline)&&st.timeline.length?st.timeline:def.timeline};});}
+    if(Array.isArray(s.options)&&s.options.length){S.options=s.options.map(sanitizeOption);}
     if(s.a)S.a={...DEFAULT_A,...s.a}; if(s.w)S.w={...DEFAULT_W,...s.w};
     if(s.couch)S.couch={...clone(DEFAULT_COUCH),...s.couch}; if(s.checks)S.checks=s.checks;
     S.neg=mergeNeg(s.neg);
-    S.plan=mergePlan(s.plan);
+    S.seedVersion=(typeof s.seedVersion==="number")?s.seedVersion:SEED_VERSION;
     if(s.ai)S.ai=s.ai;
     save();render();
   }catch(e){alert("Could not read that file: "+e.message);}};
@@ -1093,10 +926,10 @@ function importJSON(file){
 /* ---------------- comprehensive print document ---------------- */
 function buildPrint(){
   const R=rows(), a=S.a;
-  const sec=(t)=>`<div style="font-family:'Fraunces',serif;font-size:17px;color:#1c1916;margin:22px 0 8px;border-bottom:2px solid #e4621c;padding-bottom:4px;break-after:avoid">${t}</div>`;
-  const th=(arr)=>`<tr style="background:#173a63;color:#fff">${arr.map((h,j)=>`<th style="padding:5px 7px;text-align:${j===0?'left':'right'};font-size:10px">${h}</th>`).join("")}</tr>`;
+  const sec=(t)=>`<div style="font-family:'Fraunces',serif;font-size:17px;color:#1c1916;margin:22px 0 8px;border-bottom:2px solid #c9a96a;padding-bottom:4px;break-after:avoid">${t}</div>`;
+  const th=(arr)=>`<tr style="background:#1c1916;color:#fff">${arr.map((h,j)=>`<th style="padding:5px 7px;text-align:${j===0?'left':'right'};font-size:10px">${h}</th>`).join("")}</tr>`;
   const tr=(cells,i)=>`<tr style="background:${i%2?'#f5f1e8':'#fbf9f3'};border-bottom:1px solid #d8d0c0">${cells.map((c,j)=>`<td style="padding:5px 7px;text-align:${j===0?'left':'right'};font-size:10.5px;${c.b?'font-weight:700':''}">${c.v}</td>`).join("")}</tr>`;
-  const box=(label,html,bg)=>`<div style="margin-top:10px;padding:10px;background:${bg||'#f5f1e8'};border:1px solid #d8d0c0;border-radius:6px;font-size:11px;break-inside:avoid">${label?`<b style="color:#b5610e">${label}</b> `:""}${html}</div>`;
+  const box=(label,html,bg)=>`<div style="margin-top:10px;padding:10px;background:${bg||'#f5f1e8'};border:1px solid #d8d0c0;border-radius:6px;font-size:11px;break-inside:avoid">${label?`<b style="color:#a8842f">${label}</b> `:""}${html}</div>`;
 
   const ranking=`<table style="width:100%;border-collapse:collapse">${th(["Rank","Path","Scenario","Weighted","Income/yr","Life cost","Reverse","Ego+fear"])}
     ${R.map((c,i)=>tr([{v:"#"+(i+1)},{v:esc(c.o.name),b:1},{v:esc(activeLabel(c.o))},{v:Math.round(c.total),b:1},{v:fmtK(c.p.sust)},{v:c.o.lifecost+"/10"},{v:c.o.reverse+"/10"},{v:c.bias+"/20"}],i)).join("")}</table>`;
@@ -1117,7 +950,7 @@ function buildPrint(){
 
   const dts=[];S.options.forEach(o=>(o.timeline||[]).forEach(m=>{if(m.date)dts.push({d:m.date,o:o.name,l:m.label});}));
   dts.sort((x,y)=>x.d<y.d?-1:1);
-  const timeline=dts.length?`<table style="width:100%;border-collapse:collapse"><tr style="background:#173a63;color:#fff"><th style="padding:5px 7px;text-align:left;font-size:10px">Date</th><th style="padding:5px 7px;text-align:left;font-size:10px">Role</th><th style="padding:5px 7px;text-align:left;font-size:10px">Milestone</th></tr>
+  const timeline=dts.length?`<table style="width:100%;border-collapse:collapse"><tr style="background:#1c1916;color:#fff"><th style="padding:5px 7px;text-align:left;font-size:10px">Date</th><th style="padding:5px 7px;text-align:left;font-size:10px">Role</th><th style="padding:5px 7px;text-align:left;font-size:10px">Milestone</th></tr>
     ${dts.map((x,i)=>`<tr style="background:${i%2?'#f5f1e8':'#fbf9f3'};border-bottom:1px solid #d8d0c0"><td style="padding:5px 7px;font-size:10.5px;font-weight:700">${esc(x.d)}</td><td style="padding:5px 7px;font-size:10.5px">${esc(x.o)}</td><td style="padding:5px 7px;font-size:10.5px">${esc(x.l)}</td></tr>`).join("")}</table>`:`<div style="font-size:10.5px;color:#9a9282">No dates set yet.</div>`;
 
   const negDoc=(S.neg.parties||[]).map(pt=>{
@@ -1135,13 +968,8 @@ function buildPrint(){
 
   const ai=(S.ai&&S.ai.text)?`<div style="font-size:10px;color:#9a9282;margin-bottom:8px">Generated ${esc((S.ai.when||"").slice(0,16).replace("T"," "))} \u00b7 ${esc(S.ai.model||"")}</div><div style="font-size:11px;color:#1c1916">${mdToHtml(S.ai.text)}</div>`:`<div style="font-size:10.5px;color:#9a9282">No AI deep-dive saved. Run it in the “On the couch” tab on your hosted page, then export this PDF.</div>`;
 
-  const planAnchor=S.plan?S.plan.anchor:"";
-  const planGates=(S.plan?S.plan.gates:[]).map(g=>`<div style="margin-bottom:8px;break-inside:avoid"><b style="font-size:11px">${g.done?"\u2611":"\u2610"} ${esc(g.label)}</b> <span style="color:#6f675a;font-size:10px">${g.date?esc(g.date):"(no date)"}</span><div style="font-size:10.5px;color:#4a443a;margin-top:1px">${esc(g.branch)}</div>${(g.tasks&&g.tasks.length)?`<ul style="margin:3px 0 0 16px;padding:0;font-size:10.5px;color:#4a443a">${g.tasks.map(t=>`<li style="margin-bottom:1px">${t.done?"\u2611":"\u2610"} <b>${esc((STREAM[t.stream]||STREAM.all).label.split(" ")[0])}</b> \u00b7 ${esc(t.text)}</li>`).join("")}</ul>`:""}${g.note?`<div style="font-size:10.5px;color:#1c1916;margin-top:2px"><b>Note:</b> ${esc(g.note)}</div>`:""}</div>`).join("");
-  const planPhases=(S.plan?S.plan.phases:[]).map(ph=>`<div style="margin-bottom:6px;break-inside:avoid"><b style="font-size:11px">${esc(ph.label)}</b> <span style="color:#6f675a;font-size:10px">${esc(ph.span)}</span><div style="font-size:10.5px;color:#4a443a">${esc(ph.body)}</div></div>`).join("");
-  const planSvg=streamsTimelineSVG();
-
   document.getElementById("printArea").innerHTML=`
-    <div style="font-size:11px;letter-spacing:2px;color:#b5610e;font-weight:700">THE 62 DECISION \u2014 FULL DECISION DOSSIER</div>
+    <div style="font-size:11px;letter-spacing:2px;color:#a8842f;font-weight:700">THE 62 DECISION \u2014 FULL DECISION DOSSIER</div>
     <h1 style="font-family:'Fraunces',serif;font-size:27px;margin:4px 0 2px">Decision dossier</h1>
     <div style="font-size:11px;color:#6f675a;margin-bottom:4px">Generated ${new Date().toISOString().slice(0,16).replace("T"," ")} \u00b7 Ages ${a.currentAge}\u2013${a.retireAge} \u00b7 ${a.returnRate}% return${a.stress?" \u00b7 STRESS ON":""} \u00b7 target ${fmtK(a.retireTarget)}/yr</div>
     ${box("NORTHSTAR:",esc(S.couch.northstar),"#faf4e4")}
@@ -1159,11 +987,6 @@ function buildPrint(){
     <div style="break-before:page"></div>
     ${sec("9 \u00b7 Negotiation levers")}${negDoc}
     ${sec("10 \u00b7 AI deep-dive")}${ai}
-    ${sec("11 \u00b7 90-day plan to "+esc(planAnchor))}
-    <div style="font-size:10.5px;color:#4a443a;margin-bottom:6px">${esc(S.plan?S.plan.intro:"")}</div>
-    ${planSvg?`<div style="font-weight:700;font-size:11px;color:#1c1916;margin-bottom:2px">Streams timeline</div><div style="margin-bottom:10px;break-inside:avoid">${planSvg}</div>`:""}
-    ${planGates}
-    <div style="margin-top:8px;font-weight:700;font-size:11px;color:#1c1916">Phases</div>${planPhases}
     ${box("Decision rule:","choose the path that is strong on your anchors, clean of distortion, survivable in the bad case, and reversible if you're wrong \u2014 and that reaches optionality without trading away the body and family that make freedom worth having.","#faf4e4")}
     <div style="margin-top:8px;font-size:9px;color:#9a9282">Strategic modelling, not financial advice. Figures are approximations to support your own informed decision; confirm tax, super and returns with a fee-only adviser.</div>`;
 }
@@ -1187,9 +1010,8 @@ app.addEventListener("change",e=>{
   const t=e.target;
   if(t.matches('input[type=checkbox][data-path]')){ applyPath(t.dataset.path,t.checked);
     if(activeTab==="money")updateMoneyReadouts(); }
-  else if(t.matches('input[type=date][data-path]')){ if(activeTab==="next"||activeTab==="plan")render(); }
-  else if(t.dataset.planon!==undefined){ const g=S.plan.gates.find(x=>x.id===t.dataset.planon); if(g){g.done=t.checked;save();render();} }
-  else if(t.dataset.plantask!==undefined){ const pr=t.dataset.plantask.split("."); const g=S.plan.gates.find(x=>x.id===pr[0]); if(g&&g.tasks[+pr[1]]){g.tasks[+pr[1]].done=t.checked;save();render();} }
+  else if(t.matches('select[data-path]')){ applyPath(t.dataset.path,t.value); render(); }
+  else if(t.matches('input[type=date][data-path]')){ if(activeTab==="next")render(); }
   else if(t.dataset.guardon!==undefined){ S.couch.guardrails[+t.dataset.guardon].on=t.checked;
     save(); t.closest('.guard').classList.toggle('on',t.checked); }
   else if(t.dataset.check!==undefined){ S.checks[t.dataset.check]=t.checked; save();
@@ -1204,6 +1026,18 @@ app.addEventListener("click",e=>{
   else if(a==="setCase"){const o=S.options.find(x=>x.id===act.dataset.id);if(o){o.active=act.dataset.key;save();render();}}
   else if(a==="addTL"){const o=S.options.find(x=>x.id===act.dataset.id);if(o){o.timeline.push({label:"New milestone",date:""});save();render();}}
   else if(a==="delTL"){const o=S.options.find(x=>x.id===act.dataset.id);if(o){o.timeline.splice(+act.dataset.i,1);save();render();}}
+  else if(a==="addOption"){
+    const key=act.dataset.preset; let opt;
+    if(key==="blank"){opt=sanitizeOption({id:"opt"+Date.now().toString(36),name:"New candidate",tag:"Candidate",notes:""});}
+    else{const pre=LIBRARY_PRESETS.find(p=>p.id===key); if(!pre)return; opt=clone(pre);
+      if(S.options.some(o=>o.id===opt.id)) opt.id=opt.id+"-"+Date.now().toString(36);}
+    S.options.push(opt);save();render();
+  }
+  else if(a==="delOption"){
+    if(S.options.length<=2){alert("Keep at least two options to compare.");return;}
+    if(confirm("Remove this option? Its scores, cases and dates will be deleted.")){
+      S.options=S.options.filter(o=>o.id!==act.dataset.id);save();render();}
+  }
   else if(a==="negKind"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){const l=pt.levers[+act.dataset.i];l.kind=l.kind==='give'?'get':'give';save();render();}}
   else if(a==="negStar"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){const l=pt.levers[+act.dataset.i];l.star=!l.star;save();render();}}
   else if(a==="negAddLever"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){pt.levers.push({label:"New tradeable",kind:"get",star:false,note:""});save();render();}}
@@ -1212,9 +1046,6 @@ app.addEventListener("click",e=>{
   else if(a==="negDelWant"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){pt.theyWant.splice(+act.dataset.i,1);save();render();}}
   else if(a==="negAddProp"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){pt.proposals.push({ifThey:"",thenI:""});save();render();}}
   else if(a==="negDelProp"){const pt=S.neg.parties.find(x=>x.id===act.dataset.id);if(pt){pt.proposals.splice(+act.dataset.i,1);save();render();}}
-  else if(a==="planAddTask"){const g=S.plan.gates.find(x=>x.id===act.dataset.id);if(g){if(!g.tasks)g.tasks=[];g.tasks.push({text:"",stream:"all",done:false});save();render();}}
-  else if(a==="planDelTask"){const g=S.plan.gates.find(x=>x.id===act.dataset.id);if(g&&g.tasks){g.tasks.splice(+act.dataset.i,1);save();render();}}
-  else if(a==="planTaskStream"){const g=S.plan.gates.find(x=>x.id===act.dataset.id);if(g&&g.tasks&&g.tasks[+act.dataset.i]){const ord=["all","fti","kpmg","bhp","alt"];const tk=g.tasks[+act.dataset.i];tk.stream=ord[(ord.indexOf(tk.stream)+1)%ord.length];save();render();}}
   else if(a==="export"){exportJSON();}
   else if(a==="importTrigger"){document.getElementById("importFile").click();}
   else if(a==="reset"){if(confirm("Reset everything to defaults? This clears your saved inputs in this browser.")){S=freshState();save();render();}}
